@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+    <!-- 激活组件扫描功能,扫描aop的相关组件组件 -->
+    <context:component-scan base-package="com.eazy.commons.aop"/>
+    <!-- 启动对@AspectJ注解的支持 -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!--简化配置:
+    	1、自动注册DefaultAnnotationHandlerMapping,AnnotationMethodHandlerAdapter
+    	2、提供一系列:数据绑定,数字和日期的format,@NumberFormat,@DataTimeFormat,xml,json默认读写支持
+    -->
+    <mvc:annotation-driven/>
+
+    <!--静态资源默认servlet配置
+    	1、加入对静态资源的处理:js,css,gif,png
+    	2、允许使用"/"做整体映射
+    -->
+    <mvc:default-servlet-handler/>
+
+    <!--配置JSP　显示ViewResolver-->
+    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix" value=".html"/>
+    </bean>-->
+
+    <!--扫描web相关的controller-->
+    <context:component-scan base-package="com.eazy.*.controller"/>
+
+    <!--全局异常捕捉 -->
+    <bean class="com.eazy.commons.exception.GlobalExceptionResolver"/>
+
+    <!-- 支持上传文件 -->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 100M -->
+        <property name="maxUploadSize" value="104857600"></property>
+        <property name="defaultEncoding" value="utf-8"></property>
+    </bean>
+
+    <bean id="springContextUtil" class="com.eazy.commons.SpringContextUtil"></bean>
+
+    <bean id="viewResolver" class="com.jfinal.template.ext.spring.JFinalViewResolver">
+        <!-- 是否热加载模板文件-->
+        <property name="devMode" value="true"/>
+        <!-- 配置shared function, 多文件用逗号分隔 -->
+        <property name="sharedFunction" value="/commons/header.html,/commons/footer.html"/>
+        <!-- 是否支持以 #(session,value) 的方式访问session -->
+        <property name="sessionInView" value="true"/>
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix" value=".html"/>
+        <property name="order" value="1"/>
+        <property name="contentType" value="text/html;charset=utf-8"/>
+    </bean>
+</beans>

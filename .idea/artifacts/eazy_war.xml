@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="eazy:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="eazy_1.0-SNAPSHOT_20171205.war">
+      <element id="artifact" artifact-name="eazy:war exploded" />
+    </root>
+  </artifact>
+</component>
