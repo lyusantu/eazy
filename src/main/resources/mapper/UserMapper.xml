@@ -17,4 +17,12 @@
         <result property="status" column="status"/>
     </resultMap>
 
+    <select id="verifyAccountExists" resultType="Integer" parameterType="User">
+        SELECT COUNT(id) FROM user WHERE email = #{user.email}
+    </select>
+
+    <insert id="reg" parameterType="User" useGeneratedKeys="true" keyProperty="user.id">
+       INSERT INTO user(email,nickname,password,balance,reg_time,status) VALUES(#{user.email},#{user.nickName},#{user.password},#{user.balance},#{user.regTime},#{user.status})
+    </insert>
+
 </mapper>
