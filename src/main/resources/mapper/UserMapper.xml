@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eazy.user.dao.UserDao">
+
+    <!-- 定义数据库字段与实体对象的映射关系 -->
+    <resultMap type="user" id="userResultMap">
+        <id property="id" column="id"/>
+        <result property="email" column="email"/>
+        <result property="nickName" column="nickName"/>
+        <result property="password" column="password"/>
+        <result property="balance" column="balance"/>
+        <result property="avatar" column="avatar"/>
+        <result property="gender" column="gender"/>
+        <result property="sign" column="sign"/>
+        <result property="regTime" column="reg_time"/>
+        <result property="city" column="city"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+</mapper>
