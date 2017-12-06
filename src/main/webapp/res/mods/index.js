@@ -244,7 +244,13 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
           });
         });
       });
-      
+          layui.use('form', function(form){
+              //自定义验证规则
+              form.verify({
+                  nickName: [/[\u4e00-\u9fa5_a-zA-Z0-9_]{2,8}$/, '用户名必须2到8位且不能包含除下划线外的特殊字符']
+                  ,pass: [/(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/, '密码必须为6到16位的字母与数字的组合']
+              });
+          });
     }
 
     ,escape: function(html){
