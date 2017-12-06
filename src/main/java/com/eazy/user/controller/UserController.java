@@ -48,7 +48,7 @@ public class UserController {
         } else {
 //            baseService.addLoginRecord(user.getId(), Constants.getIpAddress(request)); // 记录本次登录信息
             request.getSession().setAttribute(Constants.LOGIN_USER, user);
-            LOG.info(user.getEmail() + "登录成功");
+            LOG.info(Base64.decode(user.getEmail()) + "登录成功");
             return new AjaxResult(0, null, "/");
         }
     }
@@ -77,7 +77,7 @@ public class UserController {
                 user.setPassword(SecureUtil.md5(user.getPassword()));
                 user.setRegTime(new Timestamp(System.currentTimeMillis()));
                 user.setId(userService.reg(user));
-                LOG.info(user.getEmail() + "注册成功");
+                LOG.info(Base64.decode(user.getEmail()) + "注册成功");
                 // 为用户设置默认角色
                 request.getSession().setAttribute(Constants.LOGIN_USER, user);
                 return new AjaxResult(0, null, "/");
