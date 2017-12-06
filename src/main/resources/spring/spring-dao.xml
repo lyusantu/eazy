@@ -32,13 +32,13 @@
 
 
     <!--3、配置SqlSessionFactory对象-->
-    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <bean id="sqlSessionFactory" class="com.eazy.commons.mybatis.EazySqlSessionFactoryBean">
         <!--注入数据库连接池-->
         <property name="dataSource" ref="dataSource"/>
         <!--配置mybatis全局配置文件:mybatis-config.xml-->
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
         <!--扫描entity包,使用别名,多个用;隔开-->
-        <property name="typeAliasesPackage" value="com.lyusantu.ssm.entity;com.lyusantu.ssm.ws.pojo.message"/>
+        <property name="typeAliasesPackage" value="com.eazy.*.entity"/>
         <!--扫描sql配置文件:mapper需要的xml文件-->
         <property name="mapperLocations" value="classpath:mapper/*.xml"/>
     </bean>
@@ -48,7 +48,7 @@
         <!--注入SqlSessionFactory-->
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
         <!-- 给出需要扫描的Dao接口-->
-        <property name="basePackage" value="com.lyusantu.ssm.dao"/>
+        <property name="basePackage" value="com.eazy.*.dao"/>
     </bean>
 
 </beans>
