@@ -15,9 +15,24 @@ public class SignResult implements Serializable {
 
     private JSONObject data;
 
+    private String msg;
+
     public SignResult(int status, JSONObject data) {
         this.status = status;
         this.data = data;
+    }
+
+    public SignResult(int status, String msg) {
+        this.status = status;
+        this.msg = msg;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public int getStatus() {
