@@ -52,8 +52,12 @@
                 <li class="layui-nav-item">
                   <a class="fly-nav-avatar" href="javascript:;">
                     <cite class="layui-hide-xs">#(session.loginUser.nickName)</cite>
-                    <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
-                    <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
+                    #if(session.loginUser.auth != null)
+                        <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：#(session.loginUser.auth)"></i>
+                    #end
+                    #if(session.loginUser.vip != 0)
+                        <i class="layui-badge fly-badge-vip layui-hide-xs">VIP#(session.loginUser.vip)</i>
+                    #end
                     <img src="#(session.loginUser.avatar)">
                   </a>
                   <dl class="layui-nav-child">
