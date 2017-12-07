@@ -30,4 +30,9 @@ public class UserServiceImpl implements UserService {
     public boolean verifyAccountExists(User user) {
         return userDao.verifyAccountExists(user) > 0;
     }
+
+    @Override
+    public void update(User user) {
+        userDao.update(user);
+    }
 }

@@ -9,4 +9,6 @@ public interface UserService {
     int reg(User user);
 
     boolean verifyAccountExists(User user);
+
+    void update(User user);
 }

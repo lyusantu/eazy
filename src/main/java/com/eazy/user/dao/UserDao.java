@@ -11,4 +11,6 @@ public interface UserDao {
 
     int reg(@Param("user") User user);
 
+    void update(@Param("user") User user);
+
 }
