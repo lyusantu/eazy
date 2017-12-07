@@ -174,11 +174,7 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
         }
         ,done: function(res){
           if(res.status == 0){
-            $.post('/user/set/', {
-              avatar: res.url
-            }, function(res){
               location.reload();
-            });
           } else {
             layer.msg(res.msg, {icon: 5});
           }
