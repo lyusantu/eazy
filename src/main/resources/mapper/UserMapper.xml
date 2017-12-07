@@ -29,4 +29,11 @@
        INSERT INTO user(email,nickname,password,avatar,balance,reg_time,status) VALUES(#{user.email},#{user.nickName},#{user.password},#{user.avatar},#{user.balance},#{user.regTime},#{user.status})
     </insert>
 
+    <update id="update" parameterType="User">
+        UPDATE user SET
+        <if test="user.avatar != null">
+            avatar = #{user.avatar}
+        </if>
+        WHERE id = #{user.id}
+    </update>
 </mapper>
