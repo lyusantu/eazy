@@ -17,6 +17,8 @@ public class AjaxResult<T> implements Serializable {
 
     private String action;
 
+    private String url;
+
     public AjaxResult(int status, String msg) {
         this.status = status;
         this.msg = msg;
@@ -26,6 +28,13 @@ public class AjaxResult<T> implements Serializable {
         this.status = status;
         this.msg = msg;
         this.action = action;
+    }
+
+    public AjaxResult(int status, String msg, String action, String url) {
+        this.status = status;
+        this.msg = msg;
+        this.action = action;
+        this.url = url;
     }
 
     public int getStatus() {
@@ -50,5 +59,13 @@ public class AjaxResult<T> implements Serializable {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

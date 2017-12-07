@@ -11,6 +11,8 @@ public class Constants {
 
     public static final String LOGIN_USER = "loginUser";
 
+    public static final String TITLE = "title";
+
     public static final String QINIU_CHAIN = "http://oih7sazbd.bkt.clouddn.com/"; // 七牛外链前缀
 
     public static String getIpAddress(HttpServletRequest request) {

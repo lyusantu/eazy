@@ -7,6 +7,9 @@ import com.qiniu.http.Response;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.IOException;
 
@@ -36,10 +39,12 @@ public class QiNiuUtil {
      * @param bucketName 空间名称(这里是为了获取凭证)
      * @throws IOException
      */
-    public String upload(String filePath, String key, String bucketName) throws IOException {
+    public String upload(MultipartFile file) throws IOException {
         try {
+            CommonsMultipartFile cf = (CommonsMultipartFile) file;
+            DiskFileItem fi = (DiskFileItem) cf.getFileItem();
             //调用put方法上传(第二个参数是指定上传图片到七牛的访问名字,不指定默认让七牛随机生成)
-            Response res = uploadManager.put(filePath, key, getUpToken(bucketName));
+            Response res = uploadManager.put(fi.getStoreLocation(), null, getUpToken("lyusantu"));
             JSONObject json = JSONObject.parseObject(res.bodyString());
             return json.getString("key");
         } catch (QiniuException e) {
@@ -55,15 +60,4 @@ public class QiNiuUtil {
         }
     }
 
-    /**
-     * @param args
-     * @throws IOException
-     */
-    public static void main(String args[]) throws IOException {
-        String filePath = "F:/logo.jpg"; // 上传文件的路径
-        String bucketName = "lyusantu"; // 要上传的空间名称
-        String key = null; // 上传到七牛云后保存的文件名(为null时七牛云随机生成)
-        String upload = Constants.QINIU_CHAIN + new QiNiuUtil().upload(filePath, key, bucketName);
-        System.out.println(upload);
-    }
 }
