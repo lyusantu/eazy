@@ -17,6 +17,10 @@
         <result property="status" column="status"/>
     </resultMap>
 
+    <select id="getUser" parameterType="User" resultType="User">
+        SELECT * FROM user WHERE id = #{user.id}
+    </select>
+
     <select id="login" parameterType="User" resultType="User">
         SELECT * FROM user WHERE email = #{user.email} AND password = #{user.password}
     </select>
@@ -33,6 +37,27 @@
         UPDATE user SET
         <if test="user.avatar != null">
             avatar = #{user.avatar}
+        </if>
+        <if test="user.email != null">
+            email = #{user.email},
+        </if>
+        <if test="user.nickName != null">
+            nickname = #{user.nickName},
+        </if>
+        <if test="user.gender != null">
+            gender = #{user.gender},
+        </if>
+        <if test="user.city != null">
+            city = #{user.city},
+        </if>
+        <if test="user.status != null">
+            status = #{user.status},
+        </if>
+        <if test="user.sign != null">
+            sign =  #{user.sign}
+        </if>
+        <if test="user.password != null">
+            password = #{user.password}
         </if>
         WHERE id = #{user.id}
     </update>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eazy.sign.dao.SignDao">
+
+    <select id="getSignInReocrd" resultType="Integer">
+        SELECT COUNT(*) FROM sign WHERE uid = #{uid} AND status = 0
+    </select>
+
+    <insert id="signIn" parameterType="Sign" useGeneratedKeys="true" keyProperty="sign.id">
+        INSERT INTO sign(uid, sign_in_time, status) VALUES(#{sign.uid},#{sign.signInTime},#{sign.status})
+    </insert>
+</mapper>
