@@ -340,13 +340,11 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
   ,elemSigninDays = $('.fly-signin-days');
   
   if(elemSigninMain[0]){
-    /*
     fly.json('/sign/status', function(res){
       if(!res.data) return;
       signRender.token = res.data.token;
       signRender(res.data);
     });
-    */
   }
   $('body').on('click', '#LAY_signin', function(){
     var othis = $(this);
@@ -418,7 +416,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
 
   elemSigninTop.on('click', function(){
     var loadIndex = layer.load(1, {shade: 0.8});
-    fly.json('../json/signin.js', function(res){ //实际使用，请将 url 改为真实接口
+    fly.json('/sign/activeTopList', function(res){
       var tpl = $(['<div class="layui-tab layui-tab-brief" style="margin: 5px 0 0;">'
         ,'<ul class="layui-tab-title">'
           ,'<li class="layui-this">最新签到</li>'

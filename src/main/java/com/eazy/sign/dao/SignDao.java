@@ -11,7 +11,7 @@ public interface SignDao {
      * @param uid  用户ID
      * @return
      */
-    int getSignInReocrd( Integer uid);
+    int getSignInReocrd(int uid);
 
     /**
      * 用户签到
@@ -25,4 +25,11 @@ public interface SignDao {
      * 删除用户签到记录
      */
     void deleteSignInRecord();
+
+    /**
+     * 检查今日是否签到
+     * @param uid
+     * @return
+     */
+    int status(int uid);
 }

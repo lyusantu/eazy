@@ -4,7 +4,9 @@ import com.eazy.sign.entity.Sign;
 
 public interface SignService {
 
-    int getSignInReocrd(Integer uid);
+    int getSignInReocrd(int uid);
 
     int signIn(Sign sign);
+
+    boolean status(int uid);
 }

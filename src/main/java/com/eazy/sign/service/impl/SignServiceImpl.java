@@ -17,12 +17,17 @@ public class SignServiceImpl implements SignService {
     private SignDao signDao;
 
     @Override
-    public int getSignInReocrd(Integer uid) {
+    public int getSignInReocrd(int uid) {
         return signDao.getSignInReocrd(uid);
     }
 
     @Override
     public int signIn(Sign sign) {
         return signDao.signIn(sign);
+    }
+
+    @Override
+    public boolean status(int uid) {
+        return signDao.status(uid) > 0;
     }
 }

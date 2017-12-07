@@ -1,6 +1,7 @@
 package com.eazy.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.xiaoleilu.hutool.json.JSONArray;
 import com.xiaoleilu.hutool.json.JSONObject;
 
 import java.io.Serializable;
@@ -14,6 +15,8 @@ public class SignResult implements Serializable {
     private int status;
 
     private JSONObject data;
+
+    JSONArray array;
 
     private String msg;
 

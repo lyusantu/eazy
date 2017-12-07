@@ -9,4 +9,8 @@
     <insert id="signIn" parameterType="Sign" useGeneratedKeys="true" keyProperty="sign.id">
         INSERT INTO sign(uid, sign_in_time, status) VALUES(#{sign.uid},#{sign.signInTime},#{sign.status})
     </insert>
+
+    <select id="status" resultType="Integer">
+        SELECT COUNT(*) FROM sign WHERE to_days(sign_in_time) = to_days(now()) AND uid = #{uid}
+    </select>
 </mapper>
