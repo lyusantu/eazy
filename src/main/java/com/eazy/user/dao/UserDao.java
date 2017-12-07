@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Param;
 
 public interface UserDao {
 
+    User getUser(@Param("user") User user);
+
     User login(@Param("user") User user);
 
     int verifyAccountExists(@Param("user") User user);

@@ -4,6 +4,8 @@ import com.eazy.user.entity.User;
 
 public interface UserService {
 
+    User getUser(User user);
+
     User login(User user);
 
     int reg(User user);

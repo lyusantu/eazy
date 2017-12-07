@@ -26,6 +26,29 @@ public class User {
 
     private Integer status;
 
+    private String auth;
+
+    private Integer vip;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", password='" + password + '\'' +
+                ", balance=" + balance +
+                ", avatar='" + avatar + '\'' +
+                ", gender=" + gender +
+                ", sign='" + sign + '\'' +
+                ", regTime=" + regTime +
+                ", city='" + city + '\'' +
+                ", status=" + status +
+                ", auth='" + auth + '\'' +
+                ", vip=" + vip +
+                '}';
+    }
+
     public Integer getId() {
         return id;
     }
@@ -112,5 +135,21 @@ public class User {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getAuth() {
+        return auth;
+    }
+
+    public void setAuth(String auth) {
+        this.auth = auth;
+    }
+
+    public Integer getVip() {
+        return vip;
+    }
+
+    public void setVip(Integer vip) {
+        this.vip = vip;
     }
 }
