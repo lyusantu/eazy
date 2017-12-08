@@ -3,10 +3,10 @@
  @Name: Fly社区主入口
 
  */
- 
+
 
 layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(exports){
-  
+
   var $ = layui.jquery
   ,layer = layui.layer
   ,laytpl = layui.laytpl
@@ -17,19 +17,19 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
   ,device = layui.device()
 
   ,DISABLED = 'layui-btn-disabled';
-  
+
   //阻止IE7以下访问
   if(device.ie && device.ie < 8){
     layer.alert('如果您非得使用 IE 浏览器访问Fly社区，那么请使用 IE8+');
   }
-  
+
   layui.focusInsert = function(obj, str){
     var result, val = obj.value;
     obj.focus();
     if(document.selection){ //ie
-      result = document.selection.createRange(); 
-      document.selection.empty(); 
-      result.text = str; 
+      result = document.selection.createRange();
+      document.selection.empty();
+      result.text = str;
     } else {
       result = [val.substring(0, obj.selectionStart), str, val.substr(obj.selectionEnd)];
       obj.focus();
@@ -48,13 +48,13 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     }
     return num < Math.pow(10, length) ? str + (num|0) : num;
   };
-  
+
   var fly = {
 
     //Ajax
     json: function(url, data, success, options){
       var that = this, type = typeof data === 'function';
-      
+
       if(type){
         options = success
         success = data;
@@ -90,7 +90,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
       }
       return len;
     }
-    
+
     ,form: {}
 
     //简易编辑器
@@ -166,7 +166,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
                   }
                 }
               });
-              
+
               form.on('submit(uploadImages)', function(data){
                 var field = data.field;
                 if(!field.image) return image.focus();
@@ -213,8 +213,8 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
         }
         ,yulan: function(editor){ //预览
           var content = editor.val();
-          
-          content = /^\{html\}/.test(content) 
+
+          content = /^\{html\}/.test(content)
             ? content.replace(/^\{html\}/, '')
           : fly.content(content);
 
@@ -228,7 +228,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
           });
         }
       };
-      
+
       layui.use('face', function(face){
         options = options || {};
         fly.faces = face;
@@ -278,10 +278,10 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
         var rel =  /^(http(s)*:\/\/)\b(?!(\w+\.)*(sentsin.com|layui.com))\b/.test(href.replace(/\s/g, ''));
         return '<a href="'+ href +'" target="_blank"'+ (rel ? ' rel="nofollow"' : '') +'>'+ (text||href) +'</a>';
       }).replace(html(), '\<$1 $2\>').replace(html('/'), '\</$1\>') //转移HTML代码
-      .replace(/\n/g, '<br>') //转义换行   
+      .replace(/\n/g, '<br>') //转义换行
       return content;
     }
-    
+
     //新消息通知
     ,newmsg: function(){
       var elemUser = $('.fly-nav-user');
@@ -312,7 +312,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
       }
       return arguments.callee;
     }
-    
+
   };
 
   //签到
@@ -338,7 +338,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
   ,elemSigninTop = $('#LAY_signinTop')
   ,elemSigninMain = $('.fly-signin-main')
   ,elemSigninDays = $('.fly-signin-days');
-  
+
   if(elemSigninMain[0]){
     fly.json('/sign/status', function(res){
       if(!res.data) return;
@@ -556,7 +556,13 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     fly.json(action, data.field, function(res){
       var end = function(){
         if(res.action){
-          location.href = res.action;
+          if(res.msg){
+              layer.msg(res.msg, {icon: 6,time: 1000}, function() {
+                  location.href = res.action;
+              });
+          }else{
+                  location.href = res.action;
+          }
         } else {
           fly.form[action||button.attr('key')](data.field, data.form);
         }
@@ -579,7 +585,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     layui.extend(extend);
     layui.use(layui.cache.page);
   }
-  
+
   //加载IM
   if(!device.android && !device.ios){
     //layui.use('im');
@@ -609,7 +615,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
       othis.html('（下载量：'+ res.number +'）');
     })
   });
-  
+
   //固定Bar
   util.fixbar({
     bar1: '&#xe642;'

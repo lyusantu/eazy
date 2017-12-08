@@ -137,7 +137,7 @@ public class UserController {
         userService.update(loginUser);
         loginUser = userService.getUser(loginUser);
         request.getSession().setAttribute(Constants.LOGIN_USER, loginUser);
-        return new AjaxResult(0, null, "/user/set");
+        return new AjaxResult(0, "修改资料成功", "/user/set");
     }
 
     // ajax设置新的密码
@@ -158,7 +158,7 @@ public class UserController {
                     user.setPassword(SecureUtil.md5(pass));
                     userService.update(user);
                     request.getSession().removeAttribute(Constants.LOGIN_USER);
-                    return new AjaxResult(0, null, "/user/signin");
+                    return new AjaxResult(0, "密码修改成功! 请重新登录", "/user/signin");
                 } else
                     return new AjaxResult(1, "两次输入的密码不一致");
             }
