@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2017-12-07 17:16:16
+Date: 2017-12-08 17:04:37
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -22,29 +22,16 @@ DROP TABLE IF EXISTS `sign`;
 CREATE TABLE `sign` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,
-  `sign_in_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `status` int(11) NOT NULL,
+  `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `end_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sign
 -- ----------------------------
-INSERT INTO `sign` VALUES ('1', '1', '2017-12-07 17:10:20', '0');
-INSERT INTO `sign` VALUES ('2', '1', '2017-12-07 17:10:25', '0');
-INSERT INTO `sign` VALUES ('3', '1', '2017-12-07 17:10:29', '0');
-INSERT INTO `sign` VALUES ('4', '1', '2017-12-07 17:10:32', '0');
-INSERT INTO `sign` VALUES ('5', '1', '2017-12-07 17:11:43', '0');
-INSERT INTO `sign` VALUES ('6', '1', '2017-12-07 17:11:45', '0');
-INSERT INTO `sign` VALUES ('7', '1', '2017-12-07 17:11:45', '0');
-INSERT INTO `sign` VALUES ('8', '1', '2017-12-07 17:11:46', '0');
-INSERT INTO `sign` VALUES ('9', '1', '2017-12-07 17:11:48', '0');
-INSERT INTO `sign` VALUES ('10', '1', '2017-12-07 17:11:49', '0');
-INSERT INTO `sign` VALUES ('11', '1', '2017-12-07 17:11:50', '0');
-INSERT INTO `sign` VALUES ('12', '1', '2017-12-07 17:11:50', '0');
-INSERT INTO `sign` VALUES ('13', '1', '2017-12-07 17:15:48', '0');
-INSERT INTO `sign` VALUES ('14', '1', '2017-12-07 17:15:56', '0');
-INSERT INTO `sign` VALUES ('15', '1', '2017-12-07 17:15:59', '0');
+INSERT INTO `sign` VALUES ('40', '1', '2017-12-01 16:43:41', '2017-12-07 16:55:51');
+INSERT INTO `sign` VALUES ('41', '2', '2017-01-08 16:38:21', '2017-12-08 16:43:25');
 
 -- ----------------------------
 -- Table structure for `user`
@@ -65,9 +52,10 @@ CREATE TABLE `user` (
   `auth` varchar(255) DEFAULT NULL,
   `vip` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', '352050321@qq.com', '超人', '0ab44bd43d6b18fcd5cd928d6faab1b8', '100', 'http://oih7sazbd.bkt.clouddn.com/FivibFbr6k8GqJBdZBea56zq0S4X', '0', '', '2017-12-07 16:16:06', '深圳', '0', 'eazy作者', '3');
+INSERT INTO `user` VALUES ('2', '52781380@qq.com', '钢铁侠', '9cbf8a4dcb8e30682b927f352d6559a0', '100', '/res/images/avatar/10.jpg', '0', '', '2017-12-08 16:43:17', '深圳', '0', null, '0');
