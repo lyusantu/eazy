@@ -172,8 +172,9 @@ public class UserController {
     public AjaxResult upload(@Param("file") MultipartFile file, HttpSession session) throws IOException {
         String upload = Constants.QINIU_CHAIN + new QiNiuUtil().upload(file);
         User user = (User) session.getAttribute(Constants.LOGIN_USER);
+        User updateUser = new User(user.getId(), upload);
+        userService.update(updateUser);
         user.setAvatar(upload);
-        userService.update(user);
         session.setAttribute(Constants.LOGIN_USER, user);
         LOG.info(user.getEmail() + "上传了新的头像");
         return new AjaxResult(0, null, null, upload);

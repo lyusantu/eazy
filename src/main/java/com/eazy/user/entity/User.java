@@ -30,6 +30,15 @@ public class User {
 
     private Integer vip;
 
+    public User(){
+
+    }
+
+    public User(Integer id, String avatar) {
+        this.id = id;
+        this.avatar = avatar;
+    }
+
     @Override
     public String toString() {
         return "User{" +
