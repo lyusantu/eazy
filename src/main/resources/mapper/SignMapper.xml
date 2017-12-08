@@ -5,8 +5,8 @@
     <resultMap id="signResult" type="Sign">
         <id column="id" property="id"/>
         <result column="uid" property="uid"/>
-        <result column="time" property="time"/>
-        <result column="status" property="status"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
         <association property="user" javaType="User">
             <id column="id" property="id"/>
             <result column="nickName" property="nickName"/>
@@ -14,27 +14,32 @@
         </association>
     </resultMap>
 
-    <select id="getSignInReocrd" resultType="Integer">
-        SELECT COUNT(*) FROM sign WHERE uid = #{uid} AND status = 0
+    <select id="getSignInReocrd" resultType="Sign">
+        SELECT * FROM sign WHERE uid = #{uid}
     </select>
 
     <insert id="signIn" parameterType="Sign" useGeneratedKeys="true" keyProperty="sign.id">
-        INSERT INTO sign(uid, time, status) VALUES(#{sign.uid},#{sign.time},#{sign.status})
+        INSERT INTO sign(uid, start_time, end_time) VALUES(#{sign.uid},#{sign.startTime},#{sign.endTime})
     </insert>
 
-    <select id="status" resultType="Integer">
-        SELECT COUNT(*) FROM sign WHERE to_days(time) = to_days(now()) AND uid = #{uid}
-    </select>
+    <update id="updateSignIn" parameterType="Sign">
+        UPDATE sign SET
+        <if test="sign.startTime != null">
+            start_time = #{sign.startTime},
+        </if>
+        end_time = #{sign.endTime}
+        WHERE id = #{sign.id}
+    </update>
 
     <select id="listSignInNew" resultMap="signResult">
-        SELECT s.time,u.id,u.nickName,u.avatar FROM sign s,user u WHERE s.uid = u.id AND s.status = 0 AND to_days(s.time) = to_days(now()) ORDER BY s.time DESC limit 20
+        SELECT s.end_time,u.id,u.nickName,u.avatar FROM sign s,user u WHERE s.uid = u.id AND to_days(s.end_time) = to_days(now()) ORDER BY s.end_time DESC limit 20
     </select>
 
     <select id="listSignInFast" resultMap="signResult">
-        SELECT s.*,u.id,u.nickName,u.avatar FROM sign s,user u WHERE s.uid = u.id AND s.status = 0 AND to_days(s.time) = to_days(now()) ORDER BY s.time ASC limit 20
+        SELECT s.end_time,u.id,u.nickName,u.avatar FROM sign s,user u WHERE s.uid = u.id AND to_days(s.end_time) = to_days(now()) ORDER BY s.end_time ASC limit 20
     </select>
 
     <select id="listSignInAll" resultMap="signResult">
-
+        SELECT s.start_time,s.end_time,u.id,u.nickName,u.avatar FROM sign s,user u WHERE s.uid = u.id AND (to_days(s.end_time) = to_days(now()) OR to_days(s.end_time) = to_days(now()) - 1) ORDER BY (end_time - start_time) DESC limit 20
     </select>
 </mapper>
