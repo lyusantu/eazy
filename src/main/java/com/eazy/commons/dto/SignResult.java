@@ -1,8 +1,6 @@
 package com.eazy.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.xiaoleilu.hutool.json.JSONArray;
-import com.xiaoleilu.hutool.json.JSONObject;
 
 import java.io.Serializable;
 
@@ -14,20 +12,26 @@ public class SignResult implements Serializable {
 
     private int status;
 
-    private JSONObject data;
-
-    JSONArray array;
+    private Object data;
 
     private String msg;
-
-    public SignResult(int status, JSONObject data) {
-        this.status = status;
-        this.data = data;
-    }
 
     public SignResult(int status, String msg) {
         this.status = status;
         this.msg = msg;
+    }
+
+    public SignResult(int status, Object data) {
+        this.status = status;
+        this.data = data;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
     }
 
     public String getMsg() {
@@ -44,14 +48,6 @@ public class SignResult implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public JSONObject getData() {
-        return data;
-    }
-
-    public void setData(JSONObject data) {
-        this.data = data;
     }
 
 }
