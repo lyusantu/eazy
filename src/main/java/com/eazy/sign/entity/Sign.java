@@ -10,19 +10,41 @@ public class Sign {
 
     private int uid;
 
-    private Timestamp time;
+    private Timestamp startTime;
 
-    private int status;
+    private Timestamp endTime;
 
     private User user;
+
+    public Sign() {
+
+    }
+
+    public Sign(int id, Timestamp endTime) {
+        this.id = id;
+        this.endTime = endTime;
+    }
+
+    public Sign(int uid, Timestamp startTime, Timestamp endTime) {
+        this.uid = uid;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public Sign(int id, int uid, Timestamp startTime, Timestamp endTime) {
+        this.id = id;
+        this.uid = uid;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
     @Override
     public String toString() {
         return "Sign{" +
                 "id=" + id +
                 ", uid=" + uid +
-                ", time=" + time +
-                ", status=" + status +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
                 ", user=" + user +
                 '}';
     }
@@ -33,14 +55,6 @@ public class Sign {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public int getId() {
@@ -59,11 +73,19 @@ public class Sign {
         this.uid = uid;
     }
 
-    public Timestamp getTime() {
-        return time;
+    public Timestamp getStartTime() {
+        return startTime;
     }
 
-    public void setTime(Timestamp time) {
-        this.time = time;
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
+    public Timestamp getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
     }
 }

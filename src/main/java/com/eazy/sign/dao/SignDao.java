@@ -13,7 +13,7 @@ public interface SignDao {
      * @param uid  用户ID
      * @return
      */
-    int getSignInReocrd(int uid);
+    Sign getSignInReocrd(int uid);
 
     /**
      * 用户签到
@@ -24,16 +24,15 @@ public interface SignDao {
     int signIn(@Param("sign") Sign sign);
 
     /**
+     * 更改用户签到日期
+     * @param sign
+     */
+    void updateSignIn(@Param("sign") Sign sign);
+
+    /**
      * 删除用户签到记录
      */
     void deleteSignInRecord();
-
-    /**
-     * 检查今日是否签到
-     * @param uid
-     * @return
-     */
-    int status(int uid);
 
     /**
      * 最新签到TOP20

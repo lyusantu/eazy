@@ -5,6 +5,7 @@ import com.eazy.commons.dto.SignResult;
 import com.eazy.sign.entity.Sign;
 import com.eazy.sign.service.SignService;
 import com.eazy.user.entity.User;
+import com.xiaoleilu.hutool.date.DateUtil;
 import com.xiaoleilu.hutool.json.JSONArray;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -33,39 +37,56 @@ public class SignController {
     // 签到
     @RequestMapping(value = "/in", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public SignResult in(HttpServletRequest request) throws IOException {
+    public SignResult in(HttpServletRequest request) throws IOException, ParseException {
         JSONObject json = new JSONObject();
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         if (ObjectUtil.isNull(user))
             return new SignResult(1, "请先登入");
         else {
-            int count = signService.getSignInReocrd(user.getId());// 查询已签到记录
-            Sign sign = new Sign();
-            sign.setStatus(0);
-            sign.setUid(user.getId());
-            sign.setTime(new Timestamp(System.currentTimeMillis()));
-            signService.signIn(sign);
-            if (count == 0) { // 第一次签到
+            Sign sign = signService.getSignInReocrd(user.getId());// 查询已签到记录
+            if (sign == null) {
+                sign = new Sign(user.getId(), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
                 json.put("days", 1).put("experience", getSignInReward(1)).put("signed", true);
+                signService.signIn(sign);
             } else {
-                count++;
-                json.put("days", count).put("experience", getSignInReward(count)).put("signed", true);
+                int days = 1;
+                if (DateUtil.format(new Date(sign.getEndTime().getTime() + 1000 * 60 * 60 * 24), "yyyy-MM-dd").equals(DateUtil.format(new Date(), "yyyy-MM-dd"))) {
+                    days = getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime()) + 1;
+                    sign = new Sign(sign.getId(), new Timestamp(System.currentTimeMillis()));
+                } else
+                    sign = new Sign(sign.getId(), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+                signService.updateSignIn(sign);
+                json.put("days", days).put("experience", getSignInReward(days)).put("signed", true);
             }
-            return new SignResult(0, json);
+
         }
+        return new SignResult(0, json);
     }
+
 
     // 初始化
     @RequestMapping(value = "/status", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public SignResult status(HttpServletRequest request) throws IOException {
+    public SignResult status(HttpServletRequest request) throws IOException, ParseException {
         JSONObject json = new JSONObject();
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         if (ObjectUtil.isNull(user))
             return new SignResult(0, "未登入");
         else {
-            int count = signService.getSignInReocrd(user.getId());// 查询已签到记录
-            json.put("days", count).put("experience", getSignInReward(count)).put("signed", signService.status(user.getId()));
+            Sign sign = signService.getSignInReocrd(user.getId());// 查询已签到记录
+            int days = 0;
+            if (ObjectUtil.isNull(sign)) {
+                json.put("days", days).put("experience", getSignInReward(days)).put("signed", false);
+            } else {
+                if (DateUtil.format(new Date(sign.getEndTime().getTime()), "yyyy-MM-dd").equals(DateUtil.format(new Date(), "yyyy-MM-dd"))) { // 已签到
+                    days = getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime());
+                    json.put("days", days).put("experience", getSignInReward(days)).put("signed", true);
+                } else if (DateUtil.format(new Date(sign.getEndTime().getTime() + 1000 * 60 * 60 * 24), "yyyy-MM-dd").equals(DateUtil.format(new Date(), "yyyy-MM-dd"))) {
+                    days = getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime());
+                    json.put("days", days).put("experience", getSignInReward(days)).put("signed", false);
+                } else
+                    json.put("days", days).put("experience", getSignInReward(days)).put("signed", false);
+            }
             return new SignResult(0, json);
         }
     }
@@ -80,7 +101,7 @@ public class SignController {
         if (listNew != null && listNew.size() > 0)
             for (Sign sign : listNew) {
                 jsonNew = new JSONObject();
-                jsonNew.put("uid", sign.getUser().getId()).put("time", sign.getTime()).put("user", new JSONObject().put("username", sign.getUser().getNickName()).put("avatar", sign.getUser().getAvatar()));
+                jsonNew.put("uid", sign.getUser().getId()).put("time", sign.getEndTime()).put("user", new JSONObject().put("username", sign.getUser().getNickName()).put("avatar", sign.getUser().getAvatar()));
                 arrayNew.put(jsonNew);
             }
         JSONObject jsonFast = null;
@@ -89,7 +110,7 @@ public class SignController {
         if (listFast != null && listFast.size() > 0)
             for (Sign sign : listFast) {
                 jsonFast = new JSONObject();
-                jsonFast.put("uid", sign.getUser().getId()).put("time", sign.getTime()).put("user", new JSONObject().put("username", sign.getUser().getNickName()).put("avatar", sign.getUser().getAvatar()));
+                jsonFast.put("uid", sign.getUser().getId()).put("time", sign.getEndTime()).put("user", new JSONObject().put("username", sign.getUser().getNickName()).put("avatar", sign.getUser().getAvatar()));
                 arrayFast.put(jsonFast);
             }
         JSONObject jsonAll = new JSONObject();
@@ -114,6 +135,14 @@ public class SignController {
             return 10;
         else
             return 5;
+    }
+
+    private int getDays(long start, long end) throws ParseException {
+        start = new SimpleDateFormat("yyyy-MM-dd").parse(new SimpleDateFormat("yyyy-MM-dd").format(start)).getTime();
+        end = new SimpleDateFormat("yyyy-MM-dd").parse(new SimpleDateFormat("yyyy-MM-dd").format(end)).getTime();
+        long result = end - start;
+        long day = 1000 * 60 * 60 * 24;
+        return (int) (result / day + 1);
     }
 
 }

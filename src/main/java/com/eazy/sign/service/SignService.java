@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface SignService {
 
-    int getSignInReocrd(int uid);
+    Sign getSignInReocrd(int uid);
 
     int signIn(Sign sign);
 
-    boolean status(int uid);
+    void updateSignIn(Sign sign);
 
     List listSignInNew();
 

@@ -19,7 +19,7 @@ public class SignServiceImpl implements SignService {
     private SignDao signDao;
 
     @Override
-    public int getSignInReocrd(int uid) {
+    public Sign getSignInReocrd(int uid) {
         return signDao.getSignInReocrd(uid);
     }
 
@@ -29,8 +29,8 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    public boolean status(int uid) {
-        return signDao.status(uid) > 0;
+    public void updateSignIn(Sign sign) {
+        signDao.updateSignIn(sign);
     }
 
     @Override
