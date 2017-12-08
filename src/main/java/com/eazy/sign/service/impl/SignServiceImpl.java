@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SignServiceImpl implements SignService {
 
@@ -30,4 +32,21 @@ public class SignServiceImpl implements SignService {
     public boolean status(int uid) {
         return signDao.status(uid) > 0;
     }
+
+    @Override
+    public List listSignInNew() {
+        return signDao.listSignInNew();
+    }
+
+    @Override
+    public List listSignInFast() {
+        return signDao.listSignInFast();
+    }
+
+    @Override
+    public List listSignInAll() {
+//        System.out.println(result.get("countVal"));
+        return signDao.listSignInAll();
+    }
+
 }
