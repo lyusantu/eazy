@@ -45,7 +45,6 @@ public class SignServiceImpl implements SignService {
 
     @Override
     public List listSignInAll() {
-//        System.out.println(result.get("countVal"));
         return signDao.listSignInAll();
     }
 

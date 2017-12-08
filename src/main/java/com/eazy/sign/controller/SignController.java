@@ -43,22 +43,25 @@ public class SignController {
         if (ObjectUtil.isNull(user))
             return new SignResult(1, "请先登入");
         else {
+            int reward = getSignInReward(1);
             Sign sign = signService.getSignInReocrd(user.getId());// 查询已签到记录
             if (sign == null) {
                 sign = new Sign(user.getId(), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
-                json.put("days", 1).put("experience", getSignInReward(1)).put("signed", true);
+                json.put("days", 1).put("experience", getSignInReward(reward)).put("signed", true);
                 signService.signIn(sign);
             } else {
                 int days = 1;
                 if (DateUtil.format(new Date(sign.getEndTime().getTime() + 1000 * 60 * 60 * 24), "yyyy-MM-dd").equals(DateUtil.format(new Date(), "yyyy-MM-dd"))) {
-                    days = getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime()) + 1;
+                    days = this.getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime()) + 1;
                     sign = new Sign(sign.getId(), new Timestamp(System.currentTimeMillis()));
                 } else
-                    sign = new Sign(sign.getId(), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+                    sign = new Sign(sign.getId(), user.getId(), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
                 signService.updateSignIn(sign);
-                json.put("days", days).put("experience", getSignInReward(days)).put("signed", true);
+                reward = this.getSignInReward(days);
+                json.put("days", days).put("experience", reward).put("signed", true);
             }
-
+            user.setBalance(user.getBalance() + reward);
+            request.getSession().setAttribute(Constants.LOGIN_USER, user); // 增加奖励
         }
         return new SignResult(0, json);
     }
@@ -79,10 +82,10 @@ public class SignController {
                 json.put("days", days).put("experience", getSignInReward(days)).put("signed", false);
             } else {
                 if (DateUtil.format(new Date(sign.getEndTime().getTime()), "yyyy-MM-dd").equals(DateUtil.format(new Date(), "yyyy-MM-dd"))) { // 已签到
-                    days = getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime());
+                    days = this.getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime());
                     json.put("days", days).put("experience", getSignInReward(days)).put("signed", true);
                 } else if (DateUtil.format(new Date(sign.getEndTime().getTime() + 1000 * 60 * 60 * 24), "yyyy-MM-dd").equals(DateUtil.format(new Date(), "yyyy-MM-dd"))) {
-                    days = getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime());
+                    days = this.getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime());
                     json.put("days", days).put("experience", getSignInReward(days)).put("signed", false);
                 } else
                     json.put("days", days).put("experience", getSignInReward(days)).put("signed", false);
@@ -91,32 +94,52 @@ public class SignController {
         }
     }
 
-    // 初始化
+    // 活跃榜
     @RequestMapping(value = "/activeTopList", method = RequestMethod.GET, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public SignResult activeTopList(HttpServletRequest request) throws IOException {
+    public SignResult activeTopList(HttpServletRequest request) throws IOException, ParseException {
         JSONObject jsonNew = null;
         JSONArray arrayNew = new JSONArray();
         List<Sign> listNew = signService.listSignInNew();
-        if (listNew != null && listNew.size() > 0)
+        if (ObjectUtil.isNotNull(listNew) && listNew.size() > 0)
             for (Sign sign : listNew) {
                 jsonNew = new JSONObject();
-                jsonNew.put("uid", sign.getUser().getId()).put("time", sign.getEndTime()).put("user", new JSONObject().put("username", sign.getUser().getNickName()).put("avatar", sign.getUser().getAvatar()));
+                jsonNew.put("uid", sign.getUser().getId()).
+                        put("time", sign.getEndTime())
+                        .put("user", new JSONObject().
+                                put("username", sign.getUser().getNickName())
+                                .put("avatar", sign.getUser().getAvatar()));
                 arrayNew.put(jsonNew);
             }
         JSONObject jsonFast = null;
         JSONArray arrayFast = new JSONArray();
         List<Sign> listFast = signService.listSignInFast();
-        if (listFast != null && listFast.size() > 0)
+        if (ObjectUtil.isNotNull(listFast) && listFast.size() > 0) {
             for (Sign sign : listFast) {
                 jsonFast = new JSONObject();
-                jsonFast.put("uid", sign.getUser().getId()).put("time", sign.getEndTime()).put("user", new JSONObject().put("username", sign.getUser().getNickName()).put("avatar", sign.getUser().getAvatar()));
+                jsonFast.put("uid", sign.getUser().getId())
+                        .put("time", sign.getEndTime())
+                        .put("user", new JSONObject()
+                                .put("username", sign.getUser().getNickName())
+                                .put("avatar", sign.getUser().getAvatar()));
                 arrayFast.put(jsonFast);
             }
-        JSONObject jsonAll = new JSONObject();
-        jsonAll.put("uid", 1).put("days", 99).put("time", "2017-12-7 21:37:47").put("user", new JSONObject().put("username", "志远").put("avatar", "http://q.qlogo.cn/qqapp/101235792/3C039374444019CF9C93F6AA00D5A66E/100"));
+        }
+        JSONObject jsonAll = null;
         JSONArray arrayAll = new JSONArray();
-        arrayAll.put(jsonAll);
+        List<Sign> listAll = signService.listSignInAll();
+        if (ObjectUtil.isNotNull(listAll) && listAll.size() > 0) {
+            for (Sign sign : listAll) {
+                jsonAll = new JSONObject();
+                jsonAll.put("uid", sign.getUser().getId())
+                        .put("days", this.getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime()))
+                        .put("time", sign.getEndTime())
+                        .put("user", new JSONObject()
+                                .put("username", sign.getUser().getNickName())
+                                .put("avatar", sign.getUser().getAvatar()));
+                arrayAll.put(jsonAll);
+            }
+        }
         return new SignResult(0, new JSONArray().put(arrayNew).put(arrayFast).put(arrayAll));
     }
 
