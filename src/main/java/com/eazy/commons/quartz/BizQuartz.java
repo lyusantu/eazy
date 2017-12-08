@@ -47,7 +47,7 @@ public class BizQuartz {
     /**
      * 每天凌晨0点清理前一天未签到人员的连续签到记录
      */
-    @Scheduled(cron = "0 0 0 * * ? *")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void clearSignInRecord() {
         LOG.info("@Scheduled------clearSignInRecord");
     }
