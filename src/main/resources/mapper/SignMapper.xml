@@ -2,15 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.eazy.sign.dao.SignDao">
 
+    <resultMap id="signResult" type="Sign">
+        <id column="id" property="id"/>
+        <result column="uid" property="uid"/>
+        <result column="time" property="time"/>
+        <result column="status" property="status"/>
+        <association property="user" javaType="User">
+            <id column="id" property="id"/>
+            <result column="nickName" property="nickName"/>
+            <result column="avatar" property="avatar"/>
+        </association>
+    </resultMap>
+
     <select id="getSignInReocrd" resultType="Integer">
         SELECT COUNT(*) FROM sign WHERE uid = #{uid} AND status = 0
     </select>
 
     <insert id="signIn" parameterType="Sign" useGeneratedKeys="true" keyProperty="sign.id">
-        INSERT INTO sign(uid, sign_in_time, status) VALUES(#{sign.uid},#{sign.signInTime},#{sign.status})
+        INSERT INTO sign(uid, time, status) VALUES(#{sign.uid},#{sign.time},#{sign.status})
     </insert>
 
     <select id="status" resultType="Integer">
-        SELECT COUNT(*) FROM sign WHERE to_days(sign_in_time) = to_days(now()) AND uid = #{uid}
+        SELECT COUNT(*) FROM sign WHERE to_days(time) = to_days(now()) AND uid = #{uid}
+    </select>
+
+    <select id="listSignInNew" resultMap="signResult">
+        SELECT s.time,u.id,u.nickName,u.avatar FROM sign s,user u WHERE s.uid = u.id AND s.status = 0 AND to_days(s.time) = to_days(now()) ORDER BY s.time DESC limit 20
+    </select>
+
+    <select id="listSignInFast" resultMap="signResult">
+        SELECT s.*,u.id,u.nickName,u.avatar FROM sign s,user u WHERE s.uid = u.id AND s.status = 0 AND to_days(s.time) = to_days(now()) ORDER BY s.time ASC limit 20
+    </select>
+
+    <select id="listSignInAll" resultMap="signResult">
+
     </select>
 </mapper>

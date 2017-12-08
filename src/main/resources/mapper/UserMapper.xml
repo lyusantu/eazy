@@ -30,7 +30,7 @@
     </select>
 
     <insert id="reg" parameterType="User" useGeneratedKeys="true" keyProperty="user.id">
-       INSERT INTO user(email,nickname,password,avatar,balance,reg_time,status) VALUES(#{user.email},#{user.nickName},#{user.password},#{user.avatar},#{user.balance},#{user.regTime},#{user.status})
+       INSERT INTO user(email,nickname,password,avatar,balance,reg_time,status,vip) VALUES(#{user.email},#{user.nickName},#{user.password},#{user.avatar},#{user.balance},#{user.regTime},#{user.status},#{user.vip})
     </insert>
 
     <update id="update" parameterType="User">
