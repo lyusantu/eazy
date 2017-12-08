@@ -48,6 +48,7 @@
         <!-- 100M -->
         <property name="maxUploadSize" value="104857600"></property>
         <property name="defaultEncoding" value="utf-8"></property>
+        <property name="maxInMemorySize" value="2048" /> <!-- 解决上传图片小于10kb时不生成临时文件 -->
     </bean>
 
     <bean id="springContextUtil" class="com.eazy.commons.SpringContextUtil"></bean>
