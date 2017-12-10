@@ -12,7 +12,7 @@ public class ColumnController {
 
     @RequestMapping(value = "/{column}")
     public String index(HttpServletRequest request, @PathVariable("column") String column){
-        request.setAttribute("tab_column", column);
+        request.setAttribute("tab_column", column); // curr check
         return "t/index";
     }
 
