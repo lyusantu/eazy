@@ -41,8 +41,4 @@ public class UserServiceImpl implements UserService {
         userDao.update(user);
     }
 
-    @Override
-    public void deductBalance(User user) {
-        userDao.deductBalance(user);
-    }
 }

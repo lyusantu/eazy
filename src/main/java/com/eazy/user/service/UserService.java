@@ -14,5 +14,4 @@ public interface UserService {
 
     void update(User user);
 
-    void deductBalance(User user);
 }
