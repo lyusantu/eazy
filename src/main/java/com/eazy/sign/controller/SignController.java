@@ -65,7 +65,10 @@ public class SignController {
                 json.put("days", days).put("experience", reward).put("signed", true);
             }
             user.setBalance(user.getBalance() + reward);
-            userService.update(user);
+            User updateUser = new User();
+            updateUser.setId(user.getId());
+            updateUser.setBalance(user.getBalance());
+            userService.update(updateUser);
             request.getSession().setAttribute(Constants.LOGIN_USER, user); // 增加奖励
         }
         return new SignResult(0, json);
