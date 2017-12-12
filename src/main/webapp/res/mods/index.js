@@ -648,7 +648,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
         , click: function (type) {
             if (type === 'bar1') {
                 fly.json('/post/ajaxAdd', {
-
+                    token: signRender.token || 1
                 }, function (res) {
                     var end = function () {
                         if (res.action) {
@@ -663,14 +663,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
                             fly.form[action || button.attr('key')](data.field, data.form);
                         }
                     };
-                    if (res.status == 0) {
-                        button.attr('alert') ? layer.alert(res.msg, {
-                            icon: 1,
-                            time: 10 * 1000,
-                            end: end
-                        }) : end();
-                    }
-                    ;
+                    end();
                 });
             }
         }
