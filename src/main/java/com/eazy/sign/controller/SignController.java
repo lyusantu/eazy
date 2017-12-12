@@ -5,6 +5,7 @@ import com.eazy.commons.dto.SignResult;
 import com.eazy.sign.entity.Sign;
 import com.eazy.sign.service.SignService;
 import com.eazy.user.entity.User;
+import com.eazy.user.service.UserService;
 import com.xiaoleilu.hutool.date.DateUtil;
 import com.xiaoleilu.hutool.json.JSONArray;
 import com.xiaoleilu.hutool.json.JSONObject;
@@ -34,6 +35,9 @@ public class SignController {
     @Autowired
     private SignService signService;
 
+    @Autowired
+    private UserService userService;
+
     // 签到
     @RequestMapping(value = "/in", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
@@ -61,6 +65,7 @@ public class SignController {
                 json.put("days", days).put("experience", reward).put("signed", true);
             }
             user.setBalance(user.getBalance() + reward);
+            userService.update(user);
             request.getSession().setAttribute(Constants.LOGIN_USER, user); // 增加奖励
         }
         return new SignResult(0, json);
