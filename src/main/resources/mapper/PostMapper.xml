@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eazy.post.dao.PostDao">
+
+    <insert id="addPost" parameterType="Post" useGeneratedKeys="true" keyProperty="post.id">
+        INSERT INTO post(title,`type`,content,reward,`delete`,createtime,author,comments,readers,status,top,wonderful)
+        VALUES(#{post.title}, #{post.type}, #{post.content}, #{post.reward}, #{post.delete}, #{post.createTime}, #{post.author}, #{post.comments}, #{post.readers}, #{post.status}, #{post.top}, #{post.wonderful})
+    </insert>
+
+</mapper>

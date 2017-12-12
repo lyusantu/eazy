@@ -59,6 +59,10 @@
         <if test="user.password != null">
             password = #{user.password}
         </if>
+        <if test="user.balance != null">
+            balance = #{user.balance}
+        </if>
         WHERE id = #{user.id}
     </update>
+    
 </mapper>
