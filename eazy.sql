@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2017-12-12 14:57:32
+Date: 2017-12-12 17:56:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -56,12 +56,13 @@ CREATE TABLE `post` (
   `top` int(11) NOT NULL,
   `wonderful` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of post
 -- ----------------------------
-INSERT INTO `post` VALUES ('1', '我是第一个吃螃蟹的人吗？', '1', 'face[嘻嘻] face[嘻嘻] face[嘻嘻] \n\nimg[https://static.oschina.net/uploads/space/2017/1212/140834_Pxwh_3684378.png] ', '20', '0', '2017-12-12 14:44:36', '1', '0', '0', '0', '0', '0');
+INSERT INTO `post` VALUES ('1', '我是第一个吃螃蟹的人吗？', '1', 'face[嘻嘻] face[嘻嘻] face[嘻嘻] \n\nimg[https://static.oschina.net/uploads/space/2017/1212/140834_Pxwh_3684378.png] ', '20', '0', '2017-12-12 17:26:51', '1', '0', '0', '0', '1', '1');
+INSERT INTO `post` VALUES ('10', '可以分享我一个VIP吗', '2', 'face[馋嘴] ', '50', '0', '2017-12-12 17:26:50', '2', '0', '0', '0', '1', '0');
 
 -- ----------------------------
 -- Table structure for `sign`
@@ -79,7 +80,7 @@ CREATE TABLE `sign` (
 -- Records of sign
 -- ----------------------------
 INSERT INTO `sign` VALUES ('40', '1', '2017-12-12 14:28:40', '2017-12-12 14:28:40');
-INSERT INTO `sign` VALUES ('41', '2', '2017-01-08 16:38:21', '2017-12-08 16:43:25');
+INSERT INTO `sign` VALUES ('41', '2', '2017-12-12 17:29:55', '2017-12-12 17:29:55');
 
 -- ----------------------------
 -- Table structure for `user`
@@ -106,4 +107,4 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', '352050321@qq.com', '超人', '9cbf8a4dcb8e30682b927f352d6559a0', '99879', 'http://oih7sazbd.bkt.clouddn.com/FivibFbr6k8GqJBdZBea56zq0S4X', '0', '', '2017-12-12 14:57:09', '深圳', '0', 'eazy作者', '3');
-INSERT INTO `user` VALUES ('2', '52781380@qq.com', '钢铁侠', '9cbf8a4dcb8e30682b927f352d6559a0', '100', '/res/images/avatar/10.jpg', '0', '', '2017-12-08 16:43:17', '深圳', '0', null, '0');
+INSERT INTO `user` VALUES ('2', '52781380@qq.com', '钢铁侠', '9cbf8a4dcb8e30682b927f352d6559a0', '50', '/res/images/avatar/10.jpg', '0', '', '2017-12-12 17:26:37', '深圳', '0', null, '0');
