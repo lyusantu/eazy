@@ -15,4 +15,5 @@ public interface UserDao {
 
     void update(@Param("user") User user);
 
+    void deductBalance(@Param("user") User user);
 }

@@ -13,4 +13,6 @@ public interface UserService {
     boolean verifyAccountExists(User user);
 
     void update(User user);
+
+    void deductBalance(User user);
 }
