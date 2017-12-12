@@ -6,6 +6,8 @@ import com.eazy.post.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PostServiceImpl implements PostService {
 
@@ -15,5 +17,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public int addPost(Post post) {
         return postDao.addPost(post);
+    }
+
+    @Override
+    public List<Post> list() {
+        return postDao.list();
     }
 }

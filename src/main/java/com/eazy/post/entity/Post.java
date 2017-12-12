@@ -1,5 +1,8 @@
 package com.eazy.post.entity;
 
+import com.eazy.column.entity.Column;
+import com.eazy.user.entity.User;
+
 import java.sql.Timestamp;
 
 public class Post {
@@ -30,7 +33,11 @@ public class Post {
 
     private Integer wonderful;
 
-    public Post(){
+    private User user;
+
+    private Column column;
+
+    public Post() {
 
     }
 
@@ -136,5 +143,21 @@ public class Post {
 
     public void setWonderful(Integer wonderful) {
         this.wonderful = wonderful;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Column getColumn() {
+        return column;
+    }
+
+    public void setColumn(Column column) {
+        this.column = column;
     }
 }
