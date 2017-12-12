@@ -29,12 +29,12 @@
     -->
     <mvc:default-servlet-handler/>
 
-    <!--配置JSP　显示ViewResolver-->
-    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/WEB-INF/view/"/>
-        <property name="suffix" value=".html"/>
-    </bean>-->
+    <mvc:interceptors>
+        <!-- 国际化操作拦截器 如果采用基于（请求/Session/Cookie）则必需配置 -->
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
+        <!-- 如果不定义 mvc:mapping path 将拦截所有的URL请求 -->
+        <bean class="com.eazy.commons.auth.AuthInterceptor"></bean>
+    </mvc:interceptors>
 
     <!--扫描web相关的controller-->
     <context:component-scan base-package="com.eazy.*.controller"/>
@@ -48,16 +48,23 @@
         <!-- 100M -->
         <property name="maxUploadSize" value="104857600"></property>
         <property name="defaultEncoding" value="utf-8"></property>
-        <property name="maxInMemorySize" value="2048" /> <!-- 解决上传图片小于10kb时不生成临时文件 -->
+        <property name="maxInMemorySize" value="2048"/> <!-- 解决上传图片小于10kb时不生成临时文件 -->
     </bean>
 
     <bean id="springContextUtil" class="com.eazy.commons.SpringContextUtil"></bean>
+
+    <!--配置JSP　显示ViewResolver-->
+    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix" value=".html"/>
+    </bean>-->
 
     <bean id="viewResolver" class="com.jfinal.template.ext.spring.JFinalViewResolver">
         <!-- 是否热加载模板文件-->
         <property name="devMode" value="true"/>
         <!-- 配置shared function, 多文件用逗号分隔 -->
-        <property name="sharedFunction" value="/commons/header.html,/commons/footer.html"/>
+        <property name="sharedFunction" value="/commons/header.html,/commons/footer.html,/commons/tab.html"/>
         <!-- 是否支持以 #(session,value) 的方式访问session -->
         <property name="sessionInView" value="true"/>
         <property name="prefix" value="/WEB-INF/view/"/>
