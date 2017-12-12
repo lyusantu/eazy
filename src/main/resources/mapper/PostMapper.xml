@@ -7,4 +7,38 @@
         VALUES(#{post.title}, #{post.type}, #{post.content}, #{post.reward}, #{post.delete}, #{post.createTime}, #{post.author}, #{post.comments}, #{post.readers}, #{post.status}, #{post.top}, #{post.wonderful})
     </insert>
 
+    <select id="listTop" resultMap="postResult">
+        SELECT p.*,u.id uid,u.nickName,u.avatar,u.auth,u.vip,c.id cid,c.name cname FROM post p,`user` u,`column` c WHERE p.type = c.id AND p.author = u.id AND p.top = 1 ORDER BY id DESC
+    </select>
+
+
+    <resultMap id="postResult" type="Post">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="type" property="type"/>
+        <result column="content" property="content"/>
+        <result column="reward" property="reward"/>
+        <result column="delete" property="delete"/>
+        <result column="createtime" property="createTime"/>
+        <result column="author" property="author"/>
+        <result column="comments" property="comments"/>
+        <result column="readers" property="readers"/>
+        <result column="status" property="status"/>
+        <result column="top" property="top"/>
+        <result column="wonderful" property="wonderful"/>
+        <association property="user" javaType="User">
+            <id column="uid" property="id"/>
+            <result column="nickName" property="nickName"/>
+            <result column="avatar" property="avatar"/>
+            <result column="auth" property="auth"/>
+            <result column="vip" property="vip"/>
+        </association>
+        <association property="column" javaType="Column">
+            <id column="cid" property="id"/>
+            <result column="cname" property="name"/>
+            <result column="suffix" property="suffix"/>
+            <result column="role" property="role"/>
+        </association>
+    </resultMap>
+
 </mapper>
