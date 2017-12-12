@@ -7,8 +7,8 @@
         VALUES(#{post.title}, #{post.type}, #{post.content}, #{post.reward}, #{post.delete}, #{post.createTime}, #{post.author}, #{post.comments}, #{post.readers}, #{post.status}, #{post.top}, #{post.wonderful})
     </insert>
 
-    <select id="listTop" resultMap="postResult">
-        SELECT p.*,u.id uid,u.nickName,u.avatar,u.auth,u.vip,c.id cid,c.name cname FROM post p,`user` u,`column` c WHERE p.type = c.id AND p.author = u.id AND p.top = 1 ORDER BY id DESC
+    <select id="list" resultMap="postResult">
+        SELECT p.*,u.id uid,u.nickName,u.avatar,u.auth,u.vip,c.id cid,c.name cname FROM post p,`user` u,`column` c WHERE p.type = c.id AND p.author = u.id ORDER BY id DESC
     </select>
 
 
