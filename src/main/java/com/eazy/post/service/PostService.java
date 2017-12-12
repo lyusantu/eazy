@@ -1,9 +1,9 @@
 package com.eazy.post.service;
 
-import com.eazy.column.entity.Column;
-
-import java.util.List;
+import com.eazy.post.entity.Post;
 
 public interface PostService {
+
+    int addPost(Post post);
 
 }
