@@ -312,8 +312,8 @@
         $('.createtime').each(function () {
             var date = $(this).html();
             console.log(date);
-            var str = getTimeAgo(date.year, date.month - 1, date.date, date.hours, date.minutes, date.seconds);
-            console.log(str);
+            var str = util.timeAgo(date, laydate.now);
+            $(this).html(str);
 
         })
     });
