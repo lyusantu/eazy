@@ -38,7 +38,7 @@ public class IndexController {
                     }
             );
         }
-        request.setAttribute("topList", postList);
+        request.setAttribute("topList", topList);
         request.setAttribute("otherList", otherList);
         return "index";
     }

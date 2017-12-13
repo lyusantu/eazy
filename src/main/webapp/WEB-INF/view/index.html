@@ -21,7 +21,7 @@
                                 </a>
                                 <h2>
                                     <a class="layui-badge">#(p.column.name)</a>
-                                    <a href="jie/detail.html">#(p.title)</a>
+                                    <a href="/post/#(p.id)">#(p.title)</a>
                                 </h2>
                                 <div class="fly-list-info">
                                     <a href="/user/#(p.user.id)" link>
@@ -33,8 +33,7 @@
                                             <i class="layui-badge fly-badge-vip">VIP#(p.user.vip)</i>
                                         #end
                                     </a>
-                                    <span>刚刚</span>
-
+                                    <span class="createtime">#date(p.createTime, "yyyy-MM-dd HH:mm:ss")</span>
                                     <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> #(p.reward)</span>
                                     <span class="layui-badge fly-badge-accept layui-hide-xs">#(p.status == 0 ? '未结' : '已结')</span>
                                     <span class="fly-list-nums">
@@ -56,13 +55,13 @@
             <div class="fly-panel" style="margin-bottom: 0;">
 
                 <div class="fly-panel-title fly-filter">
-                    <a href="" class="layui-this">综合</a>
+                    <a href="/column/all" class="layui-this">综合</a>
                     <span class="fly-mid"></span>
-                    <a href="">未结</a>
+                    <a href="/column/all/unsolved">未结</a>
                     <span class="fly-mid"></span>
-                    <a href="">已结</a>
+                    <a href="/column/all/solved">已结</a>
                     <span class="fly-mid"></span>
-                    <a href="">精华</a>
+                    <a href="/column/all/wonderful">精华</a>
                     <span class="fly-filter-right layui-hide-xs">
             <a href="" class="layui-this">按最新</a>
             <span class="fly-mid"></span>
@@ -73,13 +72,14 @@
                 <div class="fly-none">没有相关数据</div>
                 #else
                 <ul class="fly-list">
+                    #for(p : otherList)
                     <li>
                         <a href="/user/#(p.user.id)" class="fly-avatar">
                             <img src="#(p.user.avatar)" alt="#(p.user.nickName)">
                         </a>
                         <h2>
                             <a class="layui-badge">#(p.column.name)</a>
-                            <a href="jie/detail.html">#(p.title)</a>
+                            <a href="/post/#(p.id)">#(p.title)</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/#(p.user.id)" link>
@@ -91,7 +91,7 @@
                                     <i class="layui-badge fly-badge-vip">VIP#(p.user.vip)</i>
                                 #end
                             </a>
-                            <span>刚刚</span>
+                            <span class="createtime">#date(p.createTime, "yyyy-MM-dd HH:mm:ss")</span>
                             <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> #(p.reward)</span>
                             <!--<span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>-->
                             <span class="fly-list-nums">
@@ -106,9 +106,10 @@
                     </li>
                     #end
                 </ul>
+                #end
                 <div style="text-align: center">
                     <div class="laypage-main">
-                        <a href="jie/index.html" class="laypage-next">更多求解</a>
+                        <a href="/column/all/2" class="laypage-next">更多求解</a>
                     </div>
                 </div>
 
@@ -296,3 +297,24 @@
 </div>
 
 #@footer()
+
+<script>
+    layui.use(['util', 'laydate', 'layer'], function(){
+        var util = layui.util
+            ,laydate = layui.laydate
+            ,layer = layui.layer,
+            $ = layui.jquery;
+
+        function getTimeAgo(y, M, d, H, m, s){
+            return util.timeAgo(new Date(y, M||0, d||1, H||0, m||0, s||0));
+        };
+
+        $('.createtime').each(function () {
+            var date = $(this).html();
+            console.log(date);
+            var str = getTimeAgo(date.year, date.month - 1, date.date, date.hours, date.minutes, date.seconds);
+            console.log(str);
+
+        })
+    });
+</script>
