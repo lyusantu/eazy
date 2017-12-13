@@ -1,5 +1,6 @@
 package com.eazy.post.service.impl;
 
+import com.eazy.commons.Page;
 import com.eazy.post.dao.PostDao;
 import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
@@ -20,7 +21,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> list() {
-        return postDao.list();
+    public List<Post> list(Page page, String column, String type) {
+        return postDao.list(page, column, type);
     }
 }

@@ -1,5 +1,6 @@
 package com.eazy.post.dao;
 
+import com.eazy.commons.Page;
 import com.eazy.post.entity.Post;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,7 +12,8 @@ public interface PostDao {
 
     /**
      * 所有帖
+     *
      * @return
      */
-    List<Post> list();
+    List<Post> list(@Param("page") Page page, @Param("column") String column, @Param("type") String type);
 }

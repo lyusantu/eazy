@@ -1,5 +1,7 @@
 package com.eazy.index.controller;
 
+import com.eazy.commons.Constants;
+import com.eazy.commons.Page;
 import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
 import com.xiaoleilu.hutool.util.ObjectUtil;
@@ -25,7 +27,7 @@ public class IndexController {
     public String index(HttpServletRequest request) {
         LOG.info("invoke----------index");
         request.setAttribute("tab_column", "home");
-        List<Post> postList = postService.list(); // 置顶帖
+        List<Post> postList = postService.list(new Page(0, Constants.NUM_PER_PAGE), null, null); // 置顶帖
         List<Post> topList = new ArrayList<>();
         List<Post> otherList = new ArrayList<>();
         if (ObjectUtil.isNotNull(postList) && postList.size() > 0) {
