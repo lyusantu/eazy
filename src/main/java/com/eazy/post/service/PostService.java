@@ -13,4 +13,7 @@ public interface PostService {
 
     int count(String column, String type);
 
+    List<Post> listMyPost(int uid, Page page);
+
+    int countMyPost(int uid);
 }

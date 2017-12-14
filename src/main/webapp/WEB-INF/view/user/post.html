@@ -1,0 +1,136 @@
+#@header()
+
+<div class="layui-container fly-marginTop fly-user-main">
+    <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
+        <li class="layui-nav-item">
+            <a href="home.html">
+                <i class="layui-icon">&#xe609;</i>
+                我的主页
+            </a>
+        </li>
+        <li class="layui-nav-item layui-this">
+            <a href="index.html">
+                <i class="layui-icon">&#xe612;</i>
+                用户中心
+            </a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="set.html">
+                <i class="layui-icon">&#xe620;</i>
+                基本设置
+            </a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="message.html">
+                <i class="layui-icon">&#xe611;</i>
+                我的消息
+            </a>
+        </li>
+    </ul>
+
+    <div class="site-tree-mobile layui-hide">
+        <i class="layui-icon">&#xe602;</i>
+    </div>
+    <div class="site-mobile-shade"></div>
+
+    <div class="site-tree-mobile layui-hide">
+        <i class="layui-icon">&#xe602;</i>
+    </div>
+    <div class="site-mobile-shade"></div>
+
+
+    <div class="fly-panel fly-panel-user" pad20>
+        <!--
+        <div class="fly-msg" style="margin-top: 15px;">
+          您的邮箱尚未验证，这比较影响您的帐号安全，<a href="activate.html">立即去激活？</a>
+        </div>
+        -->
+        <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_uc">
+            <ul class="layui-tab-title">
+                <li lay-id="index" class="layui-this">
+                    我发的帖
+                </li>
+                <li lay-id="collection">
+                    我收藏的帖
+                </li>
+            </ul>
+            <div class="layui-tab-content" id="LAY_ucm" style="padding: 5px 0;">
+                <div class="layui-tab-item layui-show">
+                    <table class="layui-hide" id="LAY_mySendCard" lay-filter="mySendCard">
+                    </table>
+                </div>
+                <div class="layui-tab-item" style="">
+                    <table class="layui-hide" id="LAY_myCollectioncard">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/html" id="statusTpl">
+    <span {{d.status == 0 ? style="color: #ccc;" :  style="color: #5FB878;" }}>{{d.status == 0 ? '未结' : '已结'}}</span>
+</script>
+<script type="text/html" id="createTimeTpl">
+    <span class="createtime">{{d.createTime}}</span>
+</script>
+<script type="text/html" id="bar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+#@footer()
+
+<script>
+    layui.use(['util', 'laydate', 'table'], function () {
+        var table = layui.table,
+            util = layui.util,
+            laydate = layui.laydate,
+            $ = layui.jquery;
+
+        table.render({
+            elem: '#LAY_mySendCard'
+            , url: '/user/myPost'
+            , cols: [[
+                {field: 'title', minWidth: 200, title: '帖子标题', align: 'center'}
+                , {field: 'type', width: 100, title: '分类', align: 'center'}
+                , {field: 'status', width: 100, title: '结贴', align: 'center', templet:'#statusTpl'}
+                , {field: 'reward', width: 100, title: '飞吻', align: 'center'}
+                , {field: 'createTime', width: 120, title: '发表时间', align: 'center', sort: true, templet: '#createTimeTpl'}
+                , {field: 'data', width: 100, title: '数据', align: 'center'}
+                , {field: 'right', width: 160, title: '操作', align: 'center', toolbar: '#bar'}
+            ]]
+            , page: true
+            , done: function () {
+                $('.createtime').each(function () {
+                    var date = $(this).html();
+                    var str = util.timeAgo(date / 1, laydate.now);
+                    $(this).html(str);
+                })
+            }
+        });
+
+        table.render({
+            elem: '#LAY_myCollectioncard'
+            , url: '/user/myCollection'
+            , cols: [[
+                {field: 'title', minWidth: 150, title: '帖子标题', align: 'center'}
+                , {field: 'time', width: 200, title: '收藏时间', align: 'center'}
+            ]]
+            , page: true
+        });
+
+        table.on('tool(mySendCard)',function (obj) {
+            var data = obj.data;
+            if(obj.event == 'detail'){
+                window.open("/post/" + data.id);
+            }else if(obj.event == 'edit'){
+                window.open("/post/edit/" + data.id);
+            }else if(obj.event == 'del'){
+                layer.msg('删除'+data.title);
+            }
+        })
+    });
+</script>

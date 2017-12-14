@@ -29,4 +29,14 @@ public class PostServiceImpl implements PostService {
     public int count(String column, String type) {
         return postDao.count(column, type);
     }
+
+    @Override
+    public List<Post> listMyPost(int uid, Page page) {
+        return postDao.listMyPost(uid, page);
+    }
+
+    @Override
+    public int countMyPost(int uid) {
+        return postDao.countMyPost(uid);
+    }
 }

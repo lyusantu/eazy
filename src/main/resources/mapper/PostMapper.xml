@@ -63,6 +63,16 @@
         </if>
     </select>
 
+    <select id="countMyPost" resultType="Integer">
+        SELECT count(p.id) FROM post p,`column` c
+        WHERE p.type = c.id AND p.author = #{uid}
+    </select>
+
+    <select id="listMyPost" resultMap="postResult">
+        SELECT p.*,c.name cname FROM post p,`column` c
+        WHERE p.type = c.id AND p.author = #{uid} ORDER BY p.id DESC LIMIT #{page.startNumber},#{page.pageSize}
+    </select>
+
     <resultMap id="postResult" type="Post">
         <id column="id" property="id"/>
         <result column="title" property="title"/>

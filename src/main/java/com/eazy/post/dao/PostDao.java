@@ -26,4 +26,19 @@ public interface PostDao {
      */
     int count(@Param("column") String column, @Param("type") String type);
 
+    /**
+     * 我发的帖
+     *
+     * @param uid
+     * @param page
+     * @return
+     */
+    List<Post> listMyPost(@Param("uid") int uid, @Param("page") Page page);
+
+    /**
+     * 我发的帖的数量统计
+     * @param uid
+     * @return
+     */
+    int countMyPost(@Param("uid") int uid);
 }

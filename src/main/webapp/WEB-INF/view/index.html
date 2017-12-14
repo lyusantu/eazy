@@ -305,16 +305,10 @@
             ,layer = layui.layer,
             $ = layui.jquery;
 
-        function getTimeAgo(y, M, d, H, m, s){
-            return util.timeAgo(new Date(y, M||0, d||1, H||0, m||0, s||0));
-        };
-
         $('.createtime').each(function () {
             var date = $(this).html();
-            console.log(date);
-            var str = util.timeAgo(date, laydate.now);
+            var str = util.timeAgo(date / 1, laydate.now);
             $(this).html(str);
-
         })
     });
 </script>

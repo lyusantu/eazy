@@ -1,11 +1,17 @@
 package com.eazy.user.controller;
 
 import com.eazy.commons.Constants;
+import com.eazy.commons.Page;
 import com.eazy.commons.QiNiuUtil;
+import com.eazy.commons.auth.AuthPassport;
 import com.eazy.commons.dto.AjaxResult;
+import com.eazy.post.entity.Post;
+import com.eazy.post.service.PostService;
 import com.eazy.user.entity.User;
 import com.eazy.user.service.UserService;
 import com.xiaoleilu.hutool.crypto.SecureUtil;
+import com.xiaoleilu.hutool.json.JSONArray;
+import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.lang.Base64;
 import com.xiaoleilu.hutool.util.ObjectUtil;
 import org.apache.ibatis.annotations.Param;
@@ -24,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Random;
 
 @Controller
@@ -34,6 +41,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PostService postService;
 
     // 跳转登录
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
@@ -50,6 +60,7 @@ public class UserController {
     }
 
     // 跳转设置
+    @AuthPassport
     @RequestMapping(value = "/set", method = RequestMethod.GET)
     public String set(HttpServletRequest request) {
         request.setAttribute(Constants.TITLE, "账号设置");
@@ -57,6 +68,7 @@ public class UserController {
     }
 
     // 跳转主页
+    @AuthPassport
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String home(HttpServletRequest request) {
         request.setAttribute(Constants.TITLE, "用户主页");
@@ -114,6 +126,7 @@ public class UserController {
     }
 
     // 注销
+    @AuthPassport
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String logout(HttpServletRequest request) {
         request.getSession().removeAttribute(Constants.LOGIN_USER);
@@ -121,6 +134,7 @@ public class UserController {
     }
 
     // ajax设置个人信息
+    @AuthPassport
     @RequestMapping(value = "/ajaxSet", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public AjaxResult ajaxSet(User user, HttpServletRequest request) {
@@ -141,6 +155,7 @@ public class UserController {
     }
 
     // ajax设置新的密码
+    @AuthPassport
     @RequestMapping(value = "/ajaxSetPwd", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public AjaxResult ajaxSetPwd(User user, HttpServletRequest request) {
@@ -166,6 +181,7 @@ public class UserController {
     }
 
     // 上传头像
+    @AuthPassport
     @CrossOrigin(origins = "*", maxAge = 3600)
     @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
@@ -180,4 +196,58 @@ public class UserController {
         return new AjaxResult(0, null, null, upload);
     }
 
+    @AuthPassport
+    @RequestMapping(value = "/post", method = RequestMethod.GET)
+    public String post() {
+        return "user/post";
+    }
+
+    @AuthPassport
+    @RequestMapping(value = "/myPost")
+    public @ResponseBody
+    JSONObject myPost(HttpServletRequest request) {
+        int currPage = Integer.parseInt(request.getParameter("page"));
+        int pageSize = Integer.parseInt(request.getParameter("limit"));
+        Page page = new Page((currPage - 1) * pageSize, pageSize);
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        JSONObject json = new JSONObject();
+        json.put("code", 0);
+        json.put("count", postService.countMyPost(user.getId()));
+        JSONArray array = new JSONArray();
+        final JSONObject[] data = {new JSONObject()};
+        List<Post> postList = postService.listMyPost(user.getId(), page);
+        if (ObjectUtil.isNotNull(postList) && postList.size() > 0) {
+            postList.forEach(
+                    post -> {
+                        data[0] = new JSONObject();
+                        data[0].put("title", post.getTitle())
+                                .put("id",post.getId())
+                                .put("type", post.getColumn().getName())
+                                .put("status", post.getStatus())
+                                .put("reward", post.getReward())
+                                .put("createTime", post.getCreateTime())
+                                .put("data", post.getReaders() + "阅/" + post.getComments() + "答")
+                                .put("right", null);
+                        array.put(data[0]);
+                    }
+            );
+        }
+        json.put("data", array);
+        return json;
+    }
+
+    @AuthPassport
+    @RequestMapping(value = "/myCollection")
+    public @ResponseBody
+    JSONObject myCollection() {
+        JSONObject json = new JSONObject();
+        json.put("code", 0);
+        json.put("count", 4);
+        JSONArray array = new JSONArray();
+        JSONObject data = new JSONObject();
+        data.put("title", "1").put("time", "2017-12-14 15:56:31");
+        array.put(data);
+        json.put("data", array);
+        return json;
+    }
 }
