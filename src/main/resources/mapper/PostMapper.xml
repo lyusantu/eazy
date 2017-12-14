@@ -12,7 +12,7 @@
         FROM post p,`user` u,`column` c
         WHERE p.type = c.id
         AND p.author = u.id
-        <if test = "column != null and column != 'all'">
+        <if test="column != null and column != 'all'">
             AND c.suffix = #{column}
         </if>
         <if test="type != null">
@@ -28,10 +28,40 @@
                 </when>
             </choose>
         </if>
-        ORDER BY p.top DESC,p.wonderful DESC,p.id DESC
+        ORDER BY p.top DESC
+        <choose>
+            <when test="order == 'new'">
+                ,p.id DESC
+            </when>
+            <when test="order == 'hot'">
+                ,p.comments DESC
+            </when>
+        </choose>
         LIMIT #{page.startNumber},#{page.pageSize}
     </select>
 
+    <select id="count" resultType="Integer">
+        SELECT count(p.id)
+        FROM post p,`user` u,`column` c
+        WHERE p.type = c.id
+        AND p.author = u.id
+        <if test="column != null and column != 'all'">
+            AND c.suffix = #{column}
+        </if>
+        <if test="type != null">
+            <choose>
+                <when test="type == 'unsolved'">
+                    AND p.status = 0
+                </when>
+                <when test="type == 'solved'">
+                    AND p.status = 1
+                </when>
+                <when test="type == 'wonderful'">
+                    AND p.wonderful = 1
+                </when>
+            </choose>
+        </if>
+    </select>
 
     <resultMap id="postResult" type="Post">
         <id column="id" property="id"/>

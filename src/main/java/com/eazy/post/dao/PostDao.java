@@ -15,5 +15,15 @@ public interface PostDao {
      *
      * @return
      */
-    List<Post> list(@Param("page") Page page, @Param("column") String column, @Param("type") String type);
+    List<Post> list(@Param("page") Page page, @Param("column") String column, @Param("type") String type, @Param("order") String order);
+
+    /**
+     * 统计数量
+     *
+     * @param column
+     * @param type
+     * @return
+     */
+    int count(@Param("column") String column, @Param("type") String type);
+
 }

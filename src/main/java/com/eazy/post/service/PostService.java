@@ -9,6 +9,8 @@ public interface PostService {
 
     int addPost(Post post);
 
-    List<Post> list(Page page, String column, String type);
+    List<Post> list(Page page, String column, String type, String order);
+
+    int count(String column, String type);
 
 }

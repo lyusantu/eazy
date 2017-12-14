@@ -12,7 +12,7 @@ public class Page {
 
     private int totalPage;
 
-    public Page(){
+    public Page() {
 
     }
 
@@ -51,6 +51,7 @@ public class Page {
 
     public void setTotalCount(int totalCount) {
         this.totalCount = totalCount;
+        this.totalPage = this.totalCount % this.pageSize == 0 ? this.totalCount / this.pageSize : this.totalCount / this.pageSize + 1;
     }
 
     public int getTotalPage() {

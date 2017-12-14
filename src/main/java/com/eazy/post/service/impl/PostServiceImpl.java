@@ -21,7 +21,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> list(Page page, String column, String type) {
-        return postDao.list(page, column, type);
+    public List<Post> list(Page page, String column, String type, String order) {
+        return postDao.list(page, column, type, order);
+    }
+
+    @Override
+    public int count(String column, String type) {
+        return postDao.count(column, type);
     }
 }

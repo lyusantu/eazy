@@ -23,10 +23,18 @@ public class ColumnController {
     @RequestMapping(value = "/{column}/{type}", method = RequestMethod.GET)
     public String index(HttpServletRequest request, @PathVariable("column") String column, @PathVariable("type") String type) {
         String p = request.getParameter("p");
+        String order = request.getParameter("order");
+        System.out.println(order==null);
         Page page = new Page(((p == null ? 1 : Integer.parseInt(p)) - 1) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
-        List<Post> postList = postService.list(page, column, type);
+        page.setPageNumber(p == null ? 1 : Integer.parseInt((p)));
+        page.setTotalCount(postService.count(column, type));
+        page.setTotalCount(1000);
+        List<Post> postList = postService.list(page, column, type, order);
+        request.setAttribute("page", page);
         request.setAttribute("postList", postList);
         request.setAttribute("tab_column", column); // curr check
+        request.setAttribute("tab_filter", type);
+        request.setAttribute("tab_order", order);
         return "t/index";
     }
 

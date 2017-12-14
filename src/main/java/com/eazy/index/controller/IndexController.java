@@ -25,9 +25,9 @@ public class IndexController {
 
     @RequestMapping(value = "/")
     public String index(HttpServletRequest request) {
-        LOG.info("invoke----------index");
-        request.setAttribute("tab_column", "home");
-        List<Post> postList = postService.list(new Page(0, Constants.NUM_PER_PAGE), null, null); // 置顶帖
+        String order = request.getParameter("order");
+        order = order == null || "".equals(order.trim()) ? "new" : order.trim();
+        List<Post> postList = postService.list(new Page(0, Constants.NUM_PER_PAGE), null, null, order); // 置顶帖
         List<Post> topList = new ArrayList<>();
         List<Post> otherList = new ArrayList<>();
         if (ObjectUtil.isNotNull(postList) && postList.size() > 0) {
@@ -40,8 +40,10 @@ public class IndexController {
                     }
             );
         }
+        request.setAttribute("tab_column", "home");
         request.setAttribute("topList", topList);
         request.setAttribute("otherList", otherList);
+        request.setAttribute("tab_order", order);
         return "index";
     }
 
