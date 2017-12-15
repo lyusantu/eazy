@@ -41,4 +41,11 @@ public interface PostDao {
      * @return
      */
     int countMyPost(@Param("uid") int uid);
+
+    /**
+     * 获取帖子详情
+     * @param id
+     * @return
+     */
+    Post getPost(@Param("id") int id);
 }

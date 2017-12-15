@@ -31,8 +31,8 @@
                             <img src="#(p.user.avatar)" alt="#(p.user.nickName)">
                         </a>
                         <h2>
-                            <a class="layui-badge">分享</a>
-                            <a href="/post/#(p.id)">#(p.title)</a>
+                            <a class="layui-badge">#(p.column.name)</a>
+                            <a href="/post/#(p.id)?order=#(tab_order)">#(p.title)</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/#(p.user.id)" link>
@@ -83,7 +83,7 @@
                 #else
                 #for(p : weekHot)
                 <dd>
-                    <a href="/post/#(p.id)">#(p.title)</a>
+                    <a href="/post/#(p.id)?order=#(tab_order)">#(p.title)</a>
                     <span><i class="iconfont icon-pinglun1"></i> #(p.comments)</span>
                 </dd>
                 #end
@@ -124,11 +124,16 @@
 </div>
 
 #@footer()
-
+#@js?()
 <script>
-    layui.use(['laypage', 'layer'], function () {
+    layui.cache.page = 'jie';
+
+    layui.use(['laypage', 'layer','util', 'laydate'], function () {
         var laypage = layui.laypage
-            , layer = layui.layer;
+            , layer = layui.layer
+            , util = layui.util
+            , laydate = layui.laydate
+            , $ = layui.jquery;
 
         //总页数低于页码总数
         laypage.render({
@@ -149,5 +154,10 @@
             },
         });
 
+        $('.createtime').each(function () {
+            var date = $(this).html();
+            var str = util.timeAgo(date, laydate.now);
+            $(this).html(str);
+        })
     });
 </script>

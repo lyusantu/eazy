@@ -113,6 +113,7 @@ public class UserController {
                 user.setStatus(0);
                 user.setGender(0); // 默认为男
                 user.setBalance(100);
+                user.setType("user");
                 user.setPassword(SecureUtil.md5(user.getPassword()));
                 user.setRegTime(new Timestamp(System.currentTimeMillis()));
                 user.setAvatar("/res/images/avatar/" + new Random().nextInt(12) + ".jpg");

@@ -39,4 +39,9 @@ public class PostServiceImpl implements PostService {
     public int countMyPost(int uid) {
         return postDao.countMyPost(uid);
     }
+
+    @Override
+    public Post getPost(int id) {
+        return postDao.getPost(id);
+    }
 }

@@ -30,6 +30,8 @@ public class User {
 
     private Integer vip;
 
+    private String type;
+
     public User(){
 
     }
@@ -160,5 +162,13 @@ public class User {
 
     public void setVip(Integer vip) {
         this.vip = vip;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

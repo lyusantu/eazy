@@ -82,7 +82,10 @@
 </script>
 
 #@footer()
-
+#@js?()
+<script>
+    layui.cache.page = 'user';
+</script>
 <script>
     layui.use(['util', 'laydate', 'table'], function () {
         var table = layui.table,

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,8 +39,12 @@ public class PostController {
     private UserService userService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String index() {
-        return "post/add";
+    public String index(HttpServletRequest request, @PathVariable("id") int id) {
+        Post post = postService.getPost(id);
+        request.setAttribute("post", post);
+        request.setAttribute("tab_order", request.getParameter("order"));
+        request.setAttribute("tab_column", post.getColumn().getSuffix());
+        return "post/index";
     }
 
     @RequestMapping(value = "/ajaxAdd", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})

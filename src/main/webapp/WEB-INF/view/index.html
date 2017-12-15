@@ -21,7 +21,7 @@
                                 </a>
                                 <h2>
                                     <a class="layui-badge">#(p.column.name)</a>
-                                    <a href="/post/#(p.id)">#(p.title)</a>
+                                    <a href="/post/#(p.id)?order=#(tab_order)">#(p.title)</a>
                                 </h2>
                                 <div class="fly-list-info">
                                     <a href="/user/#(p.user.id)" link>
@@ -79,7 +79,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">#(p.column.name)</a>
-                            <a href="/post/#(p.id)">#(p.title)</a>
+                            <a href="/post/#(p.id)?order=#(tab_order)">#(p.title)</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/#(p.user.id)" link>
@@ -297,7 +297,7 @@
 </div>
 
 #@footer()
-
+#@js?()
 <script>
     layui.use(['util', 'laydate', 'layer'], function(){
         var util = layui.util
@@ -307,7 +307,7 @@
 
         $('.createtime').each(function () {
             var date = $(this).html();
-            var str = util.timeAgo(date / 1, laydate.now);
+            var str = util.timeAgo(date, laydate.now);
             $(this).html(str);
         })
     });

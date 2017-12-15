@@ -16,4 +16,6 @@ public interface PostService {
     List<Post> listMyPost(int uid, Page page);
 
     int countMyPost(int uid);
+
+    Post getPost(int id);
 }
