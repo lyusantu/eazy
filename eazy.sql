@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2017-12-12 17:56:39
+Date: 2017-12-20 15:44:55
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -48,7 +48,7 @@ CREATE TABLE `post` (
   `content` text NOT NULL,
   `reward` int(11) NOT NULL COMMENT '奖励',
   `delete` int(11) NOT NULL,
-  `createtime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `createtime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `author` int(11) NOT NULL,
   `comments` int(11) DEFAULT NULL,
   `readers` int(11) DEFAULT NULL,
@@ -56,13 +56,15 @@ CREATE TABLE `post` (
   `top` int(11) NOT NULL,
   `wonderful` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of post
 -- ----------------------------
-INSERT INTO `post` VALUES ('1', '我是第一个吃螃蟹的人吗？', '1', 'face[嘻嘻] face[嘻嘻] face[嘻嘻] \n\nimg[https://static.oschina.net/uploads/space/2017/1212/140834_Pxwh_3684378.png] ', '20', '0', '2017-12-12 17:26:51', '1', '0', '0', '0', '1', '1');
-INSERT INTO `post` VALUES ('10', '可以分享我一个VIP吗', '2', 'face[馋嘴] ', '50', '0', '2017-12-12 17:26:50', '2', '0', '0', '0', '1', '0');
+INSERT INTO `post` VALUES ('1', '我是第一个吃螃蟹的人吗？', '1', 'face[嘻嘻] face[嘻嘻] face[嘻嘻] \n\nimg[https://static.oschina.net/uploads/space/2017/1212/140834_Pxwh_3684378.png] ', '20', '0', '2017-12-14 14:16:16', '1', '0', '0', '0', '1', '0');
+INSERT INTO `post` VALUES ('11', '可以分享我一个VIP吗', '2', 'face[馋嘴] ', '50', '0', '2017-12-11 14:16:13', '2', '1', '0', '0', '0', '1');
+INSERT INTO `post` VALUES ('13', '222', '1', '2', '20', '0', '2017-12-10 15:01:07', '1', '0', '0', '0', '0', '0');
+INSERT INTO `post` VALUES ('14', 'test xixi', '1', 'img[http://www.w3school.com.cn//i/eg_tulip.jpg] ', '20', '0', '2017-12-15 15:01:15', '1', '0', '0', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for `sign`
@@ -79,7 +81,7 @@ CREATE TABLE `sign` (
 -- ----------------------------
 -- Records of sign
 -- ----------------------------
-INSERT INTO `sign` VALUES ('40', '1', '2017-12-12 14:28:40', '2017-12-12 14:28:40');
+INSERT INTO `sign` VALUES ('40', '1', '2017-12-20 14:35:19', '2017-12-20 14:35:19');
 INSERT INTO `sign` VALUES ('41', '2', '2017-12-12 17:29:55', '2017-12-12 17:29:55');
 
 -- ----------------------------
@@ -100,11 +102,30 @@ CREATE TABLE `user` (
   `status` int(11) DEFAULT NULL COMMENT '状态 [1:"正常",0:"未验证",2:"禁言",3:"封禁"]',
   `auth` varchar(255) DEFAULT NULL,
   `vip` int(11) NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', '352050321@qq.com', '超人', '9cbf8a4dcb8e30682b927f352d6559a0', '99879', 'http://oih7sazbd.bkt.clouddn.com/FivibFbr6k8GqJBdZBea56zq0S4X', '0', '', '2017-12-12 14:57:09', '深圳', '0', 'eazy作者', '3');
-INSERT INTO `user` VALUES ('2', '52781380@qq.com', '钢铁侠', '9cbf8a4dcb8e30682b927f352d6559a0', '50', '/res/images/avatar/10.jpg', '0', '', '2017-12-12 17:26:37', '深圳', '0', null, '0');
+INSERT INTO `user` VALUES ('1', '352050321@qq.com', '超人', '9cbf8a4dcb8e30682b927f352d6559a0', '99849', 'http://oih7sazbd.bkt.clouddn.com/FivibFbr6k8GqJBdZBea56zq0S4X', '0', '', '2017-12-20 14:35:19', '深圳', '0', 'eazy作者', '8', 'admin');
+INSERT INTO `user` VALUES ('2', '52781380@qq.com', '钢铁侠', '9cbf8a4dcb8e30682b927f352d6559a0', '10', '/res/images/avatar/10.jpg', '0', '', '2017-12-15 14:13:09', '深圳', '0', null, '0', 'user');
+
+-- ----------------------------
+-- Table structure for `verify`
+-- ----------------------------
+DROP TABLE IF EXISTS `verify`;
+CREATE TABLE `verify` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `question` varchar(255) NOT NULL,
+  `answer` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of verify
+-- ----------------------------
+INSERT INTO `verify` VALUES ('1', '2 + 3 = ?', '5');
+INSERT INTO `verify` VALUES ('2', '请输入eazy', 'eazy');
+INSERT INTO `verify` VALUES ('3', '中国的首都在哪里？', '北京');

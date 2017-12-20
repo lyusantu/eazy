@@ -28,7 +28,6 @@ public class ColumnController {
         Page page = new Page(((p == null ? 1 : Integer.parseInt(p)) - 1) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
         page.setPageNumber(p == null ? 1 : Integer.parseInt((p)));
         page.setTotalCount(postService.count(column, type));
-        page.setTotalCount(1000);
         List<Post> postList = postService.list(page, column, type, order);
         request.setAttribute("page", page);
         request.setAttribute("postList", postList);

@@ -9,6 +9,8 @@ import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
 import com.eazy.user.entity.User;
 import com.eazy.user.service.UserService;
+import com.eazy.verify.entity.Verify;
+import com.eazy.verify.service.VerifyService;
 import com.xiaoleilu.hutool.crypto.SecureUtil;
 import com.xiaoleilu.hutool.json.JSONArray;
 import com.xiaoleilu.hutool.json.JSONObject;
@@ -45,9 +47,14 @@ public class UserController {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private VerifyService verifyService;
+
     // 跳转登录
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
     public String signIn(HttpServletRequest request) {
+        Verify verify = verifyService.randVerify();
+        request.setAttribute("verify", verify);
         request.setAttribute(Constants.TITLE, "登录");
         return "user/login";
     }
@@ -55,6 +62,8 @@ public class UserController {
     // 跳转注册
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signUp(HttpServletRequest request) {
+        Verify verify = verifyService.randVerify();
+        request.setAttribute("verify", verify);
         request.setAttribute(Constants.TITLE, "注册");
         return "user/reg";
     }
@@ -81,20 +90,26 @@ public class UserController {
     public AjaxResult ajaxSignIn(HttpServletRequest request, User user) {
         String email = user.getEmail();
         user.setPassword(SecureUtil.md5(user.getPassword()));
-        user = userService.login(user);
-        if (ObjectUtil.isNull(user)) {
-            LOG.warn(email + "登录失败,用户名或密码输入错误");
-            return new AjaxResult(1, "用户名或密码错误");
-        } else {
-            if (user.getStatus() == 0 || user.getStatus() == 1) {
-                // baseService.addLoginRecord(user.getId(), Constants.getIpAddress(request)); // 记录本次登录信息
-                request.getSession().setAttribute(Constants.LOGIN_USER, user);
-                LOG.info(email + "登录成功");
-                return new AjaxResult(0, null, "/");
-            } else if (user.getStatus() == 2)
-                return new AjaxResult(1, "该账号已经封禁");
-            else
-                return new AjaxResult(1, "未知状态");
+        Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
+        verify = verifyService.getVerify(verify);
+        if (ObjectUtil.isNull(verify))
+            return new AjaxResult(1, "人类验证失败");
+        else {
+            user = userService.login(user);
+            if (ObjectUtil.isNull(user)) {
+                LOG.warn(email + "登录失败,用户名或密码输入错误");
+                return new AjaxResult(1, "用户名或密码错误");
+            } else {
+                if (user.getStatus() == 0 || user.getStatus() == 1) {
+                    // baseService.addLoginRecord(user.getId(), Constants.getIpAddress(request)); // 记录本次登录信息
+                    request.getSession().setAttribute(Constants.LOGIN_USER, user);
+                    LOG.info(email + "登录成功");
+                    return new AjaxResult(0, null, "/");
+                } else if (user.getStatus() == 2)
+                    return new AjaxResult(1, "该账号已经封禁");
+                else
+                    return new AjaxResult(1, "未知状态");
+            }
         }
     }
 
@@ -106,22 +121,28 @@ public class UserController {
         if (!user.getPassword().equals(rePassword)) {
             return new AjaxResult(1, "两次输入的密码不一致");
         } else {
-            if (userService.verifyAccountExists(user))
-                return new AjaxResult(1, "您输入的邮箱已被注册");
+            Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
+            verify = verifyService.getVerify(verify);
+            if (ObjectUtil.isNull(verify))
+                return new AjaxResult(1, "人类验证失败");
             else {
-                user.setVip(0);
-                user.setStatus(0);
-                user.setGender(0); // 默认为男
-                user.setBalance(100);
-                user.setType("user");
-                user.setPassword(SecureUtil.md5(user.getPassword()));
-                user.setRegTime(new Timestamp(System.currentTimeMillis()));
-                user.setAvatar("/res/images/avatar/" + new Random().nextInt(12) + ".jpg");
-                user.setId(userService.reg(user));
-                LOG.info(Base64.decode(user.getEmail()) + "注册成功");
-                // 为用户设置默认角色
-                request.getSession().setAttribute(Constants.LOGIN_USER, user);
-                return new AjaxResult(0, null, "/");
+                if (userService.verifyAccountExists(user))
+                    return new AjaxResult(1, "您输入的邮箱已被注册");
+                else {
+                    user.setVip(0);
+                    user.setStatus(0);
+                    user.setGender(0); // 默认为男
+                    user.setBalance(100);
+                    user.setType("user");
+                    user.setPassword(SecureUtil.md5(user.getPassword()));
+                    user.setRegTime(new Timestamp(System.currentTimeMillis()));
+                    user.setAvatar("/res/images/avatar/" + new Random().nextInt(12) + ".jpg");
+                    user.setId(userService.reg(user));
+                    LOG.info(Base64.decode(user.getEmail()) + "注册成功");
+                    // 为用户设置默认角色
+                    request.getSession().setAttribute(Constants.LOGIN_USER, user);
+                    return new AjaxResult(0, null, "/");
+                }
             }
         }
     }
@@ -222,7 +243,7 @@ public class UserController {
                     post -> {
                         data[0] = new JSONObject();
                         data[0].put("title", post.getTitle())
-                                .put("id",post.getId())
+                                .put("id", post.getId())
                                 .put("type", post.getColumn().getName())
                                 .put("status", post.getStatus())
                                 .put("reward", post.getReward())

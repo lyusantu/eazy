@@ -43,8 +43,8 @@
           </span>
                 </div>
                 <div class="detail-about">
-                    <a class="fly-avatar" href="../user/home.html">
-                        <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+                    <a class="fly-avatar" href="/user/#(post.user.id)">
+                        <img src="#(post.user.avatar)" alt="#(post.user.nickName)">
                     </a>
                     <div class="fly-detail-user">
                         <a href="/user/#(post.user.id)" class="fly-link">
@@ -63,6 +63,7 @@
                         #if(session.loginUser != null && session.loginUser.id == post.user.id)
                             <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/post/edit/#(post.id)">编辑此贴</a></span>
                         #end
+                        <span class="layui-btn layui-btn-xs jie-admin " type="collect" data-type="add">收藏</span>
                     </div>
                 </div>
                 <div class="detail-body photos">
@@ -76,90 +77,7 @@
                 </fieldset>
 
                 <ul class="jieda" id="jieda">
-                    <li data-id="111" class="jieda-daan">
-                        <a name="item-1111111111"></a>
-                        <div class="detail-about detail-about-reply">
-                            <a class="fly-avatar" href="">
-                                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
-                            </a>
-                            <div class="fly-detail-user">
-                                <a href="" class="fly-link">
-                                    <cite>贤心</cite>
-                                    <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
-                                    <i class="layui-badge fly-badge-vip">VIP3</i>
-                                </a>
-
-                                <span>(楼主)</span>
-                                <!--
-                                <span style="color:#5FB878">(管理员)</span>
-                                <span style="color:#FF9E3F">（社区之光）</span>
-                                <span style="color:#999">（该号已被封）</span>
-                                -->
-                            </div>
-
-                            <div class="detail-hits">
-                                <span>2017-11-30</span>
-                            </div>
-
-                            <i class="iconfont icon-caina" title="最佳答案"></i>
-                        </div>
-                        <div class="detail-body jieda-body photos">
-                            <p>香菇那个蓝瘦，这是一条被采纳的回帖</p>
-                        </div>
-                        <div class="jieda-reply">
-              <span class="jieda-zan zanok" type="zan">
-                <i class="iconfont icon-zan"></i>
-                <em>66</em>
-              </span>
-                            <span type="reply">
-                <i class="iconfont icon-svgmoban53"></i>
-                回复
-              </span>
-                            <div class="jieda-admin">
-                                <span type="edit">编辑</span>
-                                <span type="del">删除</span>
-                                <!-- <span class="jieda-accept" type="accept">采纳</span> -->
-                            </div>
-                        </div>
-                    </li>
-
-                    <li data-id="111">
-                        <a name="item-1111111111"></a>
-                        <div class="detail-about detail-about-reply">
-                            <a class="fly-avatar" href="">
-                                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
-                            </a>
-                            <div class="fly-detail-user">
-                                <a href="" class="fly-link">
-                                    <cite>贤心</cite>
-                                </a>
-                            </div>
-                            <div class="detail-hits">
-                                <span>2017-11-30</span>
-                            </div>
-                        </div>
-                        <div class="detail-body jieda-body photos">
-                            <p>蓝瘦那个香菇，这是一条没被采纳的回帖</p>
-                        </div>
-                        <div class="jieda-reply">
-              <span class="jieda-zan" type="zan">
-                <i class="iconfont icon-zan"></i>
-                <em>0</em>
-              </span>
-                            <span type="reply">
-                <i class="iconfont icon-svgmoban53"></i>
-                回复
-              </span>
-                            <div class="jieda-admin">
-                                <span type="edit">编辑</span>
-                                <span type="del">删除</span>
-                                <span class="jieda-accept" type="accept">采纳</span>
-                            </div>
-                        </div>
-                    </li>
-
-                    <!-- 无数据时 -->
-                    <!-- <li class="fly-none">消灭零回复</li> -->
+                    <li class="fly-none">消灭零回复</li>
                 </ul>
 
                 <div class="layui-form layui-form-pane">
@@ -181,29 +99,18 @@
         <div class="layui-col-md4">
             <dl class="fly-panel fly-list-one">
                 <dt class="fly-panel-title">本周热议</dt>
-                <dd>
-                    <a href="">基于 layui 的极简社区页面模版</a>
-                    <span><i class="iconfont icon-pinglun1"></i> 16</span>
-                </dd>
-                <!-- 无数据时 -->
-                <!--
                 <div class="fly-none">没有相关数据</div>
-                -->
             </dl>
 
             <div class="fly-panel">
                 <div class="fly-panel-title">
-                    这里可作为广告区域
+                    广告
                 </div>
                 <div class="fly-panel-main">
-                    <a href="http://layim.layui.com/?from=fly" target="_blank" class="fly-zanzhu" time-limit="2017.09.25-2099.01.01" style="background-color: #5FB878;">LayIM 3.0 - layui 旗舰之作</a>
+                    <a href="" target="_blank" class="fly-zanzhu" style="background-color: #393D49;">虚席以待</a>
                 </div>
             </div>
 
-            <div class="fly-panel" style="padding: 20px 0; text-align: center;">
-                <img src="../../res/images/weixin.jpg" style="max-width: 100%;" alt="layui">
-                <p style="position: relative; color: #666;">微信扫码关注 layui 公众号</p>
-            </div>
 
         </div>
     </div>
@@ -214,12 +121,21 @@
 <script>
     layui.cache.page = 'jie';
 
+    /*
+   layui.cache.user = {
+       username: '#(session.loginUser != null ? session.loginUser.nickName : 0)'
+       ,uid: '#(session.loginUser != null ? session.loginUser.id : -1)'
+       ,avatar: '#(session.loginUser != null ? session.loginUser.avatar : 0)'
+       ,experience: '#(session.loginUser != null ? session.loginUser.balance : 0)'
+       ,sex: '#(session.loginUser != null ? session.loginUser.gender == 0 ? "男" : "女" : 0)'
+   };
+   */
     layui.cache.user = {
-        username: '#(session.loginUser.nickName)'
-        ,uid: '#(session.loginUser.id)'
-        ,avatar: '#(session.loginUser.avatar)'
-        ,experience: '#(session.loginUser.balance)'
-        ,sex: '#(session.loginUser.gender == 0 ? "男" : "女")'
+        username: '游客'
+        ,uid: -1
+        ,avatar: '/res/images/avatar/00.jpg'
+        ,experience: 83
+        ,sex: '男'
     };
 
     layui.use(['util', 'laydate', 'layer'], function(){

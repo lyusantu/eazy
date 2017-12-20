@@ -26,10 +26,11 @@
                             <div class="layui-form-item">
                                 <label for="L_vercode" class="layui-form-label">人类验证</label>
                                 <div class="layui-input-inline">
+                                    <input type="hidden" name="verid" value="#(verify.id)" />
                                     <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请回答后面的问题" autocomplete="off" class="layui-input">
                                 </div>
                                 <div class="layui-form-mid">
-                                    <span style="color: #c00;">{{d.vercode}}</span>
+                                    <span style="color: #c00;">#(verify.question)</span>
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -38,11 +39,13 @@
                   <a href="/user/forget">忘记密码？</a>
                 </span>
                             </div>
+                            <!--
                             <div class="layui-form-item fly-form-app">
                                 <span>或者使用社交账号登入</span>
                                 <a href="" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-qq" title="QQ登入"></a>
                                 <a href="" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-weibo" title="微博登入"></a>
                             </div>
+                            -->
                         </form>
                     </div>
                 </div>
