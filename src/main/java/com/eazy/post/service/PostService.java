@@ -18,4 +18,6 @@ public interface PostService {
     int countMyPost(int uid);
 
     Post getPost(int id);
+
+    void delete(int id);
 }

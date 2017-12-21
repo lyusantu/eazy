@@ -19,6 +19,10 @@ public class AjaxResult<T> implements Serializable {
 
     private String url;
 
+    public AjaxResult(int status){
+        this.status = status;
+    }
+
     public AjaxResult(int status, String msg) {
         this.status = status;
         this.msg = msg;

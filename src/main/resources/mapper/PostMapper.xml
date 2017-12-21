@@ -67,18 +67,22 @@
 
     <select id="countMyPost" resultType="Integer">
         SELECT count(p.id) FROM post p,`column` c
-        WHERE p.type = c.id AND p.delete = 0 AND p.author = #{uid}
+        WHERE p.type = c.id AND p.author = #{uid}
     </select>
 
     <select id="listMyPost" resultMap="postResult">
         SELECT p.*,c.name cname FROM post p,`column` c
-        WHERE p.type = c.id AND p.delete = 0 AND p.author = #{uid} ORDER BY p.id DESC LIMIT #{page.startNumber},#{page.pageSize}
+        WHERE p.type = c.id AND p.author = #{uid} ORDER BY p.id DESC LIMIT #{page.startNumber},#{page.pageSize}
     </select>
 
     <select id="getPost" resultMap="postResult">
         SELECT p.*,c.name cname,c.suffix,u.id uid,u.nickName,u.avatar,u.auth,u.vip FROM post p,`column` c,`user` u
         WHERE p.type = c.id AND p.author = u.id AND p.delete = 0 AND p.id = #{id}
     </select>
+
+    <update id="delete">
+        UPDATE post SET `delete` = 1 WHERE id = #{id}
+    </update>
 
     <resultMap id="postResult" type="Post">
         <id column="id" property="id"/>

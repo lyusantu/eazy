@@ -10,10 +10,26 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2017-12-20 15:44:55
+Date: 2017-12-21 15:18:03
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `collection`
+-- ----------------------------
+DROP TABLE IF EXISTS `collection`;
+CREATE TABLE `collection` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `postid` int(11) NOT NULL,
+  `userid` int(11) NOT NULL,
+  `collection_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of collection
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `column`

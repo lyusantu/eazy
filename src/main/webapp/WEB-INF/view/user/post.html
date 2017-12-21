@@ -74,9 +74,8 @@
     </div>
 </div>
 
-
-<script type="text/html" id="statusTpl">
-    <span {{d.status == 0 ? style="color: #ccc;" :  style="color: #5FB878;" }}>{{d.status == 0 ? '未结' : '已结'}}</span>
+<script type="text/html" id="titleTpl">
+    <a href="/post/{{d.id}}" target="_blank" class="layui-table-link">{{d.title}}</a>
 </script>
 <script type="text/html" id="createTimeTpl">
     <span class="createtime">{{d.createTime}}</span>
@@ -84,7 +83,10 @@
 <script type="text/html" id="bar">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <!-- <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a> -->
+</script>
+<script type="text/html" id="dataTpl">
+    <span style="font-size: 12px;">{{d.data}}</span>
 </script>
 
 #@footer()
@@ -104,12 +106,13 @@
             , url: '/user/myPost'
             , cols: [[
                 {field: 'title', minWidth: 200, title: '帖子标题', align: 'center'}
-                , {field: 'type', width: 100, title: '分类', align: 'center'}
-                , {field: 'status', width: 100, title: '结贴', align: 'center', templet:'#statusTpl'}
-                , {field: 'reward', width: 100, title: '飞吻', align: 'center'}
-                , {field: 'createTime', width: 120, title: '发表时间', align: 'center', sort: true, templet: '#createTimeTpl'}
-                , {field: 'data', width: 100, title: '数据', align: 'center'}
-                , {field: 'right', width: 160, title: '操作', align: 'center', toolbar: '#bar'}
+                , {field: 'type', width: 80, title: '分类', align: 'center'}
+                , {field: 'delete', width: 80, title: '状态', align: 'center'}
+                , {field: 'status', width: 80, title: '结贴', align: 'center'}
+                , {field: 'reward', width: 80, title: '飞吻', align: 'center'}
+                , {field: 'createTime', width: 160, title: '发表时间', align: 'center', templet: '#createTimeTpl'}
+                , {field: 'data', width: 80, title: '数据', align: 'center', templet: '#dataTpl'}
+                , {field: 'right', width: 140, title: '操作', align: 'center', toolbar: '#bar'}
             ]]
             , page: true
             , done: function () {
@@ -117,7 +120,7 @@
                     var date = $(this).html();
                     var str = util.timeAgo(date / 1, laydate.now);
                     $(this).html(str);
-                })
+                });
             }
         });
 
@@ -125,10 +128,17 @@
             elem: '#LAY_myCollectioncard'
             , url: '/user/myCollection'
             , cols: [[
-                {field: 'title', minWidth: 150, title: '帖子标题', align: 'center'}
-                , {field: 'time', width: 200, title: '收藏时间', align: 'center'}
+                {field: 'title', minWidth: 150, title: '帖子标题', align: 'left', templet: '#titleTpl'}
+                , {field: 'createTime', width: 200, title: '收藏时间', align: 'center', templet: '#createTimeTpl'}
             ]]
             , page: true
+            , done: function () {
+                $('.createtime').each(function () {
+                    var date = $(this).html();
+                    var str = util.timeAgo(date / 1, laydate.now);
+                    $(this).html(str);
+                });
+            }
         });
 
         table.on('tool(mySendCard)',function (obj) {

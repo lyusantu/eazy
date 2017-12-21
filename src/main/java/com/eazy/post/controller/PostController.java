@@ -1,5 +1,7 @@
 package com.eazy.post.controller;
 
+import com.eazy.collection.entity.PostCollection;
+import com.eazy.collection.service.CollectionService;
 import com.eazy.column.entity.Column;
 import com.eazy.column.service.ColumnService;
 import com.eazy.commons.Constants;
@@ -9,6 +11,8 @@ import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
 import com.eazy.user.entity.User;
 import com.eazy.user.service.UserService;
+import com.eazy.verify.entity.Verify;
+import com.eazy.verify.service.VerifyService;
 import com.xiaoleilu.hutool.util.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +42,20 @@ public class PostController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private VerifyService verifyService;
+
+    @Autowired
+    private CollectionService collectionService;
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String index(HttpServletRequest request, @PathVariable("id") int id) {
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        if (ObjectUtil.isNotNull(user)) { // 是否收藏
+            PostCollection collection = new PostCollection(id, user.getId());
+            collection = collectionService.verifyCollection(collection);
+            request.setAttribute("collection", collection);
+        }
         Post post = postService.getPost(id);
         request.setAttribute("post", post);
         request.setAttribute("tab_order", request.getParameter("order"));
@@ -70,6 +86,8 @@ public class PostController {
         } else {
             LOG.info("从缓存中加载column");
         }
+        Verify verify = verifyService.randVerify();
+        request.setAttribute("verify", verify);
         return "post/add";
     }
 
@@ -82,16 +100,49 @@ public class PostController {
         else if (user.getBalance() < post.getReward())
             return new AjaxResult(1, "飞吻不足");
         else {
-            post.setAuthor(user.getId());
-            post.setCreateTime(new Timestamp(System.currentTimeMillis()));
-            postService.addPost(post);
-            user.setBalance(user.getBalance() - post.getReward());
-            User updateUser = new User();
-            updateUser.setId(user.getId());
-            updateUser.setBalance(user.getBalance());
-            userService.update(updateUser); // 更改用户飞吻
-            request.getSession().setAttribute(Constants.LOGIN_USER, user);
-            return new AjaxResult(0, null, "/"); // 此处应该跳转到用户发表的对应目录的首页
+            Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
+            verify = verifyService.getVerify(verify);
+            if (ObjectUtil.isNull(verify))
+                return new AjaxResult(1, "人类验证失败");
+            else {
+                post.setAuthor(user.getId());
+                post.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                postService.addPost(post);
+                user.setBalance(user.getBalance() - post.getReward());
+                User updateUser = new User();
+                updateUser.setId(user.getId());
+                updateUser.setBalance(user.getBalance());
+                userService.update(updateUser); // 更改用户飞吻
+                request.getSession().setAttribute(Constants.LOGIN_USER, user);
+                return new AjaxResult(0, null, "/"); // 此处应该跳转到用户发表的对应目录的首页
+            }
+        }
+    }
+
+    @AuthPassport
+    @RequestMapping(value = "/delete", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody
+    AjaxResult delete(HttpServletRequest request) {
+        int id = Integer.parseInt(request.getParameter("id"));
+        postService.delete(id);
+        return new AjaxResult(0, null, null, "/");
+    }
+
+    @AuthPassport
+    @RequestMapping(value = "/collection/{type}", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody
+    AjaxResult collection(HttpServletRequest request, @PathVariable("type") String type) {
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        if (ObjectUtil.isNull(user))
+            return new AjaxResult(1, "请先登入");
+        else {
+            int id = Integer.parseInt(request.getParameter("cid"));
+            PostCollection collection = new PostCollection(id, user.getId(), new Timestamp(System.currentTimeMillis()));
+            if (type.equals("add"))
+                collectionService.addCollection(collection);
+            else if (type.equals("remove"))
+                collectionService.removeCollection(collection);
+            return new AjaxResult(0);
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.eazy.user.controller;
 
+import com.eazy.collection.entity.PostCollection;
+import com.eazy.collection.service.CollectionService;
 import com.eazy.commons.Constants;
 import com.eazy.commons.Page;
 import com.eazy.commons.QiNiuUtil;
@@ -49,6 +51,9 @@ public class UserController {
 
     @Autowired
     private VerifyService verifyService;
+
+    @Autowired
+    private CollectionService collectionService;
 
     // 跳转登录
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
@@ -224,6 +229,7 @@ public class UserController {
         return "user/post";
     }
 
+    // 我的帖子
     @AuthPassport
     @RequestMapping(value = "/myPost")
     public @ResponseBody
@@ -241,11 +247,20 @@ public class UserController {
         if (ObjectUtil.isNotNull(postList) && postList.size() > 0) {
             postList.forEach(
                     post -> {
+                        String delete = "<span style=\"color:#999;\">正常</span>";
+                        if (post.getDelete() == 1)
+                            delete = "<span style=\"color:#cc0000;\">删除</span>";
+                        else if (post.getDelete() == 2)
+                            delete = "<span style=\"color:##58A571;\">审核</span>";
+                        String status = "<span style=\"color:#ccc;\">未结</span>";
+                        if (post.getStatus() == 1)
+                            status = "<span style=\"color:#5FB878;\">已结</span>";
                         data[0] = new JSONObject();
                         data[0].put("title", post.getTitle())
                                 .put("id", post.getId())
                                 .put("type", post.getColumn().getName())
-                                .put("status", post.getStatus())
+                                .put("delete", delete)
+                                .put("status", status)
                                 .put("reward", post.getReward())
                                 .put("createTime", post.getCreateTime())
                                 .put("data", post.getReaders() + "阅/" + post.getComments() + "答")
@@ -258,17 +273,26 @@ public class UserController {
         return json;
     }
 
+    // 我的收藏
     @AuthPassport
     @RequestMapping(value = "/myCollection")
     public @ResponseBody
-    JSONObject myCollection() {
+    JSONObject myCollection(HttpServletRequest request) {
+        int currPage = Integer.parseInt(request.getParameter("page"));
+        int pageSize = Integer.parseInt(request.getParameter("limit"));
+        Page page = new Page((currPage - 1) * pageSize, pageSize);
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        List<PostCollection> list = collectionService.myCollection(user.getId(), page);
         JSONObject json = new JSONObject();
-        json.put("code", 0);
-        json.put("count", 4);
+        json.put("code", 0).put("count", collectionService.countMyCollection(user.getId()));
         JSONArray array = new JSONArray();
-        JSONObject data = new JSONObject();
-        data.put("title", "1").put("time", "2017-12-14 15:56:31");
-        array.put(data);
+        if (list != null && list.size() > 0) {
+            list.forEach(
+                    collection -> {
+                        array.put(new JSONObject().put("id", collection.getPost().getId()).put("title", collection.getPost().getTitle()).put("createTime", collection.getCollectionTime()));
+                    }
+            );
+        }
         json.put("data", array);
         return json;
     }

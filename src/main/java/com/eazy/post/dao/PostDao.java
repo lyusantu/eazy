@@ -48,4 +48,10 @@ public interface PostDao {
      * @return
      */
     Post getPost(@Param("id") int id);
+
+    /**
+     * 删除帖子
+     * @param id
+     */
+    void delete(@Param("id") int id);
 }

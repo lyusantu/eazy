@@ -22,7 +22,7 @@
                     #if(post.wonderful == 1)
                         <span class="layui-badge layui-bg-red">精帖</span>
                     #end
-                    <div class="fly-admin-box" data-id="123">
+                    <div class="fly-admin-box" data-id="#(post.id)">
                         #if(session.loginUser != null && session.loginUser.type == 'admin')
                             <span class="layui-btn layui-btn-xs jie-admin" type="del">删除</span>
                             #if(post.top == 0)
@@ -58,12 +58,18 @@
                         </a>
                         <span class="createtime">#date(post.createTime, "yyyy-MM-dd HH:mm:ss")</span>
                     </div>
-                    <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
+                    <div class="detail-hits" id="LAY_jieAdmin" data-id="#(post.id)">
                         <span style="padding-right: 10px; color: #FF7200">悬赏：#(post.reward)飞吻</span>
-                        #if(session.loginUser != null && session.loginUser.id == post.user.id)
-                            <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/post/edit/#(post.id)">编辑此贴</a></span>
+                        #if(session.loginUser != null)
+                            #if(session.loginUser.id == post.user.id)
+                                <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/post/edit/#(post.id)">编辑此贴</a></span>
+                            #end
+                            #if(collection == null)
+                                <span class="layui-btn layui-btn-xs jie-admin " type="collect" data-type="add">收藏</span>
+                            #else
+                                <span class="layui-btn layui-btn-xs jie-admin layui-btn-danger" type="collect" data-type="remove">取消收藏</span>
+                            #end
                         #end
-                        <span class="layui-btn layui-btn-xs jie-admin " type="collect" data-type="add">收藏</span>
                     </div>
                 </div>
                 <div class="detail-body photos">

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eazy.collection.dao.CollectionDao">
+
+    <insert id="addCollection" useGeneratedKeys="true" keyProperty="postCollection.id">
+        insert into collection(postid,userid,collection_time) VALUES(#{postCollection.postId}, #{postCollection.userId}, #{postCollection.collectionTime})
+    </insert>
+
+    <delete id="removeCollection">
+        DELETE FROM collection WHERE postid = #{postCollection.postId} AND userid = #{postCollection.userId}
+    </delete>
+
+    <select id="verifyCollection" resultType="PostCollection">
+        SELECT * FROM collection WHERE userid =  #{postCollection.userId} AND postid = #{postCollection.postId}
+    </select>
+
+    <select id="countMyCollection" resultType="Integer">
+        SELECT COUNT(*) FROM collection c, post p WHERe c.postid = p.id AND p.delete = 0 AND userid = #{uid}
+    </select>
+
+    <select id="myCollection" resultMap="collectionResult">
+        SELECT c.*,p.id pid, p.title FROM collection c,post p WHERE c.postid = p.id AND p.delete = 0 AND userid = #{uid} ORDER BY collection_time DESC LIMIT #{page.startNumber},#{page.pageSize}
+    </select>
+
+    <resultMap id="collectionResult" type="PostCollection">
+        <id column="id" property="id"/>
+        <result column="userid" property="userId"/>
+        <result column="postId" property="postId"/>
+        <result column="collection_time" property="collectionTime"/>
+        <association property="post" javaType="Post">
+            <id column="pid" property="id"/>
+            <result column="title" property="title"/>
+        </association>
+    </resultMap>
+</mapper>
