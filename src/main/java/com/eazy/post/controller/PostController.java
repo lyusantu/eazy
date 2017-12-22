@@ -57,6 +57,9 @@ public class PostController {
             request.setAttribute("collection", collection);
         }
         Post post = postService.getPost(id);
+        post.setReaders(post.getReaders() + 1);
+        Post updatePost = new Post(post.getId(), post.getReaders());
+        postService.update(updatePost);
         request.setAttribute("post", post);
         request.setAttribute("tab_order", request.getParameter("order"));
         request.setAttribute("tab_column", post.getColumn().getSuffix());

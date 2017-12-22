@@ -38,6 +38,10 @@ public class User {
 
     }
 
+    public User(Integer id) {
+        this.id = id;
+    }
+
     public User(Integer id, String avatar) {
         this.id = id;
         this.avatar = avatar;

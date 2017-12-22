@@ -144,19 +144,6 @@
         ,sex: '男'
     };
 
-    layui.use(['util', 'laydate', 'layer'], function(){
-        var util = layui.util
-            ,laydate = layui.laydate
-            ,layer = layui.layer
-            ,$ = layui.jquery;
-
-        $('.createtime').each(function () {
-            var date = $(this).html();
-            var str = util.timeAgo(date / 1, laydate.now);
-            $(this).html(str);
-        })
-    });
-
     layui.config({
         version: "3.0.0"
         ,base: '/res/mods/'
@@ -169,5 +156,18 @@
             var othis = $(this), html = othis.html();
             othis.html(fly.content(html));
         });
+    });
+
+    layui.use(['util', 'laydate', 'layer'], function(){
+        var util = layui.util
+            ,laydate = layui.laydate
+            ,layer = layui.layer
+            ,$ = layui.jquery;
+
+        $('.createtime').each(function () {
+            var date = $(this).html();
+            var str = util.timeAgo(date, laydate.now);
+            $(this).html(str);
+        })
     });
 </script>

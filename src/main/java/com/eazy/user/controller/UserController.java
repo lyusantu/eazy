@@ -56,6 +56,17 @@ public class UserController {
     @Autowired
     private MailTaskService mailTaskService;
 
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public String index(@PathVariable("id") int id, HttpServletRequest request) {
+        User user = new User(id);
+        user = userService.getUser(user);
+        Page page = new Page(1, 20);
+        List<Post> postList = postService.listMyPost(user.getId(), page);
+        request.setAttribute("user", user);
+        request.setAttribute("postList", postList);
+        return "user/userhome";
+    }
+
     // 跳转登录
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
     public String signIn(HttpServletRequest request) {

@@ -54,4 +54,10 @@ public interface PostDao {
      * @param id
      */
     void delete(@Param("id") int id);
+
+    /**
+     * 修改
+     * @param post
+     */
+    void update(@Param("post") Post post);
 }
