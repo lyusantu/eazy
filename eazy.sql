@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : local
-Source Server Version : 50717
-Source Host           : localhost:3306
+Source Server         : eazy
+Source Server Version : 50638
+Source Host           : 112.74.54.119:3306
 Source Database       : eazy
 
 Target Server Type    : MYSQL
-Target Server Version : 50717
+Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2017-12-21 15:18:03
+Date: 2017-12-22 15:15:44
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,11 +25,13 @@ CREATE TABLE `collection` (
   `userid` int(11) NOT NULL,
   `collection_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of collection
 -- ----------------------------
+INSERT INTO `collection` VALUES ('28', '17', '1', '2017-12-21 13:54:40');
+INSERT INTO `collection` VALUES ('29', '18', '1', '2017-12-21 14:53:51');
 
 -- ----------------------------
 -- Table structure for `column`
@@ -72,15 +74,15 @@ CREATE TABLE `post` (
   `top` int(11) NOT NULL,
   `wonderful` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of post
 -- ----------------------------
-INSERT INTO `post` VALUES ('1', '我是第一个吃螃蟹的人吗？', '1', 'face[嘻嘻] face[嘻嘻] face[嘻嘻] \n\nimg[https://static.oschina.net/uploads/space/2017/1212/140834_Pxwh_3684378.png] ', '20', '0', '2017-12-14 14:16:16', '1', '0', '0', '0', '1', '0');
-INSERT INTO `post` VALUES ('11', '可以分享我一个VIP吗', '2', 'face[馋嘴] ', '50', '0', '2017-12-11 14:16:13', '2', '1', '0', '0', '0', '1');
-INSERT INTO `post` VALUES ('13', '222', '1', '2', '20', '0', '2017-12-10 15:01:07', '1', '0', '0', '0', '0', '0');
-INSERT INTO `post` VALUES ('14', 'test xixi', '1', 'img[http://www.w3school.com.cn//i/eg_tulip.jpg] ', '20', '0', '2017-12-15 15:01:15', '1', '0', '0', '0', '0', '0');
+INSERT INTO `post` VALUES ('16', 'eazy社区未完成版本说明', '2', '凡提示“请求异常，请重试”的功能，均为未完成功能 face[嘻嘻] \n\nimg[https://static.oschina.net/uploads/space/2017/1220/143949_dmar_2903254.jpg] ', '20', '0', '2017-11-20 16:06:05', '1', '0', '0', '0', '1', '1');
+INSERT INTO `post` VALUES ('17', '占位文章', '3', 'face[思考] face[思考] face[思考] ', '20', '0', '2017-12-20 16:06:44', '1', '0', '0', '0', '0', '0');
+INSERT INTO `post` VALUES ('18', '测试发表帖子', '2', '测试代码\n[pre]\n                            upload.render({\n                                elem: \'#uploadImg\'\n                                , url: \'/api/upload/\'\n                                , size: 200\n                                , done: function (res) {\n                                    if (res.status == 0) {\n                                        image.val(res.url);\n                                    } else {\n                                        layer.msg(res.msg, {icon: 5});\n                                    }\n                                }\n                            });\n[/pre]\n[hr]\n测试上传图片\nimg[http://oih7sazbd.bkt.clouddn.com/Fvb7JPJkVnaPNWUb9m35ZIE56kCd] \n[hr]\n测试表情\nface[微笑] face[嘻嘻] face[哈哈] face[可爱] face[可怜] \n[hr]\n测试超链接\n a(https://github.com/lyusantu)[https://github.com/lyusantu] ', '20', '0', '2017-12-21 10:49:20', '1', '0', '0', '0', '0', '0');
+INSERT INTO `post` VALUES ('19', '啊啊', '1', '啊', '80', '1', '2017-12-21 10:53:28', '1', '0', '0', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for `sign`
@@ -92,13 +94,12 @@ CREATE TABLE `sign` (
   `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `end_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sign
 -- ----------------------------
-INSERT INTO `sign` VALUES ('40', '1', '2017-12-20 14:35:19', '2017-12-20 14:35:19');
-INSERT INTO `sign` VALUES ('41', '2', '2017-12-12 17:29:55', '2017-12-12 17:29:55');
+INSERT INTO `sign` VALUES ('40', '1', '2015-12-20 11:14:20', '2017-12-21 10:34:22');
 
 -- ----------------------------
 -- Table structure for `user`
@@ -119,14 +120,14 @@ CREATE TABLE `user` (
   `auth` varchar(255) DEFAULT NULL,
   `vip` int(11) NOT NULL,
   `type` varchar(255) DEFAULT NULL,
+  `active_code` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', '352050321@qq.com', '超人', '9cbf8a4dcb8e30682b927f352d6559a0', '99849', 'http://oih7sazbd.bkt.clouddn.com/FivibFbr6k8GqJBdZBea56zq0S4X', '0', '', '2017-12-20 14:35:19', '深圳', '0', 'eazy作者', '8', 'admin');
-INSERT INTO `user` VALUES ('2', '52781380@qq.com', '钢铁侠', '9cbf8a4dcb8e30682b927f352d6559a0', '10', '/res/images/avatar/10.jpg', '0', '', '2017-12-15 14:13:09', '深圳', '0', null, '0', 'user');
+INSERT INTO `user` VALUES ('1', '352050321@qq.com', '超人', '9cbf8a4dcb8e30682b927f352d6559a0', '99694', 'http://oih7sazbd.bkt.clouddn.com/FivibFbr6k8GqJBdZBea56zq0S4X', '0', '', '2017-12-21 10:53:27', '深圳在哪里呀', '0', 'eazy作者', '9', 'admin', null);
 
 -- ----------------------------
 -- Table structure for `verify`
@@ -137,11 +138,13 @@ CREATE TABLE `verify` (
   `question` varchar(255) NOT NULL,
   `answer` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of verify
 -- ----------------------------
-INSERT INTO `verify` VALUES ('1', '2 + 3 = ?', '5');
-INSERT INTO `verify` VALUES ('2', '请输入eazy', 'eazy');
-INSERT INTO `verify` VALUES ('3', '中国的首都在哪里？', '北京');
+INSERT INTO `verify` VALUES ('1', '请输入so eazy', 'so eazy');
+INSERT INTO `verify` VALUES ('2', '2 + 2 * 2 = ?', '6');
+INSERT INTO `verify` VALUES ('3', '12月25日是什么节日？', '圣诞节');
+INSERT INTO `verify` VALUES ('4', '中国的首都是哪座城市？', '北京');
+INSERT INTO `verify` VALUES ('5', 'Java和JavaScript有关系吗', '没关系');

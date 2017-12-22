@@ -73,7 +73,7 @@
         <property name="contentType" value="text/html;charset=utf-8"/>
     </bean>
 
-    <context:property-placeholder location="classpath:mail.properties"/>
+    <context:property-placeholder location="classpath:mail.properties" ignore-unresolvable="true"/>
 
     <bean id="mailMessage" class="org.springframework.mail.SimpleMailMessage">
         <property name="from" value ="${mail.from}"></property>
