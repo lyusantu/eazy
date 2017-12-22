@@ -32,6 +32,8 @@ public class User {
 
     private String type;
 
+    private String activeCode;
+
     public User(){
 
     }
@@ -170,5 +172,13 @@ public class User {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getActiveCode() {
+        return activeCode;
+    }
+
+    public void setActiveCode(String activeCode) {
+        this.activeCode = activeCode;
     }
 }

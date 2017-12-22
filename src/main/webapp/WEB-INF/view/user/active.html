@@ -1,0 +1,19 @@
+#@header()
+
+#@column()
+
+<div class="layui-container fly-marginTop">
+    <div class="fly-panel">
+        <div class="fly-none">
+            #if(err == 0)
+            <h2><i class="layui-icon" style="font-size:300px;">&#xe6af;</i> </h2>
+            #else
+            <h2><i class="layui-icon" style="font-size:300px;">&#xe69c;</i> </h2>
+            #end
+            <p>#(msg)</p>
+        </div>
+    </div>
+</div>
+
+#@footer()
+#@js?()

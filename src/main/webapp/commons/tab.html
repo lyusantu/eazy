@@ -11,9 +11,10 @@
             <li #if(tab_column == "news") class="layui-hide-xs layui-this" #end><a href="/column/news/all?order=#(tab_order)">动态</a></li>
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
 
-            <!-- 用户登入后显示 -->
+            #if(session.loginUser != null)
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/post">我发表的贴</a></li>
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="user/post/#collection">我收藏的贴</a></li>
+            #end
         </ul>
 
         <div class="fly-column-right layui-hide-xs">

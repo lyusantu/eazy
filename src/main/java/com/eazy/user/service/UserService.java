@@ -14,4 +14,9 @@ public interface UserService {
 
     void update(User user);
 
+    User activeAccount(String code);
+
+    User verifyEmail(String email);
+
+    void updateActiveCode(User user);
 }

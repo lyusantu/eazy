@@ -1,5 +1,6 @@
 package com.eazy.user.controller;
 
+import com.eazy.api.service.MailTaskService;
 import com.eazy.collection.entity.PostCollection;
 import com.eazy.collection.service.CollectionService;
 import com.eazy.commons.Constants;
@@ -24,10 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +52,9 @@ public class UserController {
 
     @Autowired
     private CollectionService collectionService;
+
+    @Autowired
+    private MailTaskService mailTaskService;
 
     // 跳转登录
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
@@ -105,7 +106,9 @@ public class UserController {
                 LOG.warn(email + "登录失败,用户名或密码输入错误");
                 return new AjaxResult(1, "用户名或密码错误");
             } else {
-                if (user.getStatus() == 0 || user.getStatus() == 1) {
+                if (user.getStatus() == 0)
+                    return new AjaxResult(1, "该账户未激活");
+                else if (user.getStatus() == 1) {
                     // baseService.addLoginRecord(user.getId(), Constants.getIpAddress(request)); // 记录本次登录信息
                     request.getSession().setAttribute(Constants.LOGIN_USER, user);
                     LOG.info(email + "登录成功");
@@ -142,11 +145,14 @@ public class UserController {
                     user.setPassword(SecureUtil.md5(user.getPassword()));
                     user.setRegTime(new Timestamp(System.currentTimeMillis()));
                     user.setAvatar("/res/images/avatar/" + new Random().nextInt(12) + ".jpg");
+                    user.setActiveCode(request.getSession().getId() + System.currentTimeMillis());
                     user.setId(userService.reg(user));
                     LOG.info(Base64.decode(user.getEmail()) + "注册成功");
-                    // 为用户设置默认角色
-                    request.getSession().setAttribute(Constants.LOGIN_USER, user);
-                    return new AjaxResult(0, null, "/");
+                    LOG.info("----------激活邮件发送START----------");
+                    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+                    mailTaskService.sendSimpleMail("eazy社区账户激活邮件", "请点击链接激活您的账户：" + basePath + "user/activeAccount/" + user.getActiveCode(), user.getEmail());
+                    LOG.info("----------激活邮件发送END----------");
+                    return new AjaxResult(0, "激活邮件已发送至您的邮箱,请激活后登录 :)", "/user/signin");
                 }
             }
         }
@@ -205,6 +211,27 @@ public class UserController {
                     return new AjaxResult(1, "两次输入的密码不一致");
             }
         }
+    }
+
+    // 激活账户
+    @RequestMapping(value = "/activeAccount/{code}", method = RequestMethod.GET)
+    public String activeAccount(HttpServletRequest request, @PathVariable("code") String code) {
+        User user = userService.activeAccount(code);
+        int err = 1;
+        String msg = "激活失败！ 激活码不存在";
+        if (ObjectUtil.isNotNull(user))
+            if (user.getStatus() == 0) {
+                err = 0;
+                User activeUser = new User();
+                activeUser.setId(user.getId());
+                activeUser.setActiveCode(user.getActiveCode());
+                userService.update(activeUser);
+                msg = "激活成功！ <a href=\"/user/signin\">马上登录</a>";
+            } else
+                msg = "激活失败！激活码已失效";
+        request.setAttribute("err", err);
+        request.setAttribute("msg", msg);
+        return "user/active";
     }
 
     // 上传头像
@@ -295,5 +322,87 @@ public class UserController {
         }
         json.put("data", array);
         return json;
+    }
+
+    // 跳转找回密码
+    @RequestMapping(value = "/forget", method = RequestMethod.GET)
+    public String forget(HttpServletRequest request) {
+        Verify verify = verifyService.randVerify();
+        request.setAttribute("verify", verify);
+        request.setAttribute("way", "forget");
+        return "user/forget";
+    }
+
+    // 找回密码
+    @RequestMapping(value = "/ajaxForget", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody
+    AjaxResult ajaxForget(HttpServletRequest request, User user) {
+        Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
+        verify = verifyService.getVerify(verify);
+        if (ObjectUtil.isNull(verify))
+            return new AjaxResult(1, "人类验证失败");
+        else {
+            String email = request.getParameter("");
+            user = userService.verifyEmail(user.getEmail());
+            if (ObjectUtil.isNull(user))
+                return new AjaxResult(1, "该邮箱不存在");
+            else {
+                if (user.getStatus() == 0)
+                    return new AjaxResult(1, "该邮箱未激活");
+                else if (user.getStatus() == 2)
+                    return new AjaxResult(1, "该邮箱已被封禁");
+                else if (user.getStatus() == 1) {
+                    User updateUser = new User();
+                    updateUser.setId(user.getId());
+                    updateUser.setActiveCode(request.getSession().getId() + System.currentTimeMillis());
+                    userService.updateActiveCode(updateUser);
+                    LOG.info("----------激活邮件发送START----------");
+                    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+                    mailTaskService.sendSimpleMail("eazy社区密码修改邮件", "请点击链接修改您的密码：" + basePath + "user/updatePwd/" + updateUser.getActiveCode(), user.getEmail());
+                    LOG.info("----------激活邮件发送END----------");
+                    return new AjaxResult(0, "修改地址已发送至您的邮箱! 请及时修改");
+                } else
+                    return new AjaxResult(1, "未知状态");
+            }
+        }
+    }
+
+    // 跳转修改密码
+    @RequestMapping(value = "/updatePwd/{code}", method = RequestMethod.GET)
+    public String forget(HttpServletRequest request, @PathVariable("code") String code) {
+        Verify verify = verifyService.randVerify();
+        request.setAttribute("verify", verify);
+        request.setAttribute("way", "set");
+        User user = userService.activeAccount(code);
+        request.setAttribute("status", ObjectUtil.isNull(user));
+        request.setAttribute("user", user);
+        return "user/forget";
+    }
+
+    // 修改密码
+    @RequestMapping(value = "/ajaxUpdatePwd", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody
+    AjaxResult ajaxUpdatePwd(HttpServletRequest request, User user) {
+        Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
+        verify = verifyService.getVerify(verify);
+        if (ObjectUtil.isNull(verify))
+            return new AjaxResult(1, "人类验证失败");
+        else {
+            String repass = request.getParameter("repass");
+            if (!user.getPassword().equals(repass))
+                return new AjaxResult(1, "两次输入的密码不一致");
+            User loginUser = userService.activeAccount(user.getActiveCode());
+            if (ObjectUtil.isNull(loginUser))
+                return new AjaxResult(1, "激活码已失效");
+            user.setPassword(SecureUtil.md5(user.getPassword()));
+            if (loginUser.getPassword().equals(user.getPassword()))
+                return new AjaxResult(1, "新的密码不能与当前密码相同");
+            user.setId(loginUser.getId());
+            user.setActiveCode(null);
+            userService.update(user);
+            user.setActiveCode(request.getSession().getId() + System.currentTimeMillis());
+            userService.updateActiveCode(user);
+            return new AjaxResult(0, "密码修改成功", "/user/signin");
+        }
     }
 }

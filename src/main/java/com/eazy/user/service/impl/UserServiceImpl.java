@@ -41,4 +41,19 @@ public class UserServiceImpl implements UserService {
         userDao.update(user);
     }
 
+    @Override
+    public User activeAccount(String code) {
+        return userDao.activeAccount(code);
+    }
+
+    @Override
+    public User verifyEmail(String email) {
+        return userDao.verifyEmail(email);
+    }
+
+    @Override
+    public void updateActiveCode(User user) {
+        userDao.updateActiveCode(user);
+    }
+
 }

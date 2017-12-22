@@ -583,7 +583,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
             var end = function () {
                 if (res.action) {
                     if (res.msg) {
-                        layer.msg(res.msg, {icon: 6, time: 1000}, function () {
+                        layer.msg(res.msg, {icon: 6, time: 2000}, function () {
                             location.href = res.action;
                         });
                     } else {

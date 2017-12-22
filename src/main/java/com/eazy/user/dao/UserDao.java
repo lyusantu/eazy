@@ -15,4 +15,10 @@ public interface UserDao {
 
     void update(@Param("user") User user);
 
+    User activeAccount(@Param("code") String code);
+
+    User verifyEmail(@Param("email") String email);
+
+    void updateActiveCode(@Param("user") User user);
+
 }

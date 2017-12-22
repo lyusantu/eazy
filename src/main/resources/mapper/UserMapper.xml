@@ -30,8 +30,20 @@
     </select>
 
     <insert id="reg" parameterType="User" useGeneratedKeys="true" keyProperty="user.id">
-       INSERT INTO user(email,nickname,password,avatar,balance,reg_time,status,vip,type) VALUES(#{user.email},#{user.nickName},#{user.password},#{user.avatar},#{user.balance},#{user.regTime},#{user.status},#{user.vip},#{user.type})
+       INSERT INTO user(email,nickname,password,avatar,balance,reg_time,status,vip,type,gender,active_code) VALUES(#{user.email},#{user.nickName},#{user.password},#{user.avatar},#{user.balance},#{user.regTime},#{user.status},#{user.vip},#{user.type},#{user.gender},#{user.activeCode})
     </insert>
+
+    <select id="activeAccount" resultType="User">
+        SELECT * FROM user WHERE active_code = #{code}
+    </select>
+
+    <select id="verifyEmail" resultType="User">
+        SELECT * FROM user WHERE email = #{email}
+    </select>
+
+    <update id="updateActiveCode">
+        UPDATE user SET active_code = #{user.activeCode} WHERE id = #{user.id}
+    </update>
 
     <update id="update" parameterType="User">
         UPDATE user SET
@@ -61,6 +73,9 @@
         </if>
         <if test="user.balance != null">
             balance = #{user.balance}
+        </if>
+        <if test="user.activeCode != null">
+            status = 1
         </if>
         WHERE id = #{user.id}
     </update>
