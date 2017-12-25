@@ -15,7 +15,7 @@ public interface PostDao {
      *
      * @return
      */
-    List<Post> list(@Param("page") Page page, @Param("column") String column, @Param("type") String type, @Param("order") String order);
+    List<Post> list(@Param("page") Page page, @Param("column") String column, @Param("type") String type);
 
     /**
      * 统计数量
@@ -60,4 +60,12 @@ public interface PostDao {
      * @param post
      */
     void update(@Param("post") Post post);
+
+    /**
+     * 置顶加精
+     * @param id
+     * @param rank
+     * @param field
+     */
+    void set(@Param("id") String id, @Param("rank") String rank, @Param("field") String field);
 }

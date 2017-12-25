@@ -2,6 +2,7 @@
 
 #@column()
 
+<input type="hidden" id="pid" name="pid" value="#(post.id)" />
 <div class="layui-container">
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md8 content detail">
@@ -61,7 +62,7 @@
                     <div class="detail-hits" id="LAY_jieAdmin" data-id="#(post.id)">
                         <span style="padding-right: 10px; color: #FF7200">悬赏：#(post.reward)飞吻</span>
                         #if(session.loginUser != null)
-                            #if(session.loginUser.id == post.user.id)
+                            #if(session.loginUser.id == post.user.id && post.status == 0)
                                 <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/post/edit/#(post.id)">编辑此贴</a></span>
                             #end
                             #if(collection == null)
@@ -81,13 +82,86 @@
                 <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
                     <legend>回帖</legend>
                 </fieldset>
-
                 <ul class="jieda" id="jieda">
+                #if(list == null || list.size() == 0)
                     <li class="fly-none">消灭零回复</li>
+                #else
+                    #for(r : list)
+                        <li data-id="#(r.id)" class="jieda-daan">
+                            <a name="item-#(r.id)"></a>
+                            <div class="detail-about detail-about-reply">
+                                <a class="fly-avatar" href="/user/#(r.user.id)">
+                                    <img src="#(r.user.avatar)" alt="#(r.user.nickName)">
+                                </a>
+                                <div class="fly-detail-user">
+                                    <a href="" class="fly-link">
+                                        <cite>#(r.user.nickName)</cite>
+                                        #if(r.user.auth != null && r.user.auth != '')
+                                        <i class="iconfont icon-renzheng" title="认证信息：#(r.user.auth)"></i>
+                                        #end
+                                        #if(r.user.vip != 0)
+                                        <i class="layui-badge fly-badge-vip">VIP3</i>
+                                        #end
+                                    </a>
+                                    #if(r.user.id == post.user.id)
+                                    <span>(楼主)</span>
+                                    #end
+                                    <!--
+                                    <span style="color:#5FB878">(管理员)</span>
+                                    <span style="color:#FF9E3F">（社区之光）</span>
+                                    <span style="color:#999">（该号已被封）</span>
+                                    -->
+                                </div>
+
+                                <div class="detail-hits">
+                                    <span class="createtime">#(r.time)</span>
+                                </div>
+                                #if(r.accept == 1)
+                                <i class="iconfont icon-caina" title="最佳答案"></i>
+                                #end
+                            </div>
+                            <div class="detail-body jieda-body photos">
+                                #(r.content)
+                            </div>
+                            <div class="jieda-reply">
+
+                       <span class="jieda-zan" type="zan">
+                        <i class="iconfont icon-zan"></i>
+                        <em>0</em>
+                      </span>
+                        <span type="reply">
+                        <i class="iconfont icon-svgmoban53"></i>
+                        回复
+                      </span>
+                                <div class="jieda-admin">
+                                    #if(session.loginUser != null)
+                                    <!--
+                                        #if(session.loginUser.id == post.user.id)
+                                            <span type="edit">编辑</span>
+                                        #end
+                                    -->
+                                        #if(session.loginUser.type == 'admin')
+                                        <span type="del">删除</span>
+                                        #end
+                                        #if(session.loginUser.id == post.user.id && r.user.id != post.user.id && post.status == 0)
+                                        <span class="jieda-accept" type="accept">采纳</span>
+                                        #end
+                                    #end
+                                </div>
+                            </div>
+                        </li>
+                    #end
+                #end
                 </ul>
 
+                #if(page.totalPage > 1)
+                <div style="text-align: center;">
+                    <div id="page"></div>
+                </div>
+                #end
+
                 <div class="layui-form layui-form-pane">
-                    <form action="/jie/reply/" method="post">
+                    <form action="/post/reply" method="post">
                         <div class="layui-form-item layui-form-text">
                             <a name="comment"></a>
                             <div class="layui-input-block">
@@ -95,7 +169,8 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <input type="hidden" name="jid" value="123">
+                            <input type="hidden" name="pid" value="#(post.id)">
+                            <input type="hidden" name="action" value="/post/reply" />
                             <button class="layui-btn" lay-filter="*" lay-submit>提交回复</button>
                         </div>
                     </form>
@@ -110,10 +185,10 @@
 
             <div class="fly-panel">
                 <div class="fly-panel-title">
-                    广告
+                    赞助商
                 </div>
                 <div class="fly-panel-main">
-                    <a href="" target="_blank" class="fly-zanzhu" style="background-color: #393D49;">虚席以待</a>
+                    <a href="javascript:;" target="_blank" class="fly-zanzhu" style="background-color: #393D49;">虚席以待</a>
                 </div>
             </div>
 
@@ -127,7 +202,6 @@
 <script>
     layui.cache.page = 'jie';
 
-    /*
    layui.cache.user = {
        username: '#(session.loginUser != null ? session.loginUser.nickName : 0)'
        ,uid: '#(session.loginUser != null ? session.loginUser.id : -1)'
@@ -135,14 +209,6 @@
        ,experience: '#(session.loginUser != null ? session.loginUser.balance : 0)'
        ,sex: '#(session.loginUser != null ? session.loginUser.gender == 0 ? "男" : "女" : 0)'
    };
-   */
-    layui.cache.user = {
-        username: '游客'
-        ,uid: -1
-        ,avatar: '/res/images/avatar/00.jpg'
-        ,experience: 83
-        ,sex: '男'
-    };
 
     layui.config({
         version: "3.0.0"
@@ -158,16 +224,31 @@
         });
     });
 
-    layui.use(['util', 'laydate', 'layer'], function(){
+    layui.use(['util', 'laydate', 'layer', 'laypage'], function(){
         var util = layui.util
             ,laydate = layui.laydate
             ,layer = layui.layer
-            ,$ = layui.jquery;
+            ,$ = layui.jquery
+            ,laypage = layui.laypage;
 
         $('.createtime').each(function () {
             var date = $(this).html();
             var str = util.timeAgo(date, laydate.now);
             $(this).html(str);
         })
+
+        laypage.render({
+            elem: 'page'
+            ,count: '#(page.totalCount)'
+            , curr: '#(page.pageNumber)'
+            , limit: '#(page.pageSize)'
+            , jump: function (obj, first) {
+                if (!first) {
+                    var url = '/post/#(post.id)?p=' + obj.curr;
+                    location.href = url;
+                }
+            }
+        });
     });
+
 </script>

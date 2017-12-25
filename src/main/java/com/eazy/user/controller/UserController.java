@@ -10,6 +10,7 @@ import com.eazy.commons.auth.AuthPassport;
 import com.eazy.commons.dto.AjaxResult;
 import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
+import com.eazy.post.service.ReplyService;
 import com.eazy.user.entity.User;
 import com.eazy.user.service.UserService;
 import com.eazy.verify.entity.Verify;
@@ -56,11 +57,14 @@ public class UserController {
     @Autowired
     private MailTaskService mailTaskService;
 
+    @Autowired
+    private ReplyService replyService;
+
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public String index(@PathVariable("id") int id, HttpServletRequest request) {
         User user = new User(id);
         user = userService.getUser(user);
-        Page page = new Page(1, 20);
+        Page page = new Page(0, 20);
         List<Post> postList = postService.listMyPost(user.getId(), page);
         request.setAttribute("user", user);
         request.setAttribute("postList", postList);
@@ -97,6 +101,10 @@ public class UserController {
     @AuthPassport
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String home(HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        Page page = new Page(0, 20);
+        List<Post> postList = postService.listMyPost(user.getId(), page);
+        request.setAttribute("postList", postList);
         request.setAttribute(Constants.TITLE, "用户主页");
         return "user/home";
     }

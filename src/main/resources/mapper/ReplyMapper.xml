@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eazy.post.dao.ReplyDao">
+
+    <insert id="addReply" useGeneratedKeys="true" keyProperty="reply.id">
+        INSERT INTO reply(pid, uid, time, content, accept)
+        VALUES(#{reply.pid}, #{reply.uid}, #{reply.time}, #{reply.content}, #{reply.accept})
+    </insert>
+
+   <select id="listReply" resultMap="replyResult">
+        SELECT r.*, u.id uid,u.nickName,u.avatar,u.vip,u.auth FROM reply r, user u
+        WHERE r.uid = u.id AND r.pid = #{reply.pid} ORDER BY r.accept DESC, r.id DESC LIMIT #{page.startNumber},#{page.pageSize}
+    </select>
+
+    <select id="countListReply" resultType="Integer">
+        SELECT count(r.id) FROM reply r WHERE r.pid = #{reply.pid}
+    </select>
+
+    <update id="update">
+        UPDATE reply
+        SET accept = 1 WHERE id = #{id}
+    </update>
+
+    <select id="getReply" resultType="Reply">
+        SELECT * FROM reply WHERE id = #{reply.id}
+    </select>
+
+    <delete id="delReply">
+        DELETE FROM reply WHERE id = #{reply.id}
+    </delete>
+
+    <resultMap id="replyResult" type="Reply">
+        <id column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="uid" property="uid"/>
+        <result column="content" property="content"/>
+        <result column="time" property="time"/>
+        <result column="accept" property="accept"/>
+        <association property="user" javaType="User">
+            <id column="uid" property="id"/>
+            <result column="nickName" property="nickName"/>
+            <result column="avatar" property="avatar"/>
+            <result column="auth" property="auth"/>
+            <result column="vip" property="vip"/>
+        </association>
+    </resultMap>
+</mapper>

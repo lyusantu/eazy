@@ -21,8 +21,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> list(Page page, String column, String type, String order) {
-        return postDao.list(page, column, type, order);
+    public List<Post> list(Page page, String column, String type) {
+        return postDao.list(page, column, type);
     }
 
     @Override
@@ -53,5 +53,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public void update(Post post) {
         postDao.update(post);
+    }
+
+    @Override
+    public void set(String id, String rank, String field) {
+        postDao.set(id, rank, field);
     }
 }

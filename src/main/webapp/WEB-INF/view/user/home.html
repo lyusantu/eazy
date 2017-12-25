@@ -40,20 +40,20 @@
             <div class="fly-panel">
                 <h3 class="fly-panel-title">#(session.loginUser.nickName) 最近的提问</h3>
                 <ul class="jie-row">
-                    <!--
-                    <li>
-                        <span class="fly-jing">精</span>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>刚刚</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    <li>
-                        <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                        <i>1天前</i>
-                        <em class="layui-hide-xs">1136阅/27答</em>
-                    </li>
-                    -->
+                    #if(postList == null || postList.size() == 0)
                     <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div>
+                    #else
+                        #for(p : postList)
+                            <li>
+                                #if(p.wonderful == 1)
+                                    <span class="fly-jing">精</span>
+                                #end
+                                <a href="" class="jie-title"> #(p.title)</a>
+                                <i class="createtime">#(p.createTime)</i>
+                                <em class="layui-hide-xs">#(p.readers)阅/#(p.comments)答</em>
+                            </li>
+                        #end
+                    #end
                 </ul>
             </div>
         </div>

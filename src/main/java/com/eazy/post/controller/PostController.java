@@ -5,14 +5,18 @@ import com.eazy.collection.service.CollectionService;
 import com.eazy.column.entity.Column;
 import com.eazy.column.service.ColumnService;
 import com.eazy.commons.Constants;
+import com.eazy.commons.Page;
 import com.eazy.commons.auth.AuthPassport;
 import com.eazy.commons.dto.AjaxResult;
 import com.eazy.post.entity.Post;
+import com.eazy.post.entity.Reply;
 import com.eazy.post.service.PostService;
+import com.eazy.post.service.ReplyService;
 import com.eazy.user.entity.User;
 import com.eazy.user.service.UserService;
 import com.eazy.verify.entity.Verify;
 import com.eazy.verify.service.VerifyService;
+import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +50,9 @@ public class PostController {
     private VerifyService verifyService;
 
     @Autowired
+    private ReplyService replyService;
+
+    @Autowired
     private CollectionService collectionService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -57,13 +64,24 @@ public class PostController {
             request.setAttribute("collection", collection);
         }
         Post post = postService.getPost(id);
-        post.setReaders(post.getReaders() + 1);
-        Post updatePost = new Post(post.getId(), post.getReaders());
-        postService.update(updatePost);
-        request.setAttribute("post", post);
-        request.setAttribute("tab_order", request.getParameter("order"));
+        if (post.getDelete() == 0) {
+            post.setReaders(post.getReaders() + 1);
+            Post updatePost = new Post(post.getId(), post.getReaders());
+            postService.update(updatePost);
+            request.setAttribute("post", post);
+            // 加载评论
+            Reply reply = new Reply(id);
+            String p = request.getParameter("p");
+            Page page = new Page(((p == null ? 1 : Integer.parseInt(p)) - 1) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
+            page.setPageNumber(p == null ? 1 : Integer.parseInt((p)));
+            page.setTotalCount(replyService.countListReply(reply));
+            List<Reply> replyList = replyService.listReply(reply, page);
+            request.setAttribute("list", replyList);
+            request.setAttribute("page", page);
+        }
         request.setAttribute("tab_column", post.getColumn().getSuffix());
-        return "post/index";
+        request.setAttribute("msg", "该帖已被删除");
+        return post.getDelete() == 0 ? "post/index" : "err/err";
     }
 
     @RequestMapping(value = "/ajaxAdd", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
@@ -79,8 +97,9 @@ public class PostController {
     @AuthPassport
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String add(HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         Column column = new Column();
-        column.setRole(1);
+        column.setRole(user.getType());
         List<Column> listColumn = (List<Column>) request.getSession().getAttribute("listColumn");
         if (ObjectUtil.isNull(listColumn) || listColumn.size() == 0) {
             LOG.info("从数据中查询column");
@@ -148,4 +167,142 @@ public class PostController {
             return new AjaxResult(0);
         }
     }
+
+    // 评论
+    @RequestMapping(value = "/reply", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody
+    JSONObject reply(HttpServletRequest request, Reply reply) {
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        if (ObjectUtil.isNull(user))
+            return new JSONObject().put("status", 1).put("msg", "未登录");
+        else {
+            reply.setUid(user.getId());
+            reply.setAccept(0);
+            reply.setTime(new Timestamp(System.currentTimeMillis()));
+            replyService.addReply(reply);
+            Post post = new Post(reply.getPid());
+            post = postService.getPost(post.getId());
+            Post updatePost = new Post(post.getId());
+            updatePost.setComments(post.getComments() + 1);
+            postService.update(updatePost);
+            return new JSONObject().put("status", 0).put("msg", "回答成功").put("action", false);
+        }
+    }
+
+    // 设置置顶加精
+    @AuthPassport
+    @RequestMapping(value = "/set", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody
+    AjaxResult set(HttpServletRequest request) {
+        String id = request.getParameter("id");
+        String rank = request.getParameter("rank");
+        String field = request.getParameter("field");
+        postService.set(id, rank, field);
+        return new AjaxResult(0);
+    }
+
+    // 采纳
+    @AuthPassport
+    @RequestMapping(value = "/accept", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody
+    AjaxResult accept(HttpServletRequest request) {
+        String id = request.getParameter("id");
+        replyService.update(id);
+        Post post = new Post(Integer.parseInt(request.getParameter("pid")));
+        post.setStatus(1);
+        postService.update(post);
+        Reply reply = new Reply();
+        reply.setId(Integer.parseInt(id));
+        reply = replyService.getReply(reply);
+        post = postService.getPost(reply.getPid());
+        User user = new User(reply.getUid());
+        User updateUser = userService.getUser(user);
+        user.setBalance(updateUser.getBalance() + post.getReward());
+        userService.update(user);
+        updateUser.setBalance(user.getBalance());
+        return new AjaxResult(0);
+    }
+
+    // 删除评论
+    @AuthPassport
+    @RequestMapping(value = "/delReply", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    public @ResponseBody
+    AjaxResult delReply(HttpServletRequest request) {
+        String id = request.getParameter("id");
+        Reply reply = new Reply();
+        reply.setId(Integer.parseInt(id));
+        reply = replyService.getReply(reply);
+        if (reply.getAccept() == 1) {
+            // 改为未采纳,从用户账户内扣除飞吻
+            Post post = new Post(reply.getPid());
+            post.setStatus(0);
+            postService.update(post);
+            post = postService.getPost(post.getId());
+            User user = new User(reply.getUid());
+            User updateUser = userService.getUser(user);
+            user.setBalance(updateUser.getBalance() - post.getReward());
+            userService.update(user);
+        }
+        Post post = postService.getPost(reply.getPid());
+        Post updatePost = new Post(post.getId());
+        updatePost.setComments(post.getComments() - 1);
+        postService.update(updatePost);
+        replyService.delReply(reply);
+        return new AjaxResult(0);
+    }
+
+    @AuthPassport
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+    public String edit(HttpServletRequest request, @PathVariable("id") int id) {
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        Post post = postService.getPost(id);
+        if (post == null) {
+            request.setAttribute("msg", "帖子不存在");
+            return "err/err";
+        } else {
+            if (post.getDelete() == 1)
+                request.setAttribute("msg", "该帖已被删除");
+            else {
+                if (post.getAuthor() != user.getId()) {
+                    request.setAttribute("msg", "不是自己的帖子不能随便更改噢");
+                    return "err/err";
+                } else {
+                    Column column = new Column();
+                    column.setRole(user.getType());
+                    List<Column> listColumn = (List<Column>) request.getSession().getAttribute("listColumn");
+                    if (ObjectUtil.isNull(listColumn) || listColumn.size() == 0) {
+                        LOG.info("从数据中查询column");
+                        listColumn = columnService.listColumn(column);
+                        request.getSession().setAttribute("listColumn", listColumn);
+                    } else
+                        LOG.info("从缓存中加载column");
+                    Verify verify = verifyService.randVerify();
+                    request.setAttribute("verify", verify);
+                    request.setAttribute("post", post);
+                }
+            }
+            return post.getDelete() == 0 ? "post/edit" : "err/err";
+        }
+    }
+
+    @RequestMapping(value = "/updatePost", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public AjaxResult updatePost(HttpServletRequest request, Post post) {
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        if (ObjectUtil.isNull(user))
+            return new AjaxResult(1, "未登入");
+        else if (user.getBalance() < post.getReward())
+            return new AjaxResult(1, "飞吻不足");
+        else {
+            Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
+            verify = verifyService.getVerify(verify);
+            if (ObjectUtil.isNull(verify))
+                return new AjaxResult(1, "人类验证失败");
+            else {
+                postService.update(post);
+                return new AjaxResult(0, null, "/post/" + post.getId()); // 此处应该跳转到用户发表的对应目录的首页
+            }
+        }
+    }
+
 }

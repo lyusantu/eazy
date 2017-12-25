@@ -7,19 +7,14 @@
         <div class="layui-col-md8">
             <div class="fly-panel" style="margin-bottom: 0;">
                 <div class="fly-panel-title fly-filter">
-                    <a href="/column/#(tab_column)/all?order=#(tab_order)" #if(tab_filter== "all") class="layui-this" #end>综合</a>
+                    <a href="/column/#(tab_column)/all" #if(tab_filter== "all") class="layui-this" #end>综合</a>
                     <span class="fly-mid"></span>
-                    <a href="/column/#(tab_column)/unsolved?order=#(tab_order)" #if(tab_filter== "unsolved") class="layui-this" #end>未结</a>
+                    <a href="/column/#(tab_column)/unsolved" #if(tab_filter== "unsolved") class="layui-this" #end>未结</a>
                     <span class="fly-mid"></span>
-                    <a href="/column/#(tab_column)/solved?order=#(tab_order)" #if(tab_filter== "solved") class="layui-this" #end>已结</a>
+                    <a href="/column/#(tab_column)/solved" #if(tab_filter== "solved") class="layui-this" #end>已结</a>
                     <span class="fly-mid"></span>
-                    <a href="/column/#(tab_column)/wonderful?order=#(tab_order)" #if(tab_filter== "wonderful") class="layui-this"
+                    <a href="/column/#(tab_column)/wonderful" #if(tab_filter== "wonderful") class="layui-this"
                     #end>精华</a>
-                    <span class="fly-filter-right layui-hide-xs">
-            <a href="/column/#(tab_column)/#(tab_filter)?order=new" #if(tab_order == 'new') class="layui-this" #end>按最新</a>
-            <span class="fly-mid"></span>
-            <a href="/column/#(tab_column)/#(tab_filter)?order=hot" #if(tab_order == "hot") class="layui-this" #end>按热议</a>
-          </span>
                 </div>
                 #if(postList == null || postList.size() == 0)
                 <div class="fly-none">没有相关数据</div>
@@ -32,7 +27,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">#(p.column.name)</a>
-                            <a href="/post/#(p.id)?order=#(tab_order)">#(p.title)</a>
+                            <a href="/post/#(p.id)">#(p.title)</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/#(p.user.id)" link>
@@ -83,7 +78,7 @@
                 #else
                 #for(p : weekHot)
                 <dd>
-                    <a href="/post/#(p.id)?order=#(tab_order)">#(p.title)</a>
+                    <a href="/post/#(p.id)">#(p.title)</a>
                     <span><i class="iconfont icon-pinglun1"></i> #(p.comments)</span>
                 </dd>
                 #end
@@ -94,7 +89,7 @@
                 <div class="fly-panel-title">
                     赞助商
                     <span class="fly-mid"></span>
-                    <a href="/post/1" class="fly-link fly-joinad">我要加入</a>
+                    <a href="javascript:;" class="fly-link fly-joinad">我要加入</a>
                 </div>
                 <div class="fly-panel-main">
                     <a href="" target="_blank" class="fly-zanzhu" style="background-color: #393D49;">虚席以待</a>
@@ -139,8 +134,6 @@
             , jump: function (obj, first) {
                 if (!first) {
                     var url = '/column/#(column)/#(type)?p=' + obj.curr;
-                    if ('#(tab_order)' != null)
-                        url += '&order=#(tab_order)';
                     location.href = url;
                 }
             },

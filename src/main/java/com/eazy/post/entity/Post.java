@@ -41,6 +41,10 @@ public class Post {
 
     }
 
+    public Post(Integer id) {
+        this.id = id;
+    }
+
     public Post(Integer id, Integer readers) {
         this.id = id;
         this.readers = readers;

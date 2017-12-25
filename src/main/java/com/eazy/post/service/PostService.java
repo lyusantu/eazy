@@ -9,7 +9,7 @@ public interface PostService {
 
     int addPost(Post post);
 
-    List<Post> list(Page page, String column, String type, String order);
+    List<Post> list(Page page, String column, String type);
 
     int count(String column, String type);
 
@@ -22,4 +22,6 @@ public interface PostService {
     void delete(int id);
 
     void update(Post post);
+
+    void set(String id, String rank, String field);
 }

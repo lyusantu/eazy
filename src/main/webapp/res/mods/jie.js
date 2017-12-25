@@ -38,14 +38,14 @@ layui.define('fly', function(exports){
   });
 
   //提交回答
-  fly.form['/jie/reply/'] = function(data, required){
+  fly.form['/post/reply'] = function(data, required){
     var tpl = '<li>\
       <div class="detail-about detail-about-reply">\
-        <a class="fly-avatar" href="/u/{{ layui.cache.user.uid }}" target="_blank">\
+        <a class="fly-avatar" href="/user/{{ layui.cache.user.uid }}" target="_blank">\
           <img src="{{= d.user.avatar}}" alt="{{= d.user.username}}">\
         </a>\
         <div class="fly-detail-user">\
-          <a href="/u/{{ layui.cache.user.uid }}" target="_blank" class="fly-link">\
+          <a href="/user/{{ layui.cache.user.uid }}" target="_blank" class="fly-link">\
             <cite>{{d.user.username}}</cite>\
           </a>\
         </div>\
@@ -91,7 +91,7 @@ layui.define('fly', function(exports){
     //设置置顶、状态
     ,set: function(div){
       var othis = $(this);
-      fly.json('/api/jie-set/', {
+      fly.json('/post/set', {
         id: div.data('id')
         ,rank: othis.attr('rank')
         ,field: othis.attr('field')
@@ -122,6 +122,7 @@ layui.define('fly', function(exports){
     gather.jieAdmin[type] && gather.jieAdmin[type].call(this, othis.parent());
   });
 
+  /*
   //异步渲染
   var asyncRender = function(){
     var div = $('.fly-admin-box'), jieAdmin = $('#LAY_jieAdmin');
@@ -134,6 +135,7 @@ layui.define('fly', function(exports){
       });
     }
   }();
+  */
 
   //解答操作
   gather.jiedaActive = {
@@ -163,8 +165,9 @@ layui.define('fly', function(exports){
       var othis = $(this);
       layer.confirm('是否采纳该回答为最佳答案？', function(index){
         layer.close(index);
-        fly.json('/api/jieda-accept/', {
-          id: li.data('id')
+        fly.json('/post/accept', {
+          id: li.data('id'),
+            pid: $('#pid').val()
         }, function(res){
           if(res.status === 0){
             $('.jieda-accept').remove();
@@ -206,7 +209,7 @@ layui.define('fly', function(exports){
     ,del: function(li){ //删除
       layer.confirm('确认删除该回答么？', function(index){
         layer.close(index);
-        fly.json('/api/jieda-delete/', {
+        fly.json('/post/delReply', {
           id: li.data('id')
         }, function(res){
           if(res.status === 0){

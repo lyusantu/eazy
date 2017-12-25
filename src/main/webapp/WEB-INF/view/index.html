@@ -5,15 +5,13 @@
 <div class="layui-container">
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md8">
+            #if(topList != null && topList.size() > 0)
             <div class="fly-panel">
                 <div class="fly-panel-title fly-filter">
                     <a>置顶</a>
                     <a href="#signin" class="layui-hide-sm layui-show-xs-block fly-right" id="LAY_goSignin"
                        style="color: #FF5722;">去签到</a>
                 </div>
-                #if(topList == null || topList.size() == 0)
-                <div class="fly-none">没有相关数据</div>
-                #else
                 <ul class="fly-list">
                     #for(p : topList)
                     <li>
@@ -22,7 +20,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">#(p.column.name)</a>
-                            <a href="/post/#(p.id)?order=#(tab_order)">#(p.title)</a>
+                            <a href="/post/#(p.id)">#(p.title)</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/#(p.user.id)" link>
@@ -50,23 +48,20 @@
                     </li>
                     #end
                 </ul>
-                #end
             </div>
+            #end
 
             <div class="fly-panel" style="margin-bottom: 0;">
 
                 <div class="fly-panel-title fly-filter">
-                    <a href="/column/all/all?order=#(tab_order)" class="layui-this">综合</a>
+                    <a href="/column/all/all" class="layui-this">综合</a>
                     <span class="fly-mid"></span>
-                    <a href="/column/all/unsolved?order=#(tab_order)">未结</a>
+                    <a href="/column/all/unsolved">未结</a>
                     <span class="fly-mid"></span>
-                    <a href="/column/all/solved?order=#(tab_order)">已结</a>
+                    <a href="/column/all/solved">已结</a>
                     <span class="fly-mid"></span>
-                    <a href="/column/all/wonderful?order=#(tab_order)">精华</a>
+                    <a href="/column/all/wonderful">精华</a>
                     <span class="fly-filter-right layui-hide-xs">
-            <a href="/column/all/all?order=new" #if(tab_order== 'new') class="layui-this" #end>按最新</a>
-                        <span class="fly-mid"></span>
-            <a href="/column/all/all?order=hot" #if(tab_order== 'hot') class="layui-this" #end>按热议</a>
           </span>
                 </div>
                 #if(otherList == null || otherList.size() == 0)
@@ -80,7 +75,7 @@
                         </a>
                         <h2>
                             <a class="layui-badge">#(p.column.name)</a>
-                            <a href="/post/#(p.id)?order=#(tab_order)">#(p.title)</a>
+                            <a href="/post/#(p.id)">#(p.title)</a>
                         </h2>
                         <div class="fly-list-info">
                             <a href="/user/#(p.user.id)" link>
@@ -111,7 +106,7 @@
                 #if((topList.size() + otherList.size()) >= 20)
                 <div style="text-align: center">
                     <div class="laypage-main">
-                        <a href="/column/all/all?order=#(tab_order)&p=2" class="laypage-next">更多求解</a>
+                        <a href="/column/all/all?p=2" class="laypage-next">更多求解</a>
                     </div>
                 </div>
                 #end
@@ -119,12 +114,14 @@
         </div>
         <div class="layui-col-md4">
 
+            #if(pwList != null && pwList.size() > 0)
             <div class="fly-panel">
                 <h3 class="fly-panel-title">温馨通道</h3>
                 <ul class="fly-panel-main fly-list-static">
 
                 </ul>
             </div>
+            #end
 
             <div class="fly-panel fly-signin">
                 <div class="fly-panel-title">
@@ -140,9 +137,11 @@
                 </div>
             </div>
 
+            #if(replyList != null && replyList.size() > 0)
             <div class="fly-panel fly-rank fly-rank-reply" id="LAY_replyRank">
                 <h3 class="fly-panel-title">回贴周榜</h3>
             </div>
+            #end
 
             <dl class="fly-panel fly-list-one">
                 <dt class="fly-panel-title">本周热议</dt>
@@ -151,10 +150,14 @@
 
             <div class="fly-panel">
                 <div class="fly-panel-title">
-                    广告
+                    赞助商
                 </div>
                 <div class="fly-panel-main">
-                    <a href="" target="_blank" class="fly-zanzhu" style="background-color: #393D49;">虚席以待</a>
+                    #if(sponsorList != null && sponsorList.size() > 0)
+
+                    #else
+                    <a href="javascript:;" target="_blank" class="fly-zanzhu" style="background-color: #393D49;">虚席以待</a>
+                    #end
                 </div>
             </div>
 

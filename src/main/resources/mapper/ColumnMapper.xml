@@ -3,7 +3,13 @@
 <mapper namespace="com.eazy.column.dao.ColumnDao">
 
     <select id="listColumn" parameterType="Column" resultType="Column">
-        SELECT * FROM `column` WHERE role &lt;= #{column.role}
+        SELECT * FROM `column` WHERE
+        <if test="column.role == 'admin'">
+            1 = 1
+        </if>
+        <if test="column.role == 'user'">
+            role = #(column.role)
+        </if>
     </select>
 
 </mapper>

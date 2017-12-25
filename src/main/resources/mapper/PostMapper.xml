@@ -29,15 +29,7 @@
                 </when>
             </choose>
         </if>
-        ORDER BY p.top DESC
-        <choose>
-            <when test="order == 'new'">
-                ,p.id DESC
-            </when>
-            <when test="order == 'hot'">
-                ,p.comments DESC
-            </when>
-        </choose>
+        ORDER BY p.top DESC ,p.id DESC
         LIMIT #{page.startNumber},#{page.pageSize}
     </select>
 
@@ -77,11 +69,47 @@
 
     <select id="getPost" resultMap="postResult">
         SELECT p.*,c.name cname,c.suffix,u.id uid,u.nickName,u.avatar,u.auth,u.vip FROM post p,`column` c,`user` u
-        WHERE p.type = c.id AND p.author = u.id AND p.delete = 0 AND p.id = #{id}
+        WHERE p.type = c.id AND p.author = u.id AND p.id = #{id}
     </select>
 
     <update id="delete">
         UPDATE post SET `delete` = 1 WHERE id = #{id}
+    </update>
+
+    <update id="update">
+        UPDATE post
+        SET
+        <if test="post.readers != null">
+            readers = #{post.readers}
+        </if>
+        <if test="post.comments != null">
+            comments = #{post.comments}
+        </if>
+        <if test="post.status != null">
+            status = #{post.status}
+        </if>
+        <if test="post.title != null">
+            title = #{post.title}
+        </if>
+        <if test="post.type != null">
+            , type = #{post.type}
+        </if>
+        <if test="post.content != null">
+            , content = #{post.content}
+        </if>
+        WHERE id = #{post.id}
+    </update>
+
+    <update id="set">
+        UPDATE post
+        SET
+        <if test="field == 'status'">
+            wonderful = #{rank}
+        </if>
+        <if test="field == 'stick'">
+            top = #{rank}
+        </if>
+        WHERE id = #{id}
     </update>
 
     <resultMap id="postResult" type="Post">
