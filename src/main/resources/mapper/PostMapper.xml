@@ -57,6 +57,10 @@
         </if>
     </select>
 
+    <select id="weeklyTop" resultType="Post">
+        SELECT * FROM post WHERE YEARWEEK(date_format(createtime,'%Y-%m-%d')) = YEARWEEK(now()) AND comments > 10 ORDER BY comments DESC
+    </select>
+
     <select id="countMyPost" resultType="Integer">
         SELECT count(p.id) FROM post p,`column` c
         WHERE p.type = c.id AND p.author = #{uid}

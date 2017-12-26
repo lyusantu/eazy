@@ -45,4 +45,9 @@ public class ReplyServiceImpl implements ReplyService {
         replyDao.delReply(reply);
     }
 
+    @Override
+    public List<Reply> weeklyTop() {
+        return replyDao.weeklyTop();
+    }
+
 }

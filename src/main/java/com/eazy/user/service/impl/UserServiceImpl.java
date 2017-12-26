@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -37,6 +39,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean verifyNickNameExists(User user) {
+        return userDao.verifyNickNameExists(user) > 0;
+    }
+
+    @Override
     public void update(User user) {
         userDao.update(user);
     }
@@ -54,6 +61,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateActiveCode(User user) {
         userDao.updateActiveCode(user);
+    }
+
+    @Override
+    public User getUserByName(String name) {
+        return userDao.getUserByName(name);
+    }
+
+    @Override
+    public List<User> recentlyJoined() {
+        return userDao.recentlyJoined();
     }
 
 }

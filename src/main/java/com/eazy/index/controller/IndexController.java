@@ -2,8 +2,14 @@ package com.eazy.index.controller;
 
 import com.eazy.commons.Constants;
 import com.eazy.commons.Page;
+import com.eazy.index.entity.FriendsSite;
+import com.eazy.index.service.IndexService;
 import com.eazy.post.entity.Post;
+import com.eazy.post.entity.Reply;
 import com.eazy.post.service.PostService;
+import com.eazy.post.service.ReplyService;
+import com.eazy.user.entity.User;
+import com.eazy.user.service.UserService;
 import com.xiaoleilu.hutool.util.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +29,12 @@ public class IndexController {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private ReplyService replyService;
+
+    @Autowired
+    private IndexService indexService;
+
     @RequestMapping(value = "/")
     public String index(HttpServletRequest request) {
         List<Post> postList = postService.list(new Page(0, Constants.NUM_PER_PAGE), null, null); // 置顶帖
@@ -41,6 +53,10 @@ public class IndexController {
         request.setAttribute("tab_column", "home");
         request.setAttribute("topList", topList);
         request.setAttribute("otherList", otherList);
+        request.setAttribute("replyList", replyService.weeklyTop());// 回帖周榜
+        request.setAttribute("postList", postService.weeklyTop());// 本周热议
+        request.setAttribute("fsList", indexService.listFriendsSite());// 友链
+        request.setAttribute("sponsorList", indexService.listSponsor(1));
         return "index";
     }
 

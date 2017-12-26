@@ -96,4 +96,16 @@ full: true
 #@js?()
 <script>
     layui.cache.page = 'user';
+    layui.use(['util', 'laydate', 'table'], function () {
+        var table = layui.table,
+            util = layui.util,
+            laydate = layui.laydate,
+            $ = layui.jquery;
+
+        $('.createtime').each(function () {
+            var date = $(this).html();
+            var str = util.timeAgo(date, laydate.now);
+            $(this).html(str);
+        });
+    });
 </script>

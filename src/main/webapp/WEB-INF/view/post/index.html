@@ -180,15 +180,30 @@
         <div class="layui-col-md4">
             <dl class="fly-panel fly-list-one">
                 <dt class="fly-panel-title">本周热议</dt>
+                #if(weekHot == null || weekHot.size() == 0)
                 <div class="fly-none">没有相关数据</div>
+                #else
+                #for(p : weekHot)
+                <dd>
+                    <a href="/post/#(p.id)">#(p.title)</a>
+                    <span><i class="iconfont icon-pinglun1"></i> #(p.comments)</span>
+                </dd>
+                #end
+                #end
             </dl>
 
             <div class="fly-panel">
                 <div class="fly-panel-title">
-                    赞助商
+                    钻石级赞助商
                 </div>
                 <div class="fly-panel-main">
+                    #if(sponsorList != null && sponsorList.size() > 0)
+                    #for(s : sponsorList)
+                    <a href="#(s.url)" target="_blank" class="fly-zanzhu" style="background-color: #(s.color);">#(s.name) - #(s.desc)</a>
+                    #end
+                    #else
                     <a href="javascript:;" target="_blank" class="fly-zanzhu" style="background-color: #393D49;">虚席以待</a>
+                    #end
                 </div>
             </div>
 
@@ -244,7 +259,7 @@
             , limit: '#(page.pageSize)'
             , jump: function (obj, first) {
                 if (!first) {
-                    var url = '/post/#(post.id)?p=' + obj.curr;
+                    var url = '/post/#(post.id)?p=' + obj.curr + '#flyReply';
                     location.href = url;
                 }
             }

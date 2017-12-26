@@ -8,6 +8,8 @@ import com.eazy.commons.Page;
 import com.eazy.commons.QiNiuUtil;
 import com.eazy.commons.auth.AuthPassport;
 import com.eazy.commons.dto.AjaxResult;
+import com.eazy.message.entity.Message;
+import com.eazy.message.service.MessageService;
 import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
 import com.eazy.post.service.ReplyService;
@@ -60,15 +62,23 @@ public class UserController {
     @Autowired
     private ReplyService replyService;
 
+    @Autowired
+    private MessageService messageService;
+
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public String index(@PathVariable("id") int id, HttpServletRequest request) {
         User user = new User(id);
         user = userService.getUser(user);
-        Page page = new Page(0, 20);
-        List<Post> postList = postService.listMyPost(user.getId(), page);
-        request.setAttribute("user", user);
-        request.setAttribute("postList", postList);
-        return "user/userhome";
+        if (ObjectUtil.isNull(user)) {
+            request.setAttribute("msg", "用户未找到");
+            return "err/err";
+        } else {
+            Page page = new Page(0, 20);
+            List<Post> postList = postService.listMyPost(user.getId(), page);
+            request.setAttribute("user", user);
+            request.setAttribute("postList", postList);
+            return "user/userhome";
+        }
     }
 
     // 跳转登录
@@ -155,6 +165,8 @@ public class UserController {
             else {
                 if (userService.verifyAccountExists(user))
                     return new AjaxResult(1, "您输入的邮箱已被注册");
+                else if(userService.verifyNickNameExists(user))
+                    return new AjaxResult(1, "您输入的昵称已被注册");
                 else {
                     user.setVip(0);
                     user.setStatus(0);
@@ -165,12 +177,15 @@ public class UserController {
                     user.setRegTime(new Timestamp(System.currentTimeMillis()));
                     user.setAvatar("/res/images/avatar/" + new Random().nextInt(12) + ".jpg");
                     user.setActiveCode(request.getSession().getId() + System.currentTimeMillis());
-                    user.setId(userService.reg(user));
+                    userService.reg(user);
                     LOG.info(Base64.decode(user.getEmail()) + "注册成功");
                     LOG.info("----------激活邮件发送START----------");
                     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
                     mailTaskService.sendSimpleMail("eazy社区账户激活邮件", "请点击链接激活您的账户：" + basePath + "user/activeAccount/" + user.getActiveCode(), user.getEmail());
                     LOG.info("----------激活邮件发送END----------");
+                    LOG.info("----------推送消息欢迎新用户加入START----------");
+                    Message message = new Message(0, 0, user.getId(), 2, "欢迎加入eazy社区", new Timestamp(System.currentTimeMillis()), 0, 0);
+                    LOG.info("----------推送消息欢迎新用户加入END----------");
                     return new AjaxResult(0, "激活邮件已发送至您的邮箱,请激活后登录 :)", "/user/signin");
                 }
             }
@@ -423,5 +438,20 @@ public class UserController {
             userService.updateActiveCode(user);
             return new AjaxResult(0, "密码修改成功", "/user/signin");
         }
+    }
+
+    // 跳转我的消息
+    @AuthPassport
+    @RequestMapping(value = "/message", method = RequestMethod.GET)
+    public String message(HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        messageService.emptyStatus(user.getId()); // 置空状态
+        String p = request.getParameter("p");
+        Page page = new Page(((p == null ? 1 : Integer.parseInt(p)) - 1) * 5, 5);
+        page.setPageNumber(p == null ? 1 : Integer.parseInt((p)));
+        page.setTotalCount(messageService.countMyMsgAll(user.getId()));
+        request.setAttribute("page", page);
+        request.setAttribute("list", messageService.listMyMsg(user.getId(), page));
+        return "user/message";
     }
 }

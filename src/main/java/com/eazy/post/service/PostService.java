@@ -24,4 +24,6 @@ public interface PostService {
     void update(Post post);
 
     void set(String id, String rank, String field);
+
+    List<Post> weeklyTop();
 }

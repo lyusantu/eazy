@@ -8,7 +8,7 @@
     </insert>
 
    <select id="listReply" resultMap="replyResult">
-        SELECT r.*, u.id uid,u.nickName,u.avatar,u.vip,u.auth FROM reply r, user u
+        SELECT r.*, u.id uuid,u.nickName,u.avatar,u.vip,u.auth FROM reply r, user u
         WHERE r.uid = u.id AND r.pid = #{reply.pid} ORDER BY r.accept DESC, r.id DESC LIMIT #{page.startNumber},#{page.pageSize}
     </select>
 
@@ -29,6 +29,10 @@
         DELETE FROM reply WHERE id = #{reply.id}
     </delete>
 
+    <select id="weeklyTop" resultMap="replyResult">
+        SELECT u.id uuid, u.nickname nickName,u.avatar avatar, count(*) vip FROM reply r,user u WHERE r.uid = u.id AND YEARWEEK(date_format(r.time,'%Y-%m-%d')) = YEARWEEK(now()) GROUP BY r.uid LIMIT 0,16
+    </select>
+
     <resultMap id="replyResult" type="Reply">
         <id column="id" property="id"/>
         <result column="pid" property="pid"/>
@@ -37,7 +41,7 @@
         <result column="time" property="time"/>
         <result column="accept" property="accept"/>
         <association property="user" javaType="User">
-            <id column="uid" property="id"/>
+            <id column="uuid" property="id"/>
             <result column="nickName" property="nickName"/>
             <result column="avatar" property="avatar"/>
             <result column="auth" property="auth"/>

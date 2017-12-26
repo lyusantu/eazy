@@ -29,6 +29,10 @@
         SELECT COUNT(id) FROM user WHERE email = #{user.email}
     </select>
 
+    <select id="verifyNickNameExists" parameterType="User" resultType="Integer">
+        SELECT COUNT(id) FROM user WHERE nickname = #{user.nickName}
+    </select>
+
     <insert id="reg" parameterType="User" useGeneratedKeys="true" keyProperty="user.id">
        INSERT INTO user(email,nickname,password,avatar,balance,reg_time,status,vip,type,gender,active_code) VALUES(#{user.email},#{user.nickName},#{user.password},#{user.avatar},#{user.balance},#{user.regTime},#{user.status},#{user.vip},#{user.type},#{user.gender},#{user.activeCode})
     </insert>
@@ -44,6 +48,14 @@
     <update id="updateActiveCode">
         UPDATE user SET active_code = #{user.activeCode} WHERE id = #{user.id}
     </update>
+
+    <select id="getUserByName" resultType="User">
+        SELECT * FROM user WHERE nickName = #{nickName}
+    </select>
+
+    <select id="recentlyJoined" resultType="User">
+        SELECT * FROM user WHERE status = 1
+    </select>
 
     <update id="update" parameterType="User">
         UPDATE user SET
@@ -66,7 +78,7 @@
             status = #{user.status},
         </if>
         <if test="user.sign != null">
-            sign =  #{user.sign}
+            sign = #{user.sign}
         </if>
         <if test="user.password != null">
             password = #{user.password}
@@ -79,5 +91,5 @@
         </if>
         WHERE id = #{user.id}
     </update>
-    
+
 </mapper>

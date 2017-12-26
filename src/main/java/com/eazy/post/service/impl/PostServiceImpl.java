@@ -59,4 +59,9 @@ public class PostServiceImpl implements PostService {
     public void set(String id, String rank, String field) {
         postDao.set(id, rank, field);
     }
+
+    @Override
+    public List<Post> weeklyTop() {
+        return postDao.weeklyTop();
+    }
 }

@@ -8,6 +8,9 @@ import com.eazy.commons.Constants;
 import com.eazy.commons.Page;
 import com.eazy.commons.auth.AuthPassport;
 import com.eazy.commons.dto.AjaxResult;
+import com.eazy.index.service.IndexService;
+import com.eazy.message.entity.Message;
+import com.eazy.message.service.MessageService;
 import com.eazy.post.entity.Post;
 import com.eazy.post.entity.Reply;
 import com.eazy.post.service.PostService;
@@ -30,6 +33,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/post")
@@ -55,6 +60,12 @@ public class PostController {
     @Autowired
     private CollectionService collectionService;
 
+    @Autowired
+    private MessageService messageService;
+
+    @Autowired
+    private IndexService indexService;
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String index(HttpServletRequest request, @PathVariable("id") int id) {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
@@ -78,6 +89,8 @@ public class PostController {
             List<Reply> replyList = replyService.listReply(reply, page);
             request.setAttribute("list", replyList);
             request.setAttribute("page", page);
+            request.setAttribute("weekHot", postService.weeklyTop());// 本周热议
+            request.setAttribute("sponsorList", indexService.listSponsor(2));
         }
         request.setAttribute("tab_column", post.getColumn().getSuffix());
         request.setAttribute("msg", "该帖已被删除");
@@ -185,6 +198,31 @@ public class PostController {
             Post updatePost = new Post(post.getId());
             updatePost.setComments(post.getComments() + 1);
             postService.update(updatePost);
+            LOG.info("----------用户 " + user.getNickName() + " 评论了 " + post.getTitle() + "----------");
+            LOG.info("----------开始进行@的推送----------");
+            String reg = "@.\\S*";
+            Pattern pat = Pattern.compile(reg);
+            Matcher mat = pat.matcher(reply.getContent());
+            String name = "";
+            Message message = null;
+            User queryUser = null;
+            while (mat.find()) {
+                name = mat.group();
+                name = name.substring(1, name.length());
+                queryUser = userService.getUserByName(name); // 查询用户是否存在
+                if (ObjectUtil.isNull(queryUser)) {
+                    LOG.info("----------@的用户 " + name + " 不存在----------");
+                } else {
+                    message = new Message(post.getId(), user.getId(), queryUser.getId(), 1, null, new Timestamp(System.currentTimeMillis()), 0, reply.getId());
+                    messageService.addMsg(message);
+                    LOG.info("----------成功向用户 " + name + " 推送了一条信息----------");
+                }
+            }
+            LOG.info("----------@的推送结束----------");
+            LOG.info("----------开始进行评论的推送----------");
+            message = new Message(post.getId(), user.getId(), post.getAuthor(), 0, null, new Timestamp(System.currentTimeMillis()), 0, reply.getId());
+            messageService.addMsg(message);
+            LOG.info("----------评论的推送结束----------");
             return new JSONObject().put("status", 0).put("msg", "回答成功").put("action", false);
         }
     }

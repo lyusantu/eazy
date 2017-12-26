@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eazy.message.dao.MessageDao">
+
+    <insert id="addMsg" useGeneratedKeys="true" keyProperty="message.id">
+        INSERT INTO message(pid, uid, time, atid, type, status, content, reply)
+        VALUES(#{message.pid}, #{message.uid}, #{message.time}, #{message.atid}, #{message.type}, #{message.status}, #{message.content}, #{message.reply})
+    </insert>
+
+    <select id="listMyMsg" resultMap="messageResult">
+        SELECT m.*, p.id pid, p.title, u.id userid, u.nickName nickName, atu.id atUid, atu.nickName atNickName FROM message m, post p, user u, user atu
+        WHERE m.pid = p.id AND m.uid = u.id AND m.atid = atu.id AND m.atid = #{uid} ORDER BY m.time DESC LIMIT #{page.startNumber},#{page.pageSize}
+    </select>
+
+    <select id="countMyMsg" resultType="Integer">
+        SELECT COUNT(id) FROM message WHERE status = 0 AND atid = #{uid}
+    </select>
+
+    <select id="countMyMsgAll" resultType="Integer">
+        SELECT COUNT(id) FROM message WHERE atid = #{uid}
+    </select>
+
+    <update id="emptyStatus">
+        UPDATE message SET status = 1 WHERE atid = #{uid}
+    </update>
+
+    <delete id="removeMsg">
+        DELETE FROM message WHERE
+        <if test="id == null">
+            atid = #{uid}
+        </if>
+        <if test="id != null">
+            id = #{id}
+        </if>
+    </delete>
+
+    <resultMap id="messageResult" type="Message">
+        <id column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="uid" property="uid"/>
+        <result column="content" property="content"/>
+        <result column="time" property="time"/>
+        <result column="atid" property="atid"/>
+        <result column="type" property="type"/>
+        <result column="status" property="status"/>
+        <result column="reply" property="reply" />
+        <association property="post" javaType="Post">
+            <id column="pid" property="id"/>
+            <result column="title" property="title"/>
+        </association>
+        <association property="user" javaType="User">
+            <id column="userid" property="id"/>
+            <result column="nickName" property="nickName"/>
+        </association>
+        <association property="atUser" javaType="User">
+            <id column="atUid" property="id"/>
+            <result column="atNickName" property="nickName"/>
+        </association>
+    </resultMap>
+</mapper>

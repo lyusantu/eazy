@@ -137,24 +137,44 @@
                 </div>
             </div>
 
-            #if(replyList != null && replyList.size() > 0)
+
+            #if( replyList != null && replyList.size() > 0)
             <div class="fly-panel fly-rank fly-rank-reply" id="LAY_replyRank">
-                <h3 class="fly-panel-title">回贴周榜</h3>
+                <h3 class="fly-panel-title">回帖周榜</h3>
+                <dl>
+                    #for(r : replyList)
+                    <dd>
+                        <a href="/user/#(r.user.id)">
+                            <img src="#(r.user.avatar)"><cite>#(r.user.nickName)</cite><i>#(r.user.vip)</i>
+                        </a>
+                    </dd>
+                    #end
             </div>
             #end
 
             <dl class="fly-panel fly-list-one">
                 <dt class="fly-panel-title">本周热议</dt>
+                #if(postList == null || postList.size() == 0)
                 <div class="fly-none">没有相关数据</div>
+                #else
+                    #for(p : postList)
+                        <dd>
+                            <a href="/post/#(p.id)">#(p.title)</a>
+                            <span><i class="iconfont icon-pinglun1"></i> #(p.comments)</span>
+                        </dd>
+                    #end
+                #end
             </dl>
 
             <div class="fly-panel">
                 <div class="fly-panel-title">
-                    赞助商
+                    王者级赞助商
                 </div>
                 <div class="fly-panel-main">
                     #if(sponsorList != null && sponsorList.size() > 0)
-
+                        #for(s : sponsorList)
+                            <a href="#(s.url)" target="_blank" class="fly-zanzhu" style="background-color: #(s.color);">#(s.name) - #(s.desc)</a>
+                        #end
                     #else
                     <a href="javascript:;" target="_blank" class="fly-zanzhu" style="background-color: #393D49;">虚席以待</a>
                     #end
@@ -164,8 +184,10 @@
             <div class="fly-panel fly-link">
                 <h3 class="fly-panel-title">友情链接</h3>
                 <dl class="fly-panel-main">
-                    <dd><a href="mailto:lyusantu@gmail.com" class="fly-link">申请友链</a>
-                    <dd>
+                    <dd><a href="mailto:lyusantu@gmail.com" class="fly-link" target="_blank">申请友链</a><dd>
+                    #for(s : fsList)
+                    <dd><a href="#(s.url)" class="fly-link" target="_blank">#(s.name)</a><dd>
+                    #end
                 </dl>
             </div>
         </div>

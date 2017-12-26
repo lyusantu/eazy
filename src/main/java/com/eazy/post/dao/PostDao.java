@@ -68,4 +68,10 @@ public interface PostDao {
      * @param field
      */
     void set(@Param("id") String id, @Param("rank") String rank, @Param("field") String field);
+
+    /**
+     * 本周热帖
+     * @return
+     */
+    List<Post> weeklyTop();
 }

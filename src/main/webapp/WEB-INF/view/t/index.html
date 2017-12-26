@@ -87,22 +87,26 @@
 
             <div class="fly-panel">
                 <div class="fly-panel-title">
-                    赞助商
-                    <span class="fly-mid"></span>
-                    <a href="javascript:;" class="fly-link fly-joinad">我要加入</a>
+                    王者级赞助商
                 </div>
                 <div class="fly-panel-main">
-                    <a href="" target="_blank" class="fly-zanzhu" style="background-color: #393D49;">虚席以待</a>
+                    #if(sponsorList != null && sponsorList.size() > 0)
+                    #for(s : sponsorList)
+                    <a href="#(s.url)" target="_blank" class="fly-zanzhu" style="background-color: #(s.color);">#(s.name) - #(s.desc)</a>
+                    #end
+                    #else
+                    <a href="javascript:;" target="_blank" class="fly-zanzhu" style="background-color: #393D49;">虚席以待</a>
+                    #end
                 </div>
             </div>
 
             <div class="fly-panel fly-link">
                 <h3 class="fly-panel-title">友情链接</h3>
                 <dl class="fly-panel-main">
-                    <dd>
-                        <a href="mailto:lyusantu@gmail.com"
-                           class="fly-link">申请友链</a>
-                    <dd>
+                    <dd><a href="mailto:lyusantu@gmail.com" class="fly-link" target="_blank">申请友链</a><dd>
+                    #for(s : fsList)
+                    <dd><a href="#(s.url)" class="fly-link" target="_blank">#(s.name)</a><dd>
+                    #end
                 </dl>
             </div>
 

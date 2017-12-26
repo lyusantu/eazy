@@ -19,4 +19,6 @@ public interface ReplyDao {
     Reply getReply(@Param("reply") Reply reply);
 
     void delReply(@Param("reply") Reply reply);
+
+    List<Reply> weeklyTop();
 }

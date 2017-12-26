@@ -2,6 +2,8 @@ package com.eazy.user.service;
 
 import com.eazy.user.entity.User;
 
+import java.util.List;
+
 public interface UserService {
 
     User getUser(User user);
@@ -12,6 +14,8 @@ public interface UserService {
 
     boolean verifyAccountExists(User user);
 
+    boolean verifyNickNameExists(User user);
+
     void update(User user);
 
     User activeAccount(String code);
@@ -19,4 +23,8 @@ public interface UserService {
     User verifyEmail(String email);
 
     void updateActiveCode(User user);
+
+    User getUserByName(String name);
+
+    List<User> recentlyJoined();
 }

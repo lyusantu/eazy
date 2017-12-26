@@ -1,0 +1,125 @@
+#@header()
+
+#@column()
+
+<div class="layui-container fly-marginTop fly-user-main">
+    <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
+        <li class="layui-nav-item">
+            <a href="/user/home">
+                <i class="layui-icon">&#xe68e;</i>
+                我的主页
+            </a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="/user/set">
+                <i class="layui-icon">&#xe620;</i>
+                基本设置
+            </a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="/user/post">
+                <i class="layui-icon">&#xe60a;</i>
+                我的帖子
+            </a>
+        </li>
+        <li class="layui-nav-item layui-this">
+            <a href="/user/message">
+                <i class="layui-icon">&#xe611;</i>
+                我的消息
+            </a>
+        </li>
+    </ul>
+
+    <div class="site-tree-mobile layui-hide">
+        <i class="layui-icon">&#xe602;</i>
+    </div>
+    <div class="site-mobile-shade"></div>
+
+    <div class="site-tree-mobile layui-hide">
+        <i class="layui-icon">&#xe602;</i>
+    </div>
+    <div class="site-mobile-shade"></div>
+
+    <div class="fly-panel fly-panel-user" pad20>
+        <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_msg" style="margin-top: 15px;">
+            #if(list != null && list.size() > 0)
+            <button class="layui-btn layui-btn-danger" id="LAY_delallmsg">清空全部消息</button>
+            #end
+            <div id="LAY_minemsg" style="margin-top: 10px;">
+                #if(list == null || list.size() == 0)
+                <div class="fly-none">您暂时没有最新消息</div>
+                #else
+                <ul class="mine-msg">
+                    #for(m : list)
+                    <li data-id="#(m.id)">
+                        <blockquote class="layui-elem-quote">
+                            #if(m.type == 0) ### 评论
+                            <a href="/user/#(m.user.id)" target="_blank"><cite>#(m.user.nickName)</cite></a> 评论了您的帖子 <a
+                                href="/post/#(m.post.id)#item-#(m.reply)"
+                                target="_blank"><cite>#(m.post.title)</cite></a>
+                            #elseif(m.type == 1) ### 艾特
+                            <a href="/user/#(m.user.id)" target="_blank"><cite>#(m.user.nickName)</cite></a> 在帖子 <a
+                                href="/post/#(m.post.id)#item-#(m.reply)"
+                                target="_blank"><cite>#(m.post.title)</cite></a> 中@了你
+                            #elseif(m.type == 2) ### 系统消息
+                            系统消息: #(m.content)
+                            #end
+                        </blockquote>
+                        <p><span class="createtime">#(m.time)</span><a href="javascript:;"
+                                                                       class="layui-btn layui-btn-small layui-btn-danger fly-delete">删除</a>
+                        </p>
+                    </li>
+                    #end
+                </ul>
+
+                #if(page.totalPage > 1)
+                <div style="text-align: center">
+                    <div id="page"></div>
+                </div>
+                #end
+                #end
+            </div>
+        </div>
+    </div>
+
+</div>
+
+#@footer()
+#@js?()
+<script>
+    layui.cache.page = 'user';
+
+    layui.use(['laypage', 'layer', 'util', 'laydate'], function () {
+        var laypage = layui.laypage
+            , layer = layui.layer
+            , util = layui.util
+            , laydate = layui.laydate
+            , $ = layui.jquery;
+
+
+        $('.createtime').each(function () {
+            var date = $(this).html();
+            var str = util.timeAgo(date, laydate.now);
+            $(this).html(str);
+        })
+
+        //总页数低于页码总数
+        laypage.render({
+            elem: 'page'
+            , count: '#(page.totalCount)'
+            , first: '首页'
+            , last: '尾页'
+            , limit: '#(page.pageSize)'
+            , curr: '#(page.pageNumber)'
+            , layout: ['prev', 'page', 'next', 'skip']
+            , jump: function (obj, first) {
+                if (!first) {
+                    var url = '/user/message?p=' + obj.curr;
+                    location.href = url;
+                }
+            },
+        });
+    });
+
+
+</script>

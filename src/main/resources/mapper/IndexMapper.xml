@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eazy.index.dao.IndexDao">
+
+    <select id="listFriendsSite" resultType="FriendsSite">
+        SELECT * FROM friends_site ORDER BY time DESC
+    </select>
+
+    <select id="listSponsor" resultType="Sponsor">
+        SELECT * FROM sponsor WHERE type = #{type} ORDER BY time DESC
+    </select>
+</mapper>

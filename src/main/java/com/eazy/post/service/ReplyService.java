@@ -18,4 +18,6 @@ public interface ReplyService {
     Reply getReply(Reply reply);
 
     void delReply(Reply reply);
+
+    List<Reply> weeklyTop();
 }
