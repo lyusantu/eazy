@@ -48,7 +48,7 @@
                                 #if(p.wonderful == 1)
                                     <span class="fly-jing">精</span>
                                 #end
-                                <a href="" class="jie-title"> #(p.title)</a>
+                                <a href="/post/#(p.id)" class="jie-title"> #(p.title)</a>
                                 <i class="createtime">#(p.createTime)</i>
                                 <em class="layui-hide-xs">#(p.readers)阅/#(p.comments)答</em>
                             </li>
@@ -83,9 +83,32 @@
     </div>
 </div>
 #@footer()
-#@js?()
 <script>
     layui.cache.page = 'user';
+
+    layui.cache.user = {
+        username: '#(session.loginUser != null ? session.loginUser.nickName : 0)'
+        ,uid: '#(session.loginUser != null ? session.loginUser.id : -1)'
+        ,avatar: '#(session.loginUser != null ? session.loginUser.avatar : 0)'
+        ,experience: '#(session.loginUser != null ? session.loginUser.balance : 0)'
+        ,sex: '#(session.loginUser != null ? session.loginUser.gender == 0 ? "男" : "女" : 0)'
+    };
+
+    layui.config({
+        version: "3.0.0"
+        ,base: '/res/mods/'
+    }).extend({
+        fly: 'index'
+    }).use(['face', 'fly'], function () {
+        var fly = layui.fly
+            ,$ = layui.jquery;
+        $('.home-dacontent').each(function(){
+            var othis = $(this), html = othis.html();
+            othis.html(fly.content(html));
+        });
+    });
+
+
     layui.use(['util', 'laydate', 'table'], function () {
         var table = layui.table,
             util = layui.util,

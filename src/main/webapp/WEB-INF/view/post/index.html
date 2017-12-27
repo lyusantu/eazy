@@ -73,9 +73,11 @@
                         #end
                     </div>
                 </div>
-                <div class="detail-body photos">
-                    #(post.content)
-                </div>
+                <div class="detail-body photos">#(post.content)</div>
+                <hr/>
+                #for(k : keys)
+                   <span class="layui-badge-rim">#(k.name)</span>
+                #end
             </div>
 
             <div class="fly-panel detail-box" id="flyReply">

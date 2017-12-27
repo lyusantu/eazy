@@ -21,6 +21,8 @@ import com.eazy.verify.entity.Verify;
 import com.eazy.verify.service.VerifyService;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
+import org.ansj.app.keyword.KeyWordComputer;
+import org.ansj.app.keyword.Keyword;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,6 +94,8 @@ public class PostController {
             request.setAttribute("page", page);
             request.setAttribute("weekHot", postService.weeklyTop());// 本周热议
             request.setAttribute("sponsorList", indexService.listSponsor(2));
+            KeyWordComputer kwc = new KeyWordComputer(5);
+            request.setAttribute("keys", kwc.computeArticleTfidf(post.getTitle(), post.getContent())); // 分词
         }
         request.setAttribute("tab_column", post.getColumn().getSuffix());
         request.setAttribute("msg", "该帖已被删除");
