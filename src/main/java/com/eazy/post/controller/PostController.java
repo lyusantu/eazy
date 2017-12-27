@@ -113,7 +113,7 @@ public class PostController {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         Column column = new Column();
         column.setRole(user.getType());
-        List<Column> listColumn = columnService.listColumn(column);
+        request.getSession().setAttribute("listColumn", columnService.listColumn(column));
         request.setAttribute("verify", verifyService.randVerify());
         return "post/add";
     }
@@ -299,13 +299,7 @@ public class PostController {
                 } else {
                     Column column = new Column();
                     column.setRole(user.getType());
-                    List<Column> listColumn = (List<Column>) request.getSession().getAttribute("listColumn");
-                    if (ObjectUtil.isNull(listColumn) || listColumn.size() == 0) {
-                        LOG.info("从数据中查询column");
-                        listColumn = columnService.listColumn(column);
-                        request.getSession().setAttribute("listColumn", listColumn);
-                    } else
-                        LOG.info("从缓存中加载column");
+                    request.getSession().setAttribute("listColumn", columnService.listColumn(column));
                     Verify verify = verifyService.randVerify();
                     request.setAttribute("verify", verify);
                     request.setAttribute("post", post);
