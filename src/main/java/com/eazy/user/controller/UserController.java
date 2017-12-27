@@ -74,9 +74,9 @@ public class UserController {
             return "err/err";
         } else {
             Page page = new Page(0, 20);
-            List<Post> postList = postService.listMyPost(user.getId(), page);
             request.setAttribute("user", user);
-            request.setAttribute("postList", postList);
+            request.setAttribute("postList", postService.listMyPost(user.getId(), page)); // 最近的提问
+            request.setAttribute("replyList", replyService.listMyReply(user.getId(), page));// 最近的回答
             return "user/userhome";
         }
     }
@@ -113,8 +113,8 @@ public class UserController {
     public String home(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         Page page = new Page(0, 20);
-        List<Post> postList = postService.listMyPost(user.getId(), page);
-        request.setAttribute("postList", postList);
+        request.setAttribute("postList", postService.listMyPost(user.getId(), page)); // 最近提问
+        request.setAttribute("replyList", replyService.listMyReply(user.getId(), page));// 最近的回答
         request.setAttribute(Constants.TITLE, "用户主页");
         return "user/home";
     }
@@ -165,7 +165,7 @@ public class UserController {
             else {
                 if (userService.verifyAccountExists(user))
                     return new AjaxResult(1, "您输入的邮箱已被注册");
-                else if(userService.verifyNickNameExists(user))
+                else if (userService.verifyNickNameExists(user))
                     return new AjaxResult(1, "您输入的昵称已被注册");
                 else {
                     user.setVip(0);
@@ -453,5 +453,19 @@ public class UserController {
         request.setAttribute("page", page);
         request.setAttribute("list", messageService.listMyMsg(user.getId(), page));
         return "user/message";
+    }
+
+    // @的跳转
+    @RequestMapping(value = "/jump/{username}", method = RequestMethod.GET)
+    public String jump(@PathVariable("username") String username, HttpServletRequest request) {
+        if (username == null)
+            System.out.println("nullnull");
+        User user = userService.getUserByName(username);
+        if (ObjectUtil.isNull(user)) {
+            request.setAttribute("msg", "用户不存在");
+            return "err/err";
+        } else
+            return "redirect:/user/" + user.getId();
+
     }
 }

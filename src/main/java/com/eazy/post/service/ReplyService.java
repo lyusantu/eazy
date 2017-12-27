@@ -20,4 +20,6 @@ public interface ReplyService {
     void delReply(Reply reply);
 
     List<Reply> weeklyTop();
+
+    List<Reply> listMyReply(int uid, Page page);
 }

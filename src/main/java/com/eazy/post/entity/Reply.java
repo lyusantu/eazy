@@ -20,6 +20,8 @@ public class Reply {
 
     private User user;
 
+    private Post post;
+
     public Reply() {
 
     }
@@ -82,5 +84,13 @@ public class Reply {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 }

@@ -21,4 +21,6 @@ public interface ReplyDao {
     void delReply(@Param("reply") Reply reply);
 
     List<Reply> weeklyTop();
+
+    List<Reply> listMyReply(@Param("uid") int uid, @Param("page") Page page);
 }

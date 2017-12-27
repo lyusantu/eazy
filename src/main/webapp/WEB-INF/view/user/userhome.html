@@ -67,40 +67,49 @@
             <div class="fly-panel">
                 <h3 class="fly-panel-title">#(user.nickName) 最近的回答</h3>
                 <ul class="home-jieda">
-                    <!--
-                    <li>
-                        <p>
-                            <span>1分钟前</span>
-                            在<a href="" target="_blank">tips能同时渲染多个吗?</a>中回答：
-                        </p>
-                        <div class="home-dacontent">
-                            尝试给layer.photos加上这个属性试试：
-                            <pre>
-full: true
-</pre>
-                            文档没有提及
-                        </div>
-                    </li>
-                    <li>
-                        <p>
-                            <span>5分钟前</span>
-                            在<a href="" target="_blank">在Fly社区用的是什么系统啊?</a>中回答：
-                        </p>
-                        <div class="home-dacontent">
-                            Fly社区采用的是NodeJS。分享出来的只是前端模版
-                        </div>
-                    </li>
-                    -->
-                    <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有回答任何问题</span></div>
+                    #if(replyList != null && replyList.size() > 0)
+                        #for(r : replyList)
+                            <li>
+                                <p>
+                                    <span class="createtime">#(r.time)</span>
+                                    在<a href="/post/#(r.post.id)#item-#(r.id)" target="_blank">#(r.post.title)</a>中回答：
+                                </p>
+                                <div class="home-dacontent">#(r.content)</div>
+                            </li>
+                        #end
+                    #else
+                        <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有回答任何问题</span></div>
+                    #end
                 </ul>
             </div>
         </div>
     </div>
 </div>
 #@footer()
-#@js?()
 <script>
     layui.cache.page = 'user';
+
+    layui.cache.user = {
+        username: '#(session.loginUser != null ? session.loginUser.nickName : 0)'
+        ,uid: '#(session.loginUser != null ? session.loginUser.id : -1)'
+        ,avatar: '#(session.loginUser != null ? session.loginUser.avatar : 0)'
+        ,experience: '#(session.loginUser != null ? session.loginUser.balance : 0)'
+        ,sex: '#(session.loginUser != null ? session.loginUser.gender == 0 ? "男" : "女" : 0)'
+    };
+
+    layui.config({
+        version: "3.0.0"
+        ,base: '/res/mods/'
+    }).extend({
+        fly: 'index'
+    }).use(['face', 'fly'], function () {
+        var fly = layui.fly
+            ,$ = layui.jquery;
+        $('.home-dacontent').each(function(){
+            var othis = $(this), html = othis.html();
+            othis.html(fly.content(html));
+        });
+    });
 
     layui.use(['laypage', 'layer','util', 'laydate'], function () {
         var laypage = layui.laypage

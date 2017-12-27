@@ -50,4 +50,9 @@ public class ReplyServiceImpl implements ReplyService {
         return replyDao.weeklyTop();
     }
 
+    @Override
+    public List<Reply> listMyReply(int uid, Page page) {
+        return replyDao.listMyReply(uid, page);
+    }
+
 }

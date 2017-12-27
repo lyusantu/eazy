@@ -7,7 +7,7 @@
         VALUES(#{reply.pid}, #{reply.uid}, #{reply.time}, #{reply.content}, #{reply.accept})
     </insert>
 
-   <select id="listReply" resultMap="replyResult">
+    <select id="listReply" resultMap="replyResult">
         SELECT r.*, u.id uuid,u.nickName,u.avatar,u.vip,u.auth FROM reply r, user u
         WHERE r.uid = u.id AND r.pid = #{reply.pid} ORDER BY r.accept DESC, r.id DESC LIMIT #{page.startNumber},#{page.pageSize}
     </select>
@@ -33,6 +33,10 @@
         SELECT u.id uuid, u.nickname nickName,u.avatar avatar, count(*) vip FROM reply r,user u WHERE r.uid = u.id AND YEARWEEK(date_format(r.time,'%Y-%m-%d')) = YEARWEEK(now()) GROUP BY r.uid LIMIT 0,16
     </select>
 
+    <select id="listMyReply" resultMap="replyResult">
+        SELECT r.*, p.id ppid, p.title FROM reply r, post p WHERE r.pid = p.id AND r.uid = #{uid} ORDER BY r.id DESC LIMIT #{page.startNumber},#{page.pageSize}
+    </select>
+
     <resultMap id="replyResult" type="Reply">
         <id column="id" property="id"/>
         <result column="pid" property="pid"/>
@@ -46,6 +50,10 @@
             <result column="avatar" property="avatar"/>
             <result column="auth" property="auth"/>
             <result column="vip" property="vip"/>
+        </association>
+        <association property="post" javaType="Post">
+            <id column="ppid" property="id"/>
+            <result column="title" property="title"/>
         </association>
     </resultMap>
 </mapper>
