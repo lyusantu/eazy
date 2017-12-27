@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ColumnDao {
 
-    List<Column> listColumn(@Param("column") Column column);
+    List<Column> listColumn(@Param("cl") Column column);
 
 }
