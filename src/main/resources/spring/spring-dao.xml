@@ -30,7 +30,6 @@
         <property name="filters" value="wall,stat" />
     </bean>
 
-
     <!--3、配置SqlSessionFactory对象-->
     <bean id="sqlSessionFactory" class="com.eazy.commons.mybatis.EazySqlSessionFactoryBean">
         <!--注入数据库连接池-->
@@ -50,5 +49,7 @@
         <!-- 给出需要扫描的Dao接口-->
         <property name="basePackage" value="com.eazy.*.dao"/>
     </bean>
+
+
 
 </beans>

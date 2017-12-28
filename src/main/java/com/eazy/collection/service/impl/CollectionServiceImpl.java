@@ -6,9 +6,11 @@ import com.eazy.collection.service.CollectionService;
 import com.eazy.commons.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @Service
 public class CollectionServiceImpl implements CollectionService {
 

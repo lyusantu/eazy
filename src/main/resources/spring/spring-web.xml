@@ -42,7 +42,7 @@
     <!--全局异常捕捉 -->
     <bean class="com.eazy.commons.exception.GlobalExceptionResolver"/>
 
-    <!-- 支持上传文件 -->
+    <!-- 上传拦截,如最大上传值及最小上传值 -->
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <!-- 100M -->

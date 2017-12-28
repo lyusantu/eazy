@@ -6,9 +6,11 @@ import com.eazy.post.entity.Reply;
 import com.eazy.post.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @Service
 public class ReplyServiceImpl implements ReplyService {
 
