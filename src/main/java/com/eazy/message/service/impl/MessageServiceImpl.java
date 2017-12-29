@@ -47,5 +47,10 @@ public class MessageServiceImpl implements MessageService {
         return messageDao.countMyMsgAll(uid);
     }
 
+    @Override
+    public Message getMsg(int id, int uid) {
+        return messageDao.getMsg(id, uid);
+    }
+
 
 }

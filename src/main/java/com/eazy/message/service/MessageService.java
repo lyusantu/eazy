@@ -18,4 +18,6 @@ public interface MessageService {
     void removeMsg(String id,int uid);
 
     int countMyMsgAll(int uid);
+
+    Message getMsg(int id, int uid);
 }

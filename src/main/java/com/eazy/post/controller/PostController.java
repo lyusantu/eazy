@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -132,6 +131,9 @@ public class PostController {
         else if (user.getBalance() < post.getReward())
             return new AjaxResult(1, "飞吻不足");
         else {
+            System.out.println(post.getReward());
+            if (post.getReward() < 20)
+                return new AjaxResult(1, "不要试图更改飞吻值");
             Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
             verify = verifyService.getVerify(verify);
             if (ObjectUtil.isNull(verify))
@@ -155,6 +157,9 @@ public class PostController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     public @ResponseBody
     AjaxResult delete(HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        if (!user.getType().equalsIgnoreCase(Constants.ROLE_ADMIN))
+            return new AjaxResult(1, "权限不足");
         int id = Integer.parseInt(request.getParameter("id"));
         postService.delete(id);
         return new AjaxResult(0, null, null, "/");
@@ -229,11 +234,15 @@ public class PostController {
     @RequestMapping(value = "/set", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     public @ResponseBody
     AjaxResult set(HttpServletRequest request) {
-        String id = request.getParameter("id");
-        String rank = request.getParameter("rank");
-        String field = request.getParameter("field");
-        postService.set(id, rank, field);
-        return new AjaxResult(0);
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        if (user.getType().equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+            String id = request.getParameter("id");
+            String rank = request.getParameter("rank");
+            String field = request.getParameter("field");
+            postService.set(id, rank, field);
+            return new AjaxResult(0);
+        } else
+            return new AjaxResult(1, "权限不足");
     }
 
     // 采纳
@@ -299,7 +308,7 @@ public class PostController {
                 request.setAttribute("msg", "该帖已被删除");
             else {
                 if (post.getAuthor() != user.getId()) {
-                    request.setAttribute("msg", "不是自己的帖子不能随便更改噢");
+                    request.setAttribute("msg", "不要试图修改不是你的帖子");
                     return "err/err";
                 } else {
                     Column column = new Column();

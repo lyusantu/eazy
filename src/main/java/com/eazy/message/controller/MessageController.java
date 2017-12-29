@@ -36,7 +36,7 @@ public class MessageController {
     public @ResponseBody
     JSONObject read(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
-        if(ObjectUtil.isNotNull(user))
+        if (ObjectUtil.isNotNull(user))
             messageService.emptyStatus(user.getId());
         return new JSONObject().put("status", 0);
     }
@@ -44,8 +44,16 @@ public class MessageController {
     @RequestMapping(value = "/remove", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     public @ResponseBody
     JSONObject remove(HttpServletRequest request) {
-        String id = request.getParameter("id");
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        if (ObjectUtil.isNull(user))
+            return new JSONObject().put("status", 1).put("msg", "未登入");
+        String id = request.getParameter("id");
+        String all = request.getParameter("all");
+        if (ObjectUtil.isNull(all)) {
+            Message message = messageService.getMsg(Integer.parseInt(id), user.getId());
+            if (ObjectUtil.isNull(message))
+                return new JSONObject().put("status", 1).put("msg", "不要试图删除不是你的消息");
+        }
         messageService.removeMsg(id, user.getId());
         return new JSONObject().put("status", 0);
     }

@@ -34,6 +34,10 @@
         </if>
     </delete>
 
+    <select id="getMsg" resultType="Message">
+        SELECT * FROM message WHERE id = #{id} AND atid = #{uid}
+    </select>
+
     <resultMap id="messageResult" type="Message">
         <id column="id" property="id"/>
         <result column="pid" property="pid"/>

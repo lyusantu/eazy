@@ -20,4 +20,6 @@ public interface MessageDao {
 
     int countMyMsgAll(@Param("uid") int uid);
 
+    Message getMsg(@Param("id") int id, @Param("uid") int uid);
+
 }
