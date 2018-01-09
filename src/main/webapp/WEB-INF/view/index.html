@@ -6,7 +6,7 @@
     <div class="layui-row layui-col-space15">
 
          ### 纯净模式
-        <div class="layui-col-md8" #if(session.loginUser.readType != 0) style="width:100%"  #end>
+        <div class="layui-col-md8" #if(session.loginUser != null && session.loginUser.readType != 0) style="width:100%"  #end>
             #if(topList != null && topList.size() > 0)
             <div class="fly-panel">
                 <div class="fly-panel-title fly-filter">
@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        #if(session.loginUser.readType == 0)
+        #if(session.loginUser == null || session.loginUser.readType == 0)
         <div class="layui-col-md4">
 
             #if(pwList != null && pwList.size() > 0)

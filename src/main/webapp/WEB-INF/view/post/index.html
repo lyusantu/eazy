@@ -5,7 +5,7 @@
 <input type="hidden" id="pid" name="pid" value="#(post.id)" />
 <div class="layui-container">
     <div class="layui-row layui-col-space15">
-        <div class="layui-col-md8 content detail" #if(session.loginUser.readType != 0) style="width:100%"  #end>
+        <div class="layui-col-md8 content detail" #if(session.loginUser != null && session.loginUser.readType != 0) style="width:100%"  #end>
             <div class="fly-panel detail-box">
                 <h1>#(post.title)</h1>
                 <div class="fly-detail-info">
@@ -182,7 +182,7 @@
             </div>
         </div>
 
-        #if(session.loginUser.readType == 0)
+        #if(session.loginUser == null || session.loginUser.readType == 0)
         <div class="layui-col-md4">
             <dl class="fly-panel fly-list-one">
                 <dt class="fly-panel-title">本周热议</dt>
