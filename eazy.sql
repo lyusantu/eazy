@@ -338,7 +338,7 @@ CREATE TABLE `verify` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of verify
+-- Records of verify 1
 -- ----------------------------
 INSERT INTO `verify` VALUES ('1', '请输入so eazy', 'so eazy');
 INSERT INTO `verify` VALUES ('2', '2 + 2 * 2 = ?', '6');
