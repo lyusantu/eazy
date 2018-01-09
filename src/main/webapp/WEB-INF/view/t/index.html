@@ -4,7 +4,7 @@
 
 <div class="layui-container">
     <div class="layui-row layui-col-space15">
-        <div class="layui-col-md8">
+        <div class="layui-col-md8" #if(session.loginUser.readType != 0) style="width:100%"  #end>
             <div class="fly-panel" style="margin-bottom: 0;">
                 <div class="fly-panel-title fly-filter">
                     <a href="/column/#(tab_column)/all" #if(tab_filter== "all") class="layui-this" #end>综合</a>
@@ -70,6 +70,8 @@
 
             </div>
         </div>
+
+        #if(session.loginUser.readType == 0)
         <div class="layui-col-md4">
             <dl class="fly-panel fly-list-one">
                 <dt class="fly-panel-title">本周热议</dt>
@@ -111,6 +113,7 @@
             </div>
 
         </div>
+        #end
     </div>
 </div>
 

@@ -4,7 +4,9 @@
 
 <div class="layui-container">
     <div class="layui-row layui-col-space15">
-        <div class="layui-col-md8">
+
+         ### 纯净模式
+        <div class="layui-col-md8" #if(session.loginUser.readType != 0) style="width:100%"  #end>
             #if(topList != null && topList.size() > 0)
             <div class="fly-panel">
                 <div class="fly-panel-title fly-filter">
@@ -112,6 +114,8 @@
                 #end
             </div>
         </div>
+
+        #if(session.loginUser.readType == 0)
         <div class="layui-col-md4">
 
             #if(pwList != null && pwList.size() > 0)
@@ -124,6 +128,12 @@
             #end
 
             <div class="fly-panel fly-signin">
+                <div class="fly-panel-title">
+                    当前在线人数：#(com.eazy.commons.SessionCounter::getActiveSessions())
+                </div>
+            </div>
+
+            <div class="fly-panel fly-signin" id="signin">
                 <div class="fly-panel-title">
                     签到
                     <i class="fly-mid"></i>
@@ -191,6 +201,7 @@
                 </dl>
             </div>
         </div>
+        #end
     </div>
 </div>
 

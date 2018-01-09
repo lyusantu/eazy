@@ -15,6 +15,7 @@
         <result property="regTime" column="reg_time"/>
         <result property="city" column="city"/>
         <result property="status" column="status"/>
+        <result property="readType" column="read_type"/>
     </resultMap>
 
     <select id="getUser" parameterType="User" resultType="User">
@@ -34,7 +35,7 @@
     </select>
 
     <insert id="reg" parameterType="User" useGeneratedKeys="true" keyProperty="user.id">
-       INSERT INTO user(email,nickname,password,avatar,balance,reg_time,status,vip,type,gender,active_code) VALUES(#{user.email},#{user.nickName},#{user.password},#{user.avatar},#{user.balance},#{user.regTime},#{user.status},#{user.vip},#{user.type},#{user.gender},#{user.activeCode})
+       INSERT INTO user(email,nickname,password,avatar,balance,reg_time,status,vip,type,gender,active_code,read_type) VALUES(#{user.email},#{user.nickName},#{user.password},#{user.avatar},#{user.balance},#{user.regTime},#{user.status},#{user.vip},#{user.type},#{user.gender},#{user.activeCode},#{user.readType})
     </insert>
 
     <select id="activeAccount" resultType="User">
@@ -88,6 +89,9 @@
         </if>
         <if test="user.activeCode != null">
             status = 1
+        </if>
+        <if test="user.readType != null">
+            read_type = #{user.readType}
         </if>
         WHERE id = #{user.id}
     </update>

@@ -177,6 +177,7 @@ public class UserController {
                     user.setRegTime(new Timestamp(System.currentTimeMillis()));
                     user.setAvatar("/res/images/avatar/" + new Random().nextInt(12) + ".jpg");
                     user.setActiveCode(request.getSession().getId() + System.currentTimeMillis());
+                    user.setReadType(0);
                     userService.reg(user);
                     LOG.info(Base64.decode(user.getEmail()) + "注册成功");
                     LOG.info("----------激活邮件发送START----------");
@@ -459,13 +460,34 @@ public class UserController {
     @RequestMapping(value = "/jump/{username}", method = RequestMethod.GET)
     public String jump(@PathVariable("username") String username, HttpServletRequest request) {
         if (username == null)
-            System.out.println("nullnull");
+            System.out.println("null");
         User user = userService.getUserByName(username);
         if (ObjectUtil.isNull(user)) {
             request.setAttribute("msg", "用户不存在");
             return "err/err";
         } else
             return "redirect:/user/" + user.getId();
+    }
 
+    // 跳转社区设置
+    @AuthPassport
+    @RequestMapping(value = "/custom", method = RequestMethod.GET)
+    public String custom(HttpServletRequest request) {
+        return "user/custom";
+    }
+
+    // 社区设置
+    @AuthPassport
+    @RequestMapping(value = "/custom", method = RequestMethod.POST)
+    public @ResponseBody
+    AjaxResult customPost(HttpServletRequest request) {
+        User currUser = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        String read = request.getParameter("read");
+        User user = new User(currUser.getId());
+        user.setReadType(ObjectUtil.isNull(read) ? 0 : 1);
+        userService.update(user);
+        currUser.setReadType(user.getReadType());
+        request.getSession().setAttribute(Constants.LOGIN_USER, currUser);
+        return new AjaxResult(0, "设置成功", "/user/custom");
     }
 }

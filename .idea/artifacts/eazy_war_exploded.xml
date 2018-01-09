@@ -1,12 +1,14 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="eazy:war exploded">
-    <output-path>$PROJECT_DIR$/target/eazy_1.0-SNAPSHOT_20171220</output-path>
+    <output-path>$PROJECT_DIR$/target/eazy_1.0-SNAPSHOT_20180108</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="eazy" />
         </element>
         <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: org.ansj:ansj_seg:5.1.5" />
+          <element id="library" level="project" name="Maven: org.nlpcn:nlp-lang:1.7.7" />
           <element id="library" level="project" name="Maven: com.google.guava:guava:18.0" />
           <element id="library" level="project" name="Maven: log4j:log4j:1.2.17" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.5" />
@@ -69,10 +71,12 @@
           <element id="library" level="project" name="Maven: org.junit.jupiter:junit-jupiter-api:5.1.0-M1" />
           <element id="library" level="project" name="Maven: org.opentest4j:opentest4j:1.0.0" />
           <element id="library" level="project" name="Maven: org.junit.platform:junit-platform-commons:1.1.0-M1" />
+          <element id="library" level="project" name="Maven: javax.mail:mail:1.4.7" />
+          <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
         </element>
       </element>
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/target/eazy_1.0-SNAPSHOT_20171220/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/eazy_1.0-SNAPSHOT_20180108/META-INF/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="eazy/web/Web" />
     </root>

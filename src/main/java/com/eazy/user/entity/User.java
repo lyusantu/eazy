@@ -34,6 +34,8 @@ public class User {
 
     private String activeCode;
 
+    private Integer readType;
+
     public User(){
 
     }
@@ -184,5 +186,13 @@ public class User {
 
     public void setActiveCode(String activeCode) {
         this.activeCode = activeCode;
+    }
+
+    public Integer getReadType() {
+        return readType;
+    }
+
+    public void setReadType(Integer readType) {
+        this.readType = readType;
     }
 }
