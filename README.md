@@ -10,7 +10,6 @@ eazy
     前端：layui
     后端：Spring、SpringMVC、MyBatis、Redis、Quartz
 
-社区功能已完成
     
     
     
