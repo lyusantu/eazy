@@ -4,6 +4,7 @@ import com.eazy.column.entity.Column;
 import com.eazy.user.entity.User;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Post {
 
@@ -36,6 +37,10 @@ public class Post {
     private User user;
 
     private Column column;
+
+    private Keyword keyword;
+
+    private List<Keyword> keywords;
 
     public Post() {
 
@@ -168,5 +173,21 @@ public class Post {
 
     public void setColumn(Column column) {
         this.column = column;
+    }
+
+    public List<Keyword> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(List<Keyword> keywords) {
+        this.keywords = keywords;
+    }
+
+    public Keyword getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(Keyword keyword) {
+        this.keyword = keyword;
     }
 }

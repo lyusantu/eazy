@@ -11,6 +11,7 @@ import com.eazy.commons.dto.AjaxResult;
 import com.eazy.index.service.IndexService;
 import com.eazy.message.entity.Message;
 import com.eazy.message.service.MessageService;
+import com.eazy.post.entity.Keyword;
 import com.eazy.post.entity.Post;
 import com.eazy.post.entity.Reply;
 import com.eazy.post.service.PostService;
@@ -22,11 +23,11 @@ import com.eazy.verify.service.VerifyService;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
 import org.ansj.app.keyword.KeyWordComputer;
-import org.ansj.app.keyword.Keyword;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +40,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
+@Transactional
 @RequestMapping("/post")
 public class PostController {
 
@@ -78,6 +80,27 @@ public class PostController {
         }
         Post post = postService.getPost(id);
         if (post.getDelete() == 0) {
+            List<Column> columnList = (List<Column>) request.getSession().getAttribute("tab1");
+            if (ObjectUtil.isNull(columnList)) {
+                columnList = columnService.listColumn(new Column(0));
+                request.getSession().setAttribute("tab1", columnList);
+            }
+            Column column = new Column(columnService.getPidById(post.getType())); // 获取pid
+            List<Column> columnList1 = columnService.listColumn(column);
+            request.setAttribute("tab2", columnList1);
+            for (Column column1 : columnList) {
+                if (column1.getId().equals(columnList1.get(0).getPid())) {
+                    request.setAttribute("tab1_select", column1.getSuffix());
+                    break;
+                }
+            }
+            for (Column column1 : columnList1) {
+                if (column1.getId().equals(post.getType())) {
+                    request.setAttribute("tab2_select", column1.getSuffix());
+                    break;
+                }
+            }
+
             post.setReaders(post.getReaders() + 1);
             Post updatePost = new Post(post.getId(), post.getReaders());
             postService.update(updatePost);
@@ -93,11 +116,10 @@ public class PostController {
             request.setAttribute("page", page);
             request.setAttribute("weekHot", postService.weeklyTop());// 本周热议
             request.setAttribute("sponsorList", indexService.listSponsor(2));
-            KeyWordComputer kwc = new KeyWordComputer(5);
-            request.setAttribute("keys", kwc.computeArticleTfidf(post.getTitle(), post.getContent())); // 分词
+            request.setAttribute(Constants.TITLE, post.getTitle());
         }
-        request.setAttribute("tab_column", post.getColumn().getSuffix());
-        request.setAttribute("msg", "该帖已被删除");
+        request.setAttribute("keywords", postService.getKeyword(post.getId())); // 关键字
+        request.setAttribute("msg", "该主题已被删除");
         return post.getDelete() == 0 ? "post/index" : "err/err";
     }
 
@@ -114,11 +136,9 @@ public class PostController {
     @AuthPassport
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String add(HttpServletRequest request) {
-        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
-        Column column = new Column();
-        column.setRole(user.getType());
-        request.getSession().setAttribute("listColumn", columnService.listColumn(column));
+        request.setAttribute(Constants.TITLE, "创建新主题");
         request.setAttribute("verify", verifyService.randVerify());
+        request.setAttribute("listType", columnService.listColumnSecondary());
         return "post/add";
     }
 
@@ -141,16 +161,22 @@ public class PostController {
             else {
                 post.setAuthor(user.getId());
                 post.setCreateTime(new Timestamp(System.currentTimeMillis()));
-                postService.addPost(post);
+                postService.addPost(post); // 添加文章
                 user.setBalance(user.getBalance() - post.getReward());
-                User updateUser = new User();
-                updateUser.setId(user.getId());
-                updateUser.setBalance(user.getBalance());
+                User updateUser = new User(user.getId(), user.getBalance());
                 userService.update(updateUser); // 更改用户飞吻
                 request.getSession().setAttribute(Constants.LOGIN_USER, user);
+                KeyWordComputer kwc = new KeyWordComputer(5); // 分词,关键字提取
+                List<org.ansj.app.keyword.Keyword> keywords = kwc.computeArticleTfidf(post.getTitle(), post.getContent());
+                if (ObjectUtil.isNotNull(keywords) && keywords.size() > 0) {
+                    keywords.forEach(
+                            keyword -> postService.addKeyword(new Keyword(keyword.getName(), post.getId(), new Timestamp(System.currentTimeMillis())))
+                    );
+                }
                 return new AjaxResult(0, null, "/"); // 此处应该跳转到用户发表的对应目录的首页
             }
         }
+
     }
 
     @AuthPassport
@@ -162,6 +188,7 @@ public class PostController {
             return new AjaxResult(1, "权限不足");
         int id = Integer.parseInt(request.getParameter("id"));
         postService.delete(id);
+        postService.delKeyword(id);
         return new AjaxResult(0, null, null, "/");
     }
 
@@ -225,7 +252,7 @@ public class PostController {
             message = new Message(post.getId(), user.getId(), post.getAuthor(), 0, null, new Timestamp(System.currentTimeMillis()), 0, reply.getId());
             messageService.addMsg(message);
             LOG.info("----------评论的推送结束----------");
-            return new JSONObject().put("status", 0).put("msg", "回答成功").put("action", false);
+            return new JSONObject().put("status", 0).put("msg", "评论成功").put("action", false);
         }
     }
 
@@ -301,22 +328,24 @@ public class PostController {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         Post post = postService.getPost(id);
         if (post == null) {
-            request.setAttribute("msg", "帖子不存在");
+            request.setAttribute("msg", "主题不存在");
             return "err/err";
         } else {
             if (post.getDelete() == 1)
-                request.setAttribute("msg", "该帖已被删除");
+                request.setAttribute("msg", "该主题已被删除");
             else {
                 if (post.getAuthor() != user.getId()) {
-                    request.setAttribute("msg", "不要试图修改不是你的帖子");
+                    request.setAttribute("msg", "不要试图修改不是你的主题");
                     return "err/err";
                 } else {
+                    request.setAttribute(Constants.TITLE, "编辑主题 - " + post.getTitle());
                     Column column = new Column();
-                    column.setRole(user.getType());
+//                    column.setRole(user.getType());
                     request.getSession().setAttribute("listColumn", columnService.listColumn(column));
                     Verify verify = verifyService.randVerify();
                     request.setAttribute("verify", verify);
                     request.setAttribute("post", post);
+                    request.setAttribute("listType", columnService.listColumnSecondary());
                 }
             }
             return post.getDelete() == 0 ? "post/edit" : "err/err";
@@ -338,9 +367,38 @@ public class PostController {
                 return new AjaxResult(1, "人类验证失败");
             else {
                 postService.update(post);
+                postService.delKeyword(post.getId());// 删除已有关键字
+                KeyWordComputer kwc = new KeyWordComputer(5); // 分词,关键字提取
+                List<org.ansj.app.keyword.Keyword> keywords = kwc.computeArticleTfidf(post.getTitle(), post.getContent());
+                if (ObjectUtil.isNotNull(keywords) && keywords.size() > 0) {
+                    keywords.forEach(
+                            keyword -> postService.addKeyword(new Keyword(keyword.getName(), post.getId(), new Timestamp(System.currentTimeMillis())))
+                    );
+                }
                 return new AjaxResult(0, null, "/post/" + post.getId()); // 此处应该跳转到用户发表的对应目录的首页
             }
         }
+    }
+
+    @RequestMapping(value = "/tags/{tag}", method = RequestMethod.GET)
+    public String tags(HttpServletRequest request, @PathVariable("tag") String tag) {
+        String p = request.getParameter("p");
+        String type = request.getParameter("type");
+        Page page = new Page(((p == null ? 1 : Integer.parseInt(p)) - 1) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
+        page.setPageNumber(p == null ? 1 : Integer.parseInt((p)));
+        page.setTotalCount(postService.countTags(type, tag));
+        List<Post> postList = postService.listTags(page, type, tag);
+        request.setAttribute(Constants.TITLE, tag);
+        request.setAttribute(Constants.SEARCH_TAG, tag);
+        request.setAttribute(Constants.PAGE, page);
+        request.setAttribute(Constants.POST_LIST, postList);
+        request.setAttribute(Constants.TYPE, type);
+        request.setAttribute(Constants.REPLY_LIST, replyService.weeklyTop());// 回帖周榜
+        request.setAttribute(Constants.HOT_WEEKLY_LIST, postService.weeklyTop());// 本周热议
+        request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
+        request.setAttribute(Constants.SPONSOR_LIST, indexService.listSponsor(1));
+        request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
+        return Constants.POST_TAGS;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.eazy.post.service;
 
 import com.eazy.commons.Page;
+import com.eazy.post.entity.Keyword;
 import com.eazy.post.entity.Post;
 
 import java.util.List;
@@ -9,9 +10,9 @@ public interface PostService {
 
     int addPost(Post post);
 
-    List<Post> list(Page page, String column, String type);
+    List<Post> list(Page page, String tab, String tab2, String type);
 
-    int count(String column, String type);
+    int count(String tab, String tab2,String type);
 
     List<Post> listMyPost(int uid, Page page);
 
@@ -26,4 +27,14 @@ public interface PostService {
     void set(String id, String rank, String field);
 
     List<Post> weeklyTop();
+
+    int addKeyword(Keyword keyWord);
+
+    List<Keyword> getKeyword(Integer pid);
+
+    void delKeyword(Integer pid);
+
+    List<Post> listTags(Page page, String type, String tag);
+
+    int countTags(String type, String tag);
 }

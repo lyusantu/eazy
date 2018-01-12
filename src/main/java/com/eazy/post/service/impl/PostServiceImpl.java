@@ -2,6 +2,7 @@ package com.eazy.post.service.impl;
 
 import com.eazy.commons.Page;
 import com.eazy.post.dao.PostDao;
+import com.eazy.post.entity.Keyword;
 import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> list(Page page, String column, String type) {
-        return postDao.list(page, column, type);
+    public List<Post> list(Page page, String tab, String tab2, String type) {
+        return postDao.list(page, tab, tab2, type);
     }
 
     @Override
-    public int count(String column, String type) {
-        return postDao.count(column, type);
+    public int count(String tab, String tab2, String type) {
+        return postDao.count(tab, tab2, type);
     }
 
     @Override
@@ -65,5 +66,30 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> weeklyTop() {
         return postDao.weeklyTop();
+    }
+
+    @Override
+    public int addKeyword(Keyword keyWord) {
+        return postDao.addKeyword(keyWord);
+    }
+
+    @Override
+    public List<Keyword> getKeyword(Integer pid) {
+        return postDao.getKeyword(pid);
+    }
+
+    @Override
+    public void delKeyword(Integer pid) {
+        postDao.delKeyword(pid);
+    }
+
+    @Override
+    public List<Post> listTags(Page page, String type, String tag) {
+        return postDao.listTags(page, type, tag);
+    }
+
+    @Override
+    public int countTags(String type, String tag) {
+        return postDao.countTags(type, tag);
     }
 }
