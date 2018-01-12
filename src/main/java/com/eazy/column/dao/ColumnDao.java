@@ -9,4 +9,8 @@ public interface ColumnDao {
 
     List<Column> listColumn(@Param("column") Column column);
 
+    Integer getPidById(@Param("id") Integer id);
+
+    List<Column> listColumnSecondary();
+
 }

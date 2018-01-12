@@ -14,10 +14,20 @@ import java.util.List;
 public class ColumnServiceImpl implements ColumnService {
 
     @Autowired
-    private ColumnDao postDao;
+    private ColumnDao columnDao;
 
     @Override
     public List<Column> listColumn(Column column) {
-        return postDao.listColumn(column);
+        return columnDao.listColumn(column);
+    }
+
+    @Override
+    public Integer getPidById(Integer id) {
+        return columnDao.getPidById(id);
+    }
+
+    @Override
+    public List<Column> listColumnSecondary() {
+        return columnDao.listColumnSecondary();
     }
 }

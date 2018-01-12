@@ -8,7 +8,14 @@ public class Column {
 
     private String suffix;
 
-    private String role;
+    private Integer pid;
+
+    public Column() {
+    }
+
+    public Column(Integer pid) {
+        this.pid = pid;
+    }
 
     public Integer getId() {
         return id;
@@ -34,11 +41,11 @@ public class Column {
         this.suffix = suffix;
     }
 
-    public String getRole() {
-        return role;
+    public Integer getPid() {
+        return pid;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setPid(Integer pid) {
+        this.pid = pid;
     }
 }
