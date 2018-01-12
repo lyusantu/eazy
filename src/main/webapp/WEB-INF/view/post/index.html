@@ -21,7 +21,7 @@
                         <span class="layui-badge layui-bg-black">置顶</span>
                     #end
                     #if(post.wonderful == 1)
-                        <span class="layui-badge layui-bg-red">精帖</span>
+                        <span class="layui-badge layui-bg-red">加精</span>
                     #end
                     <div class="fly-admin-box" data-id="#(post.id)">
                         #if(session.loginUser != null && session.loginUser.type == 'admin')
@@ -63,7 +63,7 @@
                         <span style="padding-right: 10px; color: #FF7200">悬赏：#(post.reward)飞吻</span>
                         #if(session.loginUser != null)
                             #if(session.loginUser.id == post.user.id && post.status == 0)
-                                <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/post/edit/#(post.id)">编辑此贴</a></span>
+                                <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/post/edit/#(post.id)">编辑主题</a></span>
                             #end
                             #if(collection == null)
                                 <span class="layui-btn layui-btn-xs jie-admin " type="collect" data-type="add">收藏</span>
@@ -74,9 +74,11 @@
                     </div>
                 </div>
                 <div class="detail-body photos">#(post.content)</div>
+                #if(keywords != null && keywords.size() > 0)
                 <hr/>
-                #for(k : keys)
-                   <span class="layui-badge-rim">#(k.name)</span>
+                   #for(k : keywords)
+                <a href="/post/tags/#(k.keyword)"><span class="layui-badge-rim">#(k.keyword)</span></a>
+                   #end
                 #end
             </div>
 
@@ -119,7 +121,7 @@
                                     <span class="createtime">#(r.time)</span>
                                 </div>
                                 #if(r.accept == 1)
-                                <i class="iconfont icon-caina" title="最佳答案"></i>
+                                <i class="iconfont icon-caina" title="最佳评论"></i>
                                 #end
                             </div>
                             <div class="detail-body jieda-body photos">
@@ -175,7 +177,7 @@
                         <div class="layui-form-item">
                             <input type="hidden" name="pid" value="#(post.id)">
                             <input type="hidden" name="action" value="/post/reply" />
-                            <button class="layui-btn" lay-filter="*" lay-submit>提交回复</button>
+                            <button class="layui-btn" lay-filter="*" lay-submit>发表评论</button>
                         </div>
                     </form>
                 </div>
@@ -199,7 +201,7 @@
             </dl>
             <div class="fly-panel">
                 <div class="fly-panel-title">
-                    钻石级赞助商
+                    赞助商
                 </div>
                 <div class="fly-panel-main">
                     #if(sponsorList != null && sponsorList.size() > 0)

@@ -1,29 +1,38 @@
 #define column()
-<div class="fly-panel fly-column">
+<div class="fly-panel fly-column" style="margin-top:15px;">
     <div class="layui-container">
         <ul class="layui-clear">
-            <li #if(tab_column == "home") class="layui-hide-xs layui-this" #end><a href="/">首页</a></li>
-            <li #if(tab_column == "quiz") class="layui-hide-xs layui-this" #end><a href="/column/quiz/all">提问</a></li>
-            <li #if(tab_column == "share") class="layui-hide-xs layui-this" #end><a href="/column/share/all">分享<span class="layui-badge-dot layui-bg-blue"></span></a></li>
-            <li #if(tab_column == "discuss") class="layui-hide-xs layui-this" #end><a href="/column/discuss/all">讨论</a></li>
-            <li #if(tab_column == "suggest") class="layui-hide-xs layui-this" #end><a href="/column/suggest/all">建议</a></li>
-            <li #if(tab_column == "notice") class="layui-hide-xs layui-this" #end><a href="/column/notice/all">公告</a></li>
-            <li #if(tab_column == "news") class="layui-hide-xs layui-this" #end><a href="/column/news/all">动态</a></li>
-            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
+            <li #if(tab1_select == "all") class="layui-hide-xs layui-this" #end><a href="/tab/all">全部</a></li>
+            #for(t : session.tab1)
+            <li #if(tab1_select == t.suffix) class="layui-hide-xs layui-this" #end><a href="/tab/#(t.suffix)">#(t.name)</a></li>
+            #end
 
             #if(session.loginUser != null)
-            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/post">我发表的贴</a></li>
-            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/post/#collection">我收藏的贴</a></li>
+            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/post">我发表的主题</a></li>
+            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/post/#collection">我收藏的主题</a></li>
             #end
         </ul>
-
         <div class="fly-column-right layui-hide-xs">
             <span class="fly-search"><i class="layui-icon"></i></span>
-            <button class="layui-btn" id="LAY_add">发表新帖</button>
+            <button class="layui-btn" id="LAY_add">创作新主题</button>
         </div>
         <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;">
-            <button class="layui-btn" id="LAY_add">发表新帖</button>
+            <button class="layui-btn" id="LAY_add">创作新主题</button>
         </div>
     </div>
 </div>
+
+#if(tab2 != null && tab2.size() > 0)
+<div class="fly-panel fly-column"style="background-color: #f9f9f9;">
+    <div class="layui-container">
+        <ul class="layui-clear">
+            #for(t : tab2)
+            <li #if(tab2_select == t.suffix) class="layui-hide-xs layui-this" #end><a href="/tab/#(tab1_select)?tab=#(t.suffix)">#(t.name)</a></li>
+            #end
+            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
+        </ul>
+    </div>
+</div>
+#end
+
 #end

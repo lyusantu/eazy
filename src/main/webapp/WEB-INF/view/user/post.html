@@ -17,7 +17,7 @@
         <li class="layui-nav-item layui-this">
             <a href="/user/post">
                 <i class="layui-icon">&#xe60a;</i>
-                我的帖子
+                我的主题
             </a>
         </li>
         <li class="layui-nav-item">
@@ -54,10 +54,10 @@
         <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_uc">
             <ul class="layui-tab-title">
                 <li lay-id="index" class="layui-this">
-                    我发的帖
+                    我发表的主题
                 </li>
                 <li lay-id="collection">
-                    我收藏的帖
+                    我收藏的主题
                 </li>
             </ul>
             <div class="layui-tab-content" id="LAY_ucm" style="padding: 5px 0;">
@@ -108,7 +108,7 @@
             elem: '#LAY_mySendCard'
             , url: '/user/myPost'
             , cols: [[
-                {field: 'title', minWidth: 200, title: '帖子标题', align: 'center'}
+                {field: 'title', minWidth: 200, title: '主题标题', align: 'center'}
                 , {field: 'type', width: 80, title: '分类', align: 'center'}
                 , {field: 'delete', width: 80, title: '状态', align: 'center'}
                 , {field: 'status', width: 80, title: '结贴', align: 'center'}
@@ -131,7 +131,7 @@
           elem: '#LAY_myCollectioncard'
           , url: '/user/myCollection'
           , cols: [[
-              {field: 'title', minWidth: 150, title: '帖子标题', align: 'left', templet: '#titleTpl'}
+              {field: 'title', minWidth: 150, title: '主题标题', align: 'left', templet: '#titleTpl'}
               , {field: 'createTime', width: 200, title: '收藏时间', align: 'center', templet: '#createTimeTpl_coll'}
           ]]
           , page: true

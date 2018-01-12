@@ -1,24 +1,35 @@
 #@header()
 
-#@column()
+<div class="fly-panel fly-column" style="margin-top:15px;">
+    <div class="layui-container">
+        <ul class="layui-clear">
+            <li class="layui-hide-xs"><a style="color: #FF5722;">找到包含标签“#(searchTag)”的主题约 #(page.totalCount) 条结果 当前第 #(page.pageNumber) 页，共 #(page.totalPage) 页</a></li>
+
+            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
+        </ul>
+
+        <div class="fly-column-right layui-hide-xs">
+            <span class="fly-search"><i class="layui-icon"></i></span>
+            <a href="add.html" class="layui-btn">创作新主题</a>
+        </div>
+        <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;">
+            <a href="add.html" class="layui-btn">创作新主题</a>
+        </div>
+    </div>
+</div>
 
 <div class="layui-container">
     <div class="layui-row layui-col-space15">
-        <div class="layui-col-md8" #if(session.loginUser !=null && session.loginUser.readType !=0) style="width:100%"
-             #end>
+        <div class="layui-col-md8" #if(session.loginUser !=null && session.loginUser.readType !=0) style="width:100%" #end>
             <div class="fly-panel" style="margin-bottom: 0;">
                 <div class="fly-panel-title fly-filter">
-                    <a href="/tab/#(tab1_select)#if(tab2_select != null)?tab=#(tab2_select)#end" #if(type== null)
-                       class="layui-this" #end>综合</a>
+                    <a href="/post/tags/#(tag)" #if(type== null) class="layui-this" #end>综合</a>
                     <span class="fly-mid"></span>
-                    <a href="/tab/#(tab1_select)#if(tab2_select != null)?tab=#(tab2_select)&#else?#end type=unsolved"
-                       #if(type== "unsolved") class="layui-this" #end>未结</a>
+                    <a href="/post/tags/#(tag)?type=unsolved" #if(type== "unsolved") class="layui-this" #end>未结</a>
                     <span class="fly-mid"></span>
-                    <a href="/tab/#(tab1_select)#if(tab2_select != null)?tab=#(tab2_select)&#else?#end type=solved"
-                       #if(type== "solved") class="layui-this" #end>已结</a>
+                    <a href="/post/tags/#(tag)?type=solved" #if(type== "solved") class="layui-this" #end>已结</a>
                     <span class="fly-mid"></span>
-                    <a href="/tab/#(tab1_select)#if(tab2_select != null)?tab=#(tab2_select)&#else?#end type=wonderful"
-                       #if(type== "wonderful") class="layui-this" #end>精华</a>
+                    <a href="/post/tags/#(tag)?type=wonderful" #if(type== "wonderful") class="layui-this" #end>精华</a>
                     <span class="fly-filter-right layui-hide-xs"></span>
                 </div>
                 #if(postList == null || postList.size() == 0)
@@ -74,12 +85,10 @@
 
         #if(session.loginUser == null || session.loginUser.readType == 0)
         <div class="layui-col-md4">
-
             #if(pwList != null && pwList.size() > 0)
             <div class="fly-panel">
                 <h3 class="fly-panel-title">温馨通道</h3>
                 <ul class="fly-panel-main fly-list-static">
-
                 </ul>
             </div>
             #end
@@ -104,7 +113,8 @@
                 </div>
             </div>
 
-            #if( replyList != null && replyList.size() > 0)
+
+            #if(replyList != null && replyList.size() > 0)
             <div class="fly-panel fly-rank fly-rank-reply" id="LAY_replyRank">
                 <h3 class="fly-panel-title">回帖周榜</h3>
                 <dl>
@@ -163,28 +173,14 @@
             <div class="fly-panel fly-link">
                 <h3 class="fly-panel-title">友情链接</h3>
                 <dl class="fly-panel-main">
+                    <dd><a href="mailto:lyusantu@gmail.com" class="fly-link" target="_blank">申请友链</a>
+                    <dd>
                         #for(s : fsList)
-                    <dd><a href="#(s.url)" target="_blank">#(s.name)</a></dd>
+                    <dd><a href="#(s.url)" class="fly-link" target="_blank">#(s.name)</a>
+                    <dd>
                         #end
-                    <dd><a href="mailto:lyusantu@gmail.com" class="fly-link" target="_blank">申请友链</a></dd>
                 </dl>
             </div>
-
-            <div class="fly-panel fly-link">
-                <!--<h3 class="fly-panel-title">轮播广告</h3>
-                <dl class="fly-panel-main">-->
-                <div class="layui-carousel" id="carousel">
-                    <div carousel-item>
-                        <div style="background-color: orange"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">测试轮播</a></p></div>
-                        <div style="background-color: #FF7200"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">测试轮播</a></p></div>
-                        <div style="background-color: #2D93CA"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">测试轮播</a></p></div>
-                        <div style="background-color: #393D49"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">测试轮播</a></p></div>
-                        <div style="background-color: #CC0000"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">测试轮播</a></p></div>
-                    </div>
-                </div>
-                <!--</dl>-->
-            </div>
-
         </div>
         #end
     </div>
@@ -193,12 +189,11 @@
 #@footer()
 #@js?()
 <script>
-    layui.use(['util', 'laydate', 'layer', 'laypage', 'carousel'], function () {
+    layui.use(['util', 'laydate', 'layer', 'laypage'], function () {
         var util = layui.util
             , laydate = layui.laydate
             , layer = layui.layer,
             laypage = layui.laypage,
-            carousel = layui.carousel,
             $ = layui.jquery;
 
         //总页数低于页码总数
@@ -212,15 +207,8 @@
             , layout: ['prev', 'page', 'next', 'skip']
             , jump: function (obj, first) {
                 if (!first)
-                    location.href = '/tab/#(tab1_select)?p=' + obj.curr + '#if(tab2_select != null)&tab=#(tab2_select)#end#if(type != null)&type=#(type)#end';
+                    location.href = '';
             },
-        });
-
-        carousel.render({
-            elem: '#carousel'
-            ,width: '100%' //设置容器宽度
-            ,arrow: 'hover'
-            //,anim: 'updown' //切换动画方式
         });
 
         $('.createtime').each(function () {

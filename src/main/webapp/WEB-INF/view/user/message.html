@@ -17,7 +17,7 @@
         <li class="layui-nav-item">
             <a href="/user/post">
                 <i class="layui-icon">&#xe60a;</i>
-                我的帖子
+                我的主题
             </a>
         </li>
         <li class="layui-nav-item layui-this">
@@ -58,11 +58,11 @@
                     <li data-id="#(m.id)">
                         <blockquote class="layui-elem-quote">
                             #if(m.type == 0) ### 评论
-                            <a href="/user/#(m.user.id)" target="_blank"><cite>#(m.user.nickName)</cite></a> 评论了您的帖子 <a
+                            <a href="/user/#(m.user.id)" target="_blank"><cite>#(m.user.nickName)</cite></a> 评论了您的主题 <a
                                 href="/post/#(m.post.id)#item-#(m.reply)"
                                 target="_blank"><cite>#(m.post.title)</cite></a>
                             #elseif(m.type == 1) ### 艾特
-                            <a href="/user/#(m.user.id)" target="_blank"><cite>#(m.user.nickName)</cite></a> 在帖子 <a
+                            <a href="/user/#(m.user.id)" target="_blank"><cite>#(m.user.nickName)</cite></a> 在主题 <a
                                 href="/post/#(m.post.id)#item-#(m.reply)"
                                 target="_blank"><cite>#(m.post.title)</cite></a> 中@了你
                             #elseif(m.type == 2) ### 系统消息

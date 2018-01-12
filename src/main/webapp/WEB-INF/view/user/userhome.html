@@ -45,10 +45,10 @@
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md6 fly-home-jie">
             <div class="fly-panel">
-                <h3 class="fly-panel-title">#(user.nickName) 最近的提问</h3>
+                <h3 class="fly-panel-title">#(user.nickName) 最近的主题</h3>
                 <ul class="jie-row">
                     #if(postList == null || postList.size() == 0)
-                        <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div>
+                        <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何主题</i></div>
                     #else
                     #for(p : postList)
                     <li>
@@ -57,7 +57,7 @@
                         #end
                         <a href="/post/#(p.id)" class="jie-title"> #(p.title)</a>
                         <i class="createtime">#(p.createTime)</i>
-                        <em class="layui-hide-xs">#(p.readers)阅/#(p.comments)答</em>
+                        <em class="layui-hide-xs">#(p.readers)阅/#(p.comments)评</em>
                     </li>
                     #end
                    #end
@@ -67,20 +67,20 @@
 
         <div class="layui-col-md6 fly-home-da">
             <div class="fly-panel">
-                <h3 class="fly-panel-title">#(user.nickName) 最近的回答</h3>
+                <h3 class="fly-panel-title">#(user.nickName) 最近的评论</h3>
                 <ul class="home-jieda">
                     #if(replyList != null && replyList.size() > 0)
                         #for(r : replyList)
                             <li>
                                 <p>
                                     <span class="createtime">#(r.time)</span>
-                                    在<a href="/post/#(r.post.id)#item-#(r.id)" target="_blank">#(r.post.title)</a>中回答：
+                                    在<a href="/post/#(r.post.id)#item-#(r.id)" target="_blank">#(r.post.title)</a>中评论：
                                 </p>
                                 <div class="home-dacontent">#(r.content)</div>
                             </li>
                         #end
                     #else
-                        <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有回答任何问题</span></div>
+                        <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有评论任何主题</span></div>
                     #end
                 </ul>
             </div>
