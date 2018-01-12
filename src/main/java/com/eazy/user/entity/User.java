@@ -49,6 +49,11 @@ public class User {
         this.avatar = avatar;
     }
 
+    public User(Integer id, Integer balance) {
+        this.id = id;
+        this.balance = balance;
+    }
+
     @Override
     public String toString() {
         return "User{" +

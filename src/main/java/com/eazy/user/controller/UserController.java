@@ -74,6 +74,7 @@ public class UserController {
             return "err/err";
         } else {
             Page page = new Page(0, 20);
+            request.setAttribute(Constants.TITLE, user.getNickName());
             request.setAttribute("user", user);
             request.setAttribute("postList", postService.listMyPost(user.getId(), page)); // 最近的提问
             request.setAttribute("replyList", replyService.listMyReply(user.getId(), page));// 最近的回答
@@ -86,7 +87,7 @@ public class UserController {
     public String signIn(HttpServletRequest request) {
         Verify verify = verifyService.randVerify();
         request.setAttribute("verify", verify);
-        request.setAttribute(Constants.TITLE, "登录");
+        request.setAttribute(Constants.TITLE, "登入");
         return "user/login";
     }
 
@@ -103,7 +104,7 @@ public class UserController {
     @AuthPassport
     @RequestMapping(value = "/set", method = RequestMethod.GET)
     public String set(HttpServletRequest request) {
-        request.setAttribute(Constants.TITLE, "账号设置");
+        request.setAttribute(Constants.TITLE, "基本设置");
         return "user/set";
     }
 
@@ -115,7 +116,7 @@ public class UserController {
         Page page = new Page(0, 20);
         request.setAttribute("postList", postService.listMyPost(user.getId(), page)); // 最近提问
         request.setAttribute("replyList", replyService.listMyReply(user.getId(), page));// 最近的回答
-        request.setAttribute(Constants.TITLE, "用户主页");
+        request.setAttribute(Constants.TITLE, "我的主页");
         return "user/home";
     }
 
@@ -264,6 +265,7 @@ public class UserController {
                 msg = "激活成功！ <a href=\"/user/signin\">马上登录</a>";
             } else
                 msg = "激活失败！激活码已失效";
+        request.setAttribute(Constants.TITLE, "激活账户");
         request.setAttribute("err", err);
         request.setAttribute("msg", msg);
         return "user/active";
@@ -287,7 +289,8 @@ public class UserController {
 
     @AuthPassport
     @RequestMapping(value = "/post", method = RequestMethod.GET)
-    public String post() {
+    public String post(HttpServletRequest request) {
+        request.setAttribute(Constants.TITLE, "我的主题");
         return "user/post";
     }
 
@@ -325,7 +328,7 @@ public class UserController {
                                 .put("status", status)
                                 .put("reward", post.getReward())
                                 .put("createTime", post.getCreateTime())
-                                .put("data", post.getReaders() + "阅/" + post.getComments() + "答")
+                                .put("data", post.getReaders() + "阅/" + post.getComments() + "评")
                                 .put("right", null);
                         array.put(data[0]);
                     }
@@ -365,6 +368,7 @@ public class UserController {
         Verify verify = verifyService.randVerify();
         request.setAttribute("verify", verify);
         request.setAttribute("way", "forget");
+        request.setAttribute(Constants.TITLE, "找回密码");
         return "user/forget";
     }
 
@@ -411,6 +415,7 @@ public class UserController {
         User user = userService.activeAccount(code);
         request.setAttribute("status", ObjectUtil.isNull(user));
         request.setAttribute("user", user);
+        request.setAttribute(Constants.TITLE, "修改密码");
         return "user/forget";
     }
 
@@ -453,6 +458,7 @@ public class UserController {
         page.setTotalCount(messageService.countMyMsgAll(user.getId()));
         request.setAttribute("page", page);
         request.setAttribute("list", messageService.listMyMsg(user.getId(), page));
+        request.setAttribute(Constants.TITLE, "我的消息");
         return "user/message";
     }
 
@@ -473,6 +479,7 @@ public class UserController {
     @AuthPassport
     @RequestMapping(value = "/custom", method = RequestMethod.GET)
     public String custom(HttpServletRequest request) {
+        request.setAttribute(Constants.TITLE, "社区设置");
         return "user/custom";
     }
 
