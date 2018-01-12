@@ -9,4 +9,8 @@
     <select id="listSponsor" resultType="Sponsor">
         SELECT * FROM sponsor WHERE type = #{type} ORDER BY time DESC
     </select>
+
+    <select id="listKeyword" resultType="Keyword">
+       SELECT *,COUNT(keyword) as ct from keyword GROUP BY keyword HAVING ct > 0 ORDER BY ct DESC LIMIT 0,30
+    </select>
 </mapper>

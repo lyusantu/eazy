@@ -3,13 +3,15 @@
 <mapper namespace="com.eazy.column.dao.ColumnDao">
 
     <select id="listColumn" parameterType="Column" resultType="Column">
-        SELECT * FROM `column` WHERE
-        <if test="column.role == 'admin'">
-            1 = 1
-        </if>
-        <if test="column.role == 'user'">
-            role = #{column.role}
-        </if>
+        SELECT * FROM `column` WHERE pid = #{column.pid} ORDER BY id ASC
+    </select>
+
+    <select id="getPidById" resultType="Integer">
+        SELECT pid FROM `column` WHERE id = #{id}
+    </select>
+
+    <select id="listColumnSecondary" resultType="Column">
+        SELECT * FROM `column` WHERE pid != 0
     </select>
 
 </mapper>

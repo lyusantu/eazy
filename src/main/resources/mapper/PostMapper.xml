@@ -13,8 +13,11 @@
         WHERE p.type = c.id
         AND p.author = u.id
         AND p.delete = 0
-        <if test="column != null and column != 'all'">
-            AND c.suffix = #{column}
+        <if test="tab != null and tab != 'all'">
+            AND c.suffix in (SELECT suffix FROM `column` WHERE pid in (SELECT id FROM `column` WHERE suffix = #{tab}))
+        </if>
+        <if test="tab2 != null and tab2 != 'all'">
+            AND c.suffix = #{tab2}
         </if>
         <if test="type != null">
             <choose>
@@ -39,8 +42,11 @@
         WHERE p.type = c.id
         AND p.author = u.id
         AND p.delete = 0
-        <if test="column != null and column != 'all'">
-            AND c.suffix = #{column}
+        <if test="tab != null and tab != 'all'">
+            AND c.suffix in (SELECT suffix FROM `column` WHERE pid in (SELECT id FROM `column` WHERE suffix = #{tab}))
+        </if>
+        <if test="tab2 != null and tab2 != 'all'">
+            AND c.suffix = #{tab2}
         </if>
         <if test="type != null">
             <choose>
@@ -58,17 +64,17 @@
     </select>
 
     <select id="weeklyTop" resultType="Post">
-        SELECT * FROM post WHERE YEARWEEK(date_format(createtime,'%Y-%m-%d')) = YEARWEEK(now()) AND comments > 10 ORDER BY comments DESC
+        SELECT * FROM post WHERE `delete` = 0 AND YEARWEEK(date_format(createtime,'%Y-%m-%d')) = YEARWEEK(now()) AND comments > 10 ORDER BY comments DESC
     </select>
 
     <select id="countMyPost" resultType="Integer">
         SELECT count(p.id) FROM post p,`column` c
-        WHERE p.type = c.id AND p.author = #{uid}
+        WHERE p.type = c.id AND p.author = #{uid} AND p.delete = 0
     </select>
 
     <select id="listMyPost" resultMap="postResult">
         SELECT p.*,c.name cname FROM post p,`column` c
-        WHERE p.type = c.id AND p.author = #{uid} ORDER BY p.id DESC LIMIT #{page.startNumber},#{page.pageSize}
+        WHERE p.type = c.id AND p.author = #{uid} AND p.delete = 0 ORDER BY p.id DESC LIMIT #{page.startNumber},#{page.pageSize}
     </select>
 
     <select id="getPost" resultMap="postResult">
@@ -116,6 +122,66 @@
         WHERE id = #{id}
     </update>
 
+    <insert id="addKeyword" useGeneratedKeys="true" keyProperty="keyword.id">
+        INSERT INTO keyword(keyword, pid, time) VALUES(#{keyword.keyword}, #{keyword.pid}, #{keyword.time})
+    </insert>
+
+    <select id="getKeyword" resultType="Keyword">
+        SELECT * FROM keyword WHERE pid = #{pid}
+    </select>
+
+    <delete id="delKeyword">
+        DELETE FROM keyword WHERE pid = #{pid}
+    </delete>
+
+    <select id="listTags" resultMap="postResult">
+        SELECT p.*,u.id uid,u.nickName,u.avatar,u.auth,u.vip,c.id cid,c.name cname
+        FROM post p,`user` u,`column` c,keyword k
+        WHERE p.type = c.id
+        AND p.author = u.id
+        AND p.delete = 0
+        AND p.id = k.pid
+        AND k.keyword = #{tag}
+        <if test="type != null">
+            <choose>
+                <when test="type == 'unsolved'">
+                    AND p.status = 0
+                </when>
+                <when test="type == 'solved'">
+                    AND p.status = 1
+                </when>
+                <when test="type == 'wonderful'">
+                    AND p.wonderful = 1
+                </when>
+            </choose>
+        </if>
+        ORDER BY p.top DESC ,p.id DESC
+        LIMIT #{page.startNumber},#{page.pageSize}
+    </select>
+
+    <select id="countTags" resultType="Integer">
+        SELECT count(p.id)
+        FROM post p,`user` u,`column` c,keyword k
+        WHERE p.type = c.id
+        AND p.author = u.id
+        AND p.delete = 0
+        AND p.id = k.pid
+        AND k.keyword = #{tag}
+        <if test="type != null">
+            <choose>
+                <when test="type == 'unsolved'">
+                    AND p.status = 0
+                </when>
+                <when test="type == 'solved'">
+                    AND p.status = 1
+                </when>
+                <when test="type == 'wonderful'">
+                    AND p.wonderful = 1
+                </when>
+            </choose>
+        </if>
+    </select>
+
     <resultMap id="postResult" type="Post">
         <id column="id" property="id"/>
         <result column="title" property="title"/>
@@ -142,6 +208,9 @@
             <result column="cname" property="name"/>
             <result column="suffix" property="suffix"/>
             <result column="role" property="role"/>
+        </association>
+        <association property="keyword" javaType="Keyword">
+            <result column="keyword" property="keyword"/>
         </association>
     </resultMap>
 
