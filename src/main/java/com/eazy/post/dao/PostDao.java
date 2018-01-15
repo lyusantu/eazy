@@ -103,4 +103,8 @@ public interface PostDao {
     List<Post> listTags(@Param("page") Page page, @Param("type") String type,@Param("tag") String tag);
 
     int countTags(@Param("type") String type, @Param("tag") String tag);
+
+    List<Post> listSearch(@Param("page") Page page, @Param("type") String type,@Param("search") String search);
+
+    int countSearch(@Param("type") String type, @Param("search") String search);
 }

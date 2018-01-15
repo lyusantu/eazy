@@ -37,4 +37,8 @@ public interface PostService {
     List<Post> listTags(Page page, String type, String tag);
 
     int countTags(String type, String tag);
+
+    List<Post> listSearch(Page page, String type, String tag);
+
+    int countSearch(String type, String search);
 }

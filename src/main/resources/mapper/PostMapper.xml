@@ -64,7 +64,7 @@
     </select>
 
     <select id="weeklyTop" resultType="Post">
-        SELECT * FROM post WHERE `delete` = 0 AND YEARWEEK(date_format(createtime,'%Y-%m-%d')) = YEARWEEK(now()) AND comments > 10 ORDER BY comments DESC
+        SELECT * FROM post WHERE `delete` = 0 AND YEARWEEK(date_format(createtime,'%Y-%m-%d')) = YEARWEEK(now()) AND readers > 10 ORDER BY comments DESC
     </select>
 
     <select id="countMyPost" resultType="Integer">
@@ -167,6 +167,52 @@
         AND p.delete = 0
         AND p.id = k.pid
         AND k.keyword = #{tag}
+        <if test="type != null">
+            <choose>
+                <when test="type == 'unsolved'">
+                    AND p.status = 0
+                </when>
+                <when test="type == 'solved'">
+                    AND p.status = 1
+                </when>
+                <when test="type == 'wonderful'">
+                    AND p.wonderful = 1
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="listSearch" resultMap="postResult">
+        SELECT p.*,u.id uid,u.nickName,u.avatar,u.auth,u.vip,c.id cid,c.name cname
+        FROM post p,`user` u,`column` c
+        WHERE p.type = c.id
+        AND p.author = u.id
+        AND p.delete = 0
+        AND (p.title LIKE concat('%',#{search},'%') or p.content LIKE  concat('%',#{search},'%'))
+        <if test="type != null">
+            <choose>
+                <when test="type == 'unsolved'">
+                    AND p.status = 0
+                </when>
+                <when test="type == 'solved'">
+                    AND p.status = 1
+                </when>
+                <when test="type == 'wonderful'">
+                    AND p.wonderful = 1
+                </when>
+            </choose>
+        </if>
+        ORDER BY p.top DESC ,p.id DESC
+        LIMIT #{page.startNumber},#{page.pageSize}
+    </select>
+
+    <select id="countSearch" resultType="Integer">
+        SELECT count(p.id)
+        FROM post p,`user` u,`column` c
+        WHERE p.type = c.id
+        AND p.author = u.id
+        AND p.delete = 0
+        AND (p.title LIKE concat('%',#{search},'%') or p.content LIKE  concat('%',#{search},'%'))
         <if test="type != null">
             <choose>
                 <when test="type == 'unsolved'">

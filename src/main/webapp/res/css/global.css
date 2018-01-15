@@ -136,7 +136,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 .icon-pinglun1{position: relative; top: 2px;}
 
 /* 头部 */
-.fly-header{position: fixed; left: 0; top: 0; z-index: 10000; width: 100%; height: 60px; border-bottom: 1px solid #404553; border-right: 1px solid #404553; border-radius: 0;}
+.fly-header{position: fixed; left: 0; top: 0; z-index: 10000; width: 100%; height: 60px; border-right: 1px solid #404553; border-radius: 0;}
 .fly-logo{position: absolute; left: 15px; top: 11px;}
 .fly-nav{margin-left: 200px;}
 .fly-nav a i{position: absolute; left: 25px; top: 0; padding-right: 10px; font-size: 26px;}
@@ -158,7 +158,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 .fly-header .fly-nav-user li .fly-nav-avatar{padding-right: 0;}
 .fly-header .fly-nav-user a.iconfont{color: #A9B7B7;}
 .fly-header>.layui-nav-item a{color: rgba(255,255,255,0.5);}
-.fly-header .layui-this a{color: #fff;}
+.fly-header .layui-this a{color: #5FB878;}
 .fly-header .layui-nav .layui-this:after,
 .fly-header .layui-nav .layui-nav-bar,
 .fly-header .fly-nav-user .layui-nav-more{display: none !important;}
@@ -176,7 +176,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 .fly-union span a:hover{text-decoration: underline;}
 
 /* 面板 */
-.fly-panel{margin-bottom: 15px; border-radius: 2px; background-color: #fff; box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);}
+.fly-panel{margin-bottom: 15px; border-radius: 2px; background-color: #FFF; box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);}
 .fly-panel[pad20]{padding: 20px;}
 .fly-panel-title{position: relative; height: 50px; line-height: 50px; padding: 0 15px; border-bottom: 1px dotted #E9E9E9; color: #333; border-radius: 2px 2px 0 0; font-size: 14px;}
 .fly-panel-main{padding: 10px 15px;}

@@ -57,7 +57,6 @@ public class IndexController {
         request.setAttribute(Constants.REPLY_LIST, replyService.weeklyTop());// 回帖周榜
         request.setAttribute(Constants.HOT_WEEKLY_LIST, postService.weeklyTop());// 本周热议
         request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
-        request.setAttribute(Constants.SPONSOR_LIST, indexService.listSponsor(1)); // 广告
         request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
         return Constants.INDEX;
     }

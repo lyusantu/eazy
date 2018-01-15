@@ -92,4 +92,14 @@ public class PostServiceImpl implements PostService {
     public int countTags(String type, String tag) {
         return postDao.countTags(type, tag);
     }
+
+    @Override
+    public List<Post> listSearch(Page page, String type, String search) {
+        return postDao.listSearch(page, type, search);
+    }
+
+    @Override
+    public int countSearch(String type, String search) {
+        return postDao.countSearch(type, search);
+    }
 }

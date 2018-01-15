@@ -9,15 +9,12 @@ import com.eazy.index.service.IndexService;
 import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
 import com.eazy.post.service.ReplyService;
-import com.xiaoleilu.hutool.json.JSONArray;
-import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -75,7 +72,6 @@ public class ColumnController {
         request.setAttribute(Constants.REPLY_LIST, replyService.weeklyTop());// 回帖周榜
         request.setAttribute(Constants.HOT_WEEKLY_LIST, postService.weeklyTop());// 本周热议
         request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
-        request.setAttribute(Constants.SPONSOR_LIST, indexService.listSponsor(1));
         request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
         return Constants.INDEX;
     }

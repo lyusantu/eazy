@@ -7,6 +7,20 @@
         <div class="layui-col-md8" #if(session.loginUser !=null && session.loginUser.readType !=0) style="width:100%"
              #end>
             <div class="fly-panel" style="margin-bottom: 0;">
+                #if(tab2 != null && tab2.size() > 0)
+                <div class="fly-panel-title fly-filter">
+                    #for(t : tab2)
+                    <a href="/tab/#(tab1_select)?tab=#(t.suffix)" #if(tab2_select == t.suffix) class="layui-hide-xs layui-this" #end>#(t.name)</a>
+                        #if(for.index == for.size - 1)
+                            <span class="fly-filter-right layui-hide-xs"></span>
+                        #else
+                            <span class="fly-mid"></span>
+                        #end
+                    #end
+
+                </div>
+                #end
+                <!-- 主题的类型排序,客户端显示冲突,先隐藏掉
                 <div class="fly-panel-title fly-filter">
                     <a href="/tab/#(tab1_select)#if(tab2_select != null)?tab=#(tab2_select)#end" #if(type== null)
                        class="layui-this" #end>综合</a>
@@ -21,6 +35,7 @@
                        #if(type== "wonderful") class="layui-this" #end>精华</a>
                     <span class="fly-filter-right layui-hide-xs"></span>
                 </div>
+                 -->
                 #if(postList == null || postList.size() == 0)
                 <div class="fly-none">没有相关数据</div>
                 #else
@@ -143,23 +158,6 @@
             </div>
             #end
 
-            <div class="fly-panel">
-                <div class="fly-panel-title">
-                    赞助商
-                </div>
-                <div class="fly-panel-main">
-                    #if(sponsorList != null && sponsorList.size() > 0)
-                    #for(s : sponsorList)
-                    <a href="#(s.url)" target="_blank" class="fly-zanzhu" style="background-color: #(s.color);">#(s.name)
-                        - #(s.desc)</a>
-                    #end
-                    #else
-                    <a href="javascript:;" target="_blank" class="fly-zanzhu"
-                       style="background-color: #393D49;">虚席以待</a>
-                    #end
-                </div>
-            </div>
-
             <div class="fly-panel fly-link">
                 <h3 class="fly-panel-title">友情链接</h3>
                 <dl class="fly-panel-main">
@@ -170,19 +168,23 @@
                 </dl>
             </div>
 
+            <!--
             <div class="fly-panel fly-link">
                 <!--<h3 class="fly-panel-title">轮播广告</h3>
                 <dl class="fly-panel-main">-->
+               <!--
                 <div class="layui-carousel" id="carousel">
                     <div carousel-item>
-                        <div style="background-color: orange"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">测试轮播</a></p></div>
-                        <div style="background-color: #FF7200"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">测试轮播</a></p></div>
-                        <div style="background-color: #2D93CA"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">测试轮播</a></p></div>
-                        <div style="background-color: #393D49"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">测试轮播</a></p></div>
-                        <div style="background-color: #CC0000"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">测试轮播</a></p></div>
+                        <div style="background-color: orange"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">轮播广告</a></p></div>
+                        <div style="background-color: #FF7200"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">轮播广告</a></p></div>
+                        <div style="background-color: #2D93CA"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">轮播广告</a></p></div>
+                        <div style="background-color: #393D49"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">轮播广告</a></p></div>
+                        <div style="background-color: #CC0000"><p style="text-align: center;height: 270px;line-height: 270px;"><a href="/">轮播广告</a></p></div>
                     </div>
                 </div>
+                -->
                 <!--</dl>-->
+
             </div>
 
         </div>

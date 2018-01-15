@@ -1,5 +1,5 @@
 #define column()
-<div class="fly-panel fly-column" style="margin-top:15px;">
+<div class="fly-panel fly-column">
     <div class="layui-container">
         <ul class="layui-clear">
             <li #if(tab1_select == "all") class="layui-hide-xs layui-this" #end><a href="/tab/all">全部</a></li>
@@ -21,18 +21,5 @@
         </div>
     </div>
 </div>
-
-#if(tab2 != null && tab2.size() > 0)
-<div class="fly-panel fly-column"style="background-color: #f9f9f9;">
-    <div class="layui-container">
-        <ul class="layui-clear">
-            #for(t : tab2)
-            <li #if(tab2_select == t.suffix) class="layui-hide-xs layui-this" #end><a href="/tab/#(tab1_select)?tab=#(t.suffix)">#(t.name)</a></li>
-            #end
-            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
-        </ul>
-    </div>
-</div>
-#end
 
 #end

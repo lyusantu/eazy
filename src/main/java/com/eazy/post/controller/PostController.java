@@ -115,7 +115,6 @@ public class PostController {
             request.setAttribute("list", replyList);
             request.setAttribute("page", page);
             request.setAttribute("weekHot", postService.weeklyTop());// 本周热议
-            request.setAttribute("sponsorList", indexService.listSponsor(2));
             request.setAttribute(Constants.TITLE, post.getTitle());
         }
         request.setAttribute("keywords", postService.getKeyword(post.getId())); // 关键字
@@ -390,6 +389,28 @@ public class PostController {
         List<Post> postList = postService.listTags(page, type, tag);
         request.setAttribute(Constants.TITLE, tag);
         request.setAttribute(Constants.SEARCH_TAG, tag);
+        request.setAttribute(Constants.PAGE, page);
+        request.setAttribute(Constants.POST_LIST, postList);
+        request.setAttribute(Constants.TYPE, type);
+        request.setAttribute(Constants.REPLY_LIST, replyService.weeklyTop());// 回帖周榜
+        request.setAttribute(Constants.HOT_WEEKLY_LIST, postService.weeklyTop());// 本周热议
+        request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
+        request.setAttribute(Constants.SPONSOR_LIST, indexService.listSponsor(1));
+        request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
+        return Constants.POST_TAGS;
+    }
+
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public String search(HttpServletRequest request) {
+        String p = request.getParameter("p");
+        String search = request.getParameter("q");
+        String type = request.getParameter("type");
+        Page page = new Page(((p == null ? 1 : Integer.parseInt(p)) - 1) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
+        page.setPageNumber(p == null ? 1 : Integer.parseInt((p)));
+        page.setTotalCount(postService.countSearch(type, search));
+        List<Post> postList = postService.listSearch(page, type, search);
+        request.setAttribute(Constants.TITLE, search);
+        request.setAttribute(Constants.SEARCH_TAG, search);
         request.setAttribute(Constants.PAGE, page);
         request.setAttribute(Constants.POST_LIST, postList);
         request.setAttribute(Constants.TYPE, type);
