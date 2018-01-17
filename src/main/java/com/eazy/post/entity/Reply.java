@@ -2,9 +2,10 @@ package com.eazy.post.entity;
 
 import com.eazy.user.entity.User;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Reply {
+public class Reply implements Serializable {
 
     private Integer id;
 

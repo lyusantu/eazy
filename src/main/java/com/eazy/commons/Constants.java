@@ -9,7 +9,7 @@ public class Constants {
     private Constants() {
     }
 
-    public static final Integer NUM_PER_PAGE = 15;
+    public static final Integer NUM_PER_PAGE = 20;
 
     public static final String LOGIN_USER = "loginUser";
 

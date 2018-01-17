@@ -471,7 +471,7 @@ body .fly-user-main{position: relative; min-height: 600px;}
 .fly-case-list li{width: 239px; margin: 0 15px 15px 0; padding: 10px;}
 .fly-case-list li:hover{box-shadow: 1px 1px 5px rgba(0,0,0,.1);}
 .fly-case-img{position: relative; display: block;}
-.fly-case-img img{width: 239px; height: 150px;}
+.fly-case-img img{width: 239px;}
 .fly-case-img .layui-btn{display: none; position: absolute; bottom: 20px; left: 50%; margin-left: -29px;}
 .fly-case-img:hover .layui-btn{display: inline-block;}
 .fly-case-list li h2{padding: 10px 0 5px; line-height: 22px; font-size: 18px; white-space: nowrap; overflow: hidden; text-align: center;}

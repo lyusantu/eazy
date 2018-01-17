@@ -5,10 +5,15 @@ import com.eazy.post.dao.PostDao;
 import com.eazy.post.entity.Keyword;
 import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Transactional
@@ -18,14 +23,11 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostDao postDao;
 
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+
     @Override
     public int addPost(Post post) {
         return postDao.addPost(post);
-    }
-
-    @Override
-    public List<Post> list(Page page, String tab, String tab2, String type) {
-        return postDao.list(page, tab, tab2, type);
     }
 
     @Override
@@ -34,13 +36,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> listMyPost(int uid, Page page) {
-        return postDao.listMyPost(uid, page);
+    public List<Post> list(Page page, String tab, String tab2, String type) {
+        return postDao.list(page, tab, tab2, type);
     }
 
     @Override
     public int countMyPost(int uid) {
         return postDao.countMyPost(uid);
+    }
+
+    @Override
+    public List<Post> listMyPost(int uid, Page page) {
+        return postDao.listMyPost(uid, page);
     }
 
     @Override
@@ -64,6 +71,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Cacheable(value = "myCache", key = "'weeklyTopPost'")
     public List<Post> weeklyTop() {
         return postDao.weeklyTop();
     }

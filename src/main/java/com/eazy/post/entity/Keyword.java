@@ -1,8 +1,9 @@
 package com.eazy.post.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Keyword {
+public class Keyword implements Serializable {
 
     private Integer id;
 

@@ -80,27 +80,24 @@ public class PostController {
         }
         Post post = postService.getPost(id);
         if (post.getDelete() == 0) {
-            List<Column> columnList = (List<Column>) request.getSession().getAttribute("tab1");
-            if (ObjectUtil.isNull(columnList)) {
-                columnList = columnService.listColumn(new Column(0));
-                request.getSession().setAttribute("tab1", columnList);
-            }
+            List<Column> columnList = columnService.listColumn(new Column(0));
             Column column = new Column(columnService.getPidById(post.getType())); // 获取pid
             List<Column> columnList1 = columnService.listColumn(column);
-            request.setAttribute("tab2", columnList1);
             for (Column column1 : columnList) {
                 if (column1.getId().equals(columnList1.get(0).getPid())) {
-                    request.setAttribute("tab1_select", column1.getSuffix());
+                    request.setAttribute(Constants.TAB1_SELECT, column1.getSuffix());
                     break;
                 }
             }
+            /* 详情页面无需显示二级类型
+            request.setAttribute(Constants.TAB2, columnList1);
             for (Column column1 : columnList1) {
                 if (column1.getId().equals(post.getType())) {
-                    request.setAttribute("tab2_select", column1.getSuffix());
+                    request.setAttribute(Constants.TAB2_SELECT, column1.getSuffix());
                     break;
                 }
             }
-
+            */
             post.setReaders(post.getReaders() + 1);
             Post updatePost = new Post(post.getId(), post.getReaders());
             postService.update(updatePost);
@@ -113,7 +110,8 @@ public class PostController {
             page.setTotalCount(replyService.countListReply(reply));
             List<Reply> replyList = replyService.listReply(reply, page);
             request.setAttribute("list", replyList);
-            request.setAttribute("page", page);
+            request.setAttribute(Constants.PAGE, page);
+            request.setAttribute(Constants.TAB1, columnList);
             request.setAttribute("weekHot", postService.weeklyTop());// 本周热议
             request.setAttribute(Constants.TITLE, post.getTitle());
         }
@@ -138,6 +136,7 @@ public class PostController {
         request.setAttribute(Constants.TITLE, "创建新主题");
         request.setAttribute("verify", verifyService.randVerify());
         request.setAttribute("listType", columnService.listColumnSecondary());
+        request.setAttribute(Constants.TAB1, columnService.listColumn(new Column(0)));
         return "post/add";
     }
 
@@ -338,9 +337,7 @@ public class PostController {
                     return "err/err";
                 } else {
                     request.setAttribute(Constants.TITLE, "编辑主题 - " + post.getTitle());
-                    Column column = new Column();
-//                    column.setRole(user.getType());
-                    request.getSession().setAttribute("listColumn", columnService.listColumn(column));
+                    request.setAttribute(Constants.TAB1, columnService.listColumn(new Column(0)));
                     Verify verify = verifyService.randVerify();
                     request.setAttribute("verify", verify);
                     request.setAttribute("post", post);

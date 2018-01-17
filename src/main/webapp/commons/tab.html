@@ -3,7 +3,7 @@
     <div class="layui-container">
         <ul class="layui-clear">
             <li #if(tab1_select == "all") class="layui-hide-xs layui-this" #end><a href="/tab/all">全部</a></li>
-            #for(t : session.tab1)
+            #for(t : tab1)
             <li #if(tab1_select == t.suffix) class="layui-hide-xs layui-this" #end><a href="/tab/#(t.suffix)">#(t.name)</a></li>
             #end
 

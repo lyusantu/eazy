@@ -186,7 +186,8 @@ public class UserController {
                     mailTaskService.sendSimpleMail("eazy社区账户激活邮件", "请点击链接激活您的账户：" + basePath + "user/activeAccount/" + user.getActiveCode(), user.getEmail());
                     LOG.info("----------激活邮件发送END----------");
                     LOG.info("----------推送消息欢迎新用户加入START----------");
-                    Message message = new Message(0, 0, user.getId(), 2, "欢迎加入eazy社区", new Timestamp(System.currentTimeMillis()), 0, 0);
+                    Message message = new Message(1, 1, user.getId(), 2, "欢迎加入eazy社区", new Timestamp(System.currentTimeMillis()), 0, 0);
+                    messageService.addMsg(message);
                     LOG.info("----------推送消息欢迎新用户加入END----------");
                     return new AjaxResult(0, "激活邮件已发送至您的邮箱,请激活后登录 :)", "/user/signin");
                 }

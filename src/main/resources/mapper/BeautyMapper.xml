@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eazy.beauty.dao.BeautyDao">
+
+    <select id="countBeauty" resultType="Integer">
+        SELECT COUNT(*) FROM beauty WHERE 1 = 1
+        <if test="uid != null">
+            AND uid = #{uid}
+        </if>
+        AND status =
+        <choose>
+            <when test="order == 'time'">
+                1 ORDER BY time DESC
+            </when>
+            <when test="order == 'praise'">
+                1 ORDER BY praise DESC
+            </when>
+            <when test="order == 'pa'">
+                0 ORDER BY time DESC
+            </when>
+        </choose>
+    </select>
+
+    <select id="listBeauty" resultMap="beautyResult">
+        SELECT b.*,u.nickname,u.avatar FROM beauty b,user u WHERE b.uid = u.id
+        <if test="uid != null">
+            AND uid = #{uid}
+        </if>
+        AND b.status =
+        <choose>
+            <when test="order == 'time'">
+                1 ORDER BY time DESC
+            </when>
+            <when test="order == 'praise'">
+                1 ORDER BY praise DESC
+            </when>
+            <when test="order == 'pa'">
+                0 ORDER BY time DESC
+            </when>
+        </choose>
+        LIMIT #{page.startNumber},#{page.pageSize}
+    </select>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="beauty.id">
+        INSERT INTO beauty(uid,pic,time,praise, status) VALUES(#{beauty.uid},#{beauty.pic},#{beauty.time}, #{beauty.praise}, #{beauty.status})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM beauty WHERE id = #{id}
+    </delete>
+
+    <update id="approve">
+        UPDATE beauty SET status = 1 WHERE id = #{id}
+    </update>
+
+    <update id="praise">
+        UPDATE beauty SET praise = #{praise} WHERE id = #{id}
+    </update>
+
+    <select id="getBeauty" resultType="Beauty">
+        SELECT * FROM beauty WHERE id = #{id}
+    </select>
+
+    <resultMap id="beautyResult" type="Beauty">
+        <id column="id" property="id"/>
+        <result column="uid" property="uid"/>
+        <result column="pic" property="pic"/>
+        <result column="time" property="time"/>
+        <result column="praise" property="praise"/>
+        <result column="status" property="status"/>
+        <association property="user" javaType="User">
+            <id column="avatar" property="avatar"/>
+            <id column="nickName" property="nickName"/>
+        </association>
+    </resultMap>
+</mapper>

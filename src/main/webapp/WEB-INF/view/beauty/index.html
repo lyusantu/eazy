@@ -1,0 +1,99 @@
+#@header()
+
+<div class="fly-main" style="overflow: hidden;">
+
+    <div class="beauty" style="background-color:#FFF;border-radius: 2px;margin-top: 15px;">
+        <div class="upload" style="padding: 15px 15px;">
+
+            <div style="color: #2e6da4;">
+                <b>发图方法#if(session.loginUser == null)（需登入）#end</b><br/>
+                复制图片地址，点击立即发布，在输入框粘帖图片地址，等待审批。<br/>
+                请勿发布AV截图/裸体/露点图以及带有网址/商标/二维码等水印的图。<br/>
+                <b>版权声明</b><br/>
+                本页面图片皆为用户发布，适用避风港原则。如有涉嫌侵权图片，请邮件联系lyusantu@gmail.com，告知图片URL或者上传者名称以及侵权证据。
+            </div>
+            #if(session.loginUser != null)
+            <div style="padding-top: 1rem">
+                <a href="javascript:;" class="layui-btn layui-btn-big fly-case-active" data-type="push">立即发布</a>
+                    <a href="/beauty/#(session.loginUser.id)/time/1" class="layui-btn layui-btn-primary layui-btn-big">我的发布</a>
+                <!-- <a href="" target="_blank" style="padding: 0 15px; text-decoration: underline">发布要求</a> -->
+            </div>
+            #end
+        </div>
+    </div>
+
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li #if(order == 'time') class="layui-this" #end><a href="/beauty#if(uid != null)/#(uid)#end/time/1">按提交时间</a></li>
+            <li #if(order == 'praise') class="layui-this" #end><a href="/beauty#if(uid != null)/#(uid)#end/praise/1">按点赞排行</a></li>
+            #if(session.loginUser != null && session.loginUser.type == 'admin')
+            <li #if(order == 'pa') class="layui-this" #end><a href="/beauty#if(uid != null)/#(uid)#end/pa/1">等待审批</a></li>
+            #end
+        </ul>
+    </div>
+
+    #if(listBeauty != null && listBeauty.size() > 0)
+        <ul class="fly-case-list">
+            #for(b : listBeauty)
+            <li data-id="#(b.id)">
+                <a class="fly-case-img" href="#(b.pic)" target="_blank">
+                    <img src="#(b.pic)" alt="#(b.pic)">
+                </a>
+                <!-- 标题和描述,可以不要
+                <h2><a href="http://fly.layui.com/" target="_blank">title</a></h2>
+                <p class="fly-case-desc">desc</p>
+                -->
+                <div class="fly-case-info">
+                    <a href="/user/#(b.uid)" class="fly-case-user" target="_blank"><img src="#(b.user.avatar)"></a>
+                    <p class="layui-elip" style="font-size: 12px;"><span style="color: #666;">#(b.user.nickName)</span>
+                        #date(b.time, "yyyy-MM-dd")</p>
+                    <p>获得<a class="fly-case-nums fly-case-active" href="javascript:;" data-type="showPraise" style=" padding:0 5px; color: #01AAED;">#(b.praise)</a>个赞</p>
+                    #if(order == 'pa')
+                    <button class="layui-btn layui-btn-primary fly-case-active" style="height: 19px;line-height: 19px;" data-type="approve"><i class="layui-icon">&#xe605;</i></button>
+                    <button class="layui-btn layui-btn-primary  fly-case-active" style="height: 19px;line-height: 19px;top:38px;" data-type="delpic"><i class="layui-icon">&#x1006;</i></button>
+                    #else
+                    <button class="layui-btn layui-btn-primary fly-case-active" data-type="praise">点赞</button>
+                    <!-- <button class="layui-btn  fly-case-active" data-type="praise">已赞</button> -->
+                    #end
+                </div>
+            </li>
+            #end
+        </ul>
+    #else
+        <blockquote class="layui-elem-quote layui-quote-nm">暂无数据</blockquote>
+    #end
+
+    #if(page.totalPage > 1)
+    <div style="text-align: center">
+        <div id="page"></div>
+    </div>
+    #end
+
+</div>
+
+#@footer()
+#@js?()
+
+<script>
+    layui.cache.page = 'case';
+
+    layui.use([ 'laypage'], function () {
+        var laypage = layui.laypage;
+
+        //总页数低于页码总数
+        laypage.render({
+            elem: 'page'
+            , count: '#(page.totalCount)'
+            , first: '首页'
+            , last: '尾页'
+            , limit: '#(page.pageSize)'
+            , curr: '#(page.pageNumber)'
+            , layout: ['prev', 'page', 'next']
+            , jump: function (obj, first) {
+                if (!first)
+                    location.href = '/beauty#if(uid != null)/#(uid)#end/#(order)/' + obj.curr;
+            },
+        });
+    });
+
+</script>

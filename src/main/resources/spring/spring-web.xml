@@ -4,12 +4,15 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:cache="http://www.springframework.org/schema/cache"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/mvc
-		http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/cache
+        http://www.springframework.org/schema/cache/spring-cache.xsd">
 
 
     <!-- 激活组件扫描功能,扫描aop的相关组件组件 -->
@@ -79,7 +82,6 @@
         <property name="from" value ="${mail.from}"></property>
     </bean>
 
-
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="defaultEncoding" value="UTF-8" />
         <property name="host" value="${mail.host}" />
@@ -98,5 +100,23 @@
                 <prop key="mail.smtp.socketFactory.port">${mail.smtp.socketFactory.port}</prop>
             </props>
         </property>
+    </bean>
+
+    <!-- 缓存配置 -->
+    <!-- 启用缓存注解功能  -->
+    <cache:annotation-driven cache-manager="cacheManager" />
+    <!-- Spring自己的基于java.util.concurrent.ConcurrentHashMap实现的缓存管理器(该功能是从Spring3.1开始提供的) -->
+    <!-- <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+        <property name="caches"> <set> <bean name="myCache" class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"/>
+        </set> </property> </bean> -->
+    <!-- 若只想使用Spring自身提供的缓存器,则注释掉下面的两个关于Ehcache配置的bean,并启用上面的SimpleCacheManager即可 -->
+    <!-- Spring提供的基于的Ehcache实现的缓存管理器 -->
+
+    <bean id="cacheManagerFactory"
+          class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:ehcache.xml" />
+    </bean>
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="cacheManagerFactory" />
     </bean>
 </beans>

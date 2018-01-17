@@ -3,7 +3,7 @@
  @Name: 案例
 
  */
- 
+
 layui.define(['laypage', 'fly'], function(exports){
 
   var $ = layui.jquery;
@@ -15,7 +15,7 @@ layui.define(['laypage', 'fly'], function(exports){
   var upload = layui.upload;
   var fly = layui.fly;
   var device = layui.device();
-  
+
 
   //求解管理
   var active = {
@@ -24,31 +24,19 @@ layui.define(['laypage', 'fly'], function(exports){
       layer.open({
         type: 1
         ,id: 'LAY_pushcase'
-        ,title: '提交案例'
+        ,title: '发布图片'
         ,area: (device.ios || device.android) ? ($(window).width() + 'px') : '660px'
         ,content: ['<ul class="layui-form" style="margin: 20px;">'
           ,'<li class="layui-form-item">'
-            ,'<label class="layui-form-label">案例名称</label>'
+            ,'<label class="layui-form-label">图片地址</label>'
             ,'<div class="layui-input-block">'
-              ,'<input required name="title" lay-verify="required" placeholder="一般为网站名称" value="" class="layui-input">'
+              ,'<input required name="link" lay-verify="url" name="pic" id="pic" placeholder="可复制图片链接地址" value="" class="layui-input">'
             ,'</div>'
           ,'</li>'
           ,'<li class="layui-form-item">'
-            ,'<label class="layui-form-label">案例网址</label>'
-            ,'<div class="layui-input-block">'
-              ,'<input required name="link" lay-verify="url" placeholder="必须是自己或自己参与过的项目" value="" class="layui-input">'
-            ,'</div>'
-          ,'</li>'
-          ,'<li class="layui-form-item layui-form-text">'
-            ,'<label class="layui-form-label">案例描述</label>'
-            ,'<div class="layui-input-block layui-form-text">'
-              ,'<textarea required name="desc" lay-verify="required" autocomplete="off" placeholder="大致介绍你的项目，也可以阐述你在该项目中使用 layui 的感受\n10-60个字" class="layui-textarea"></textarea>'
-            ,'</div>'
-          ,'</li>'
-          ,'<li class="layui-form-item">'
-            ,'<label class="layui-form-label">案例封面</label>'
+            ,'<label class="layui-form-label">上传图片</label>'
             ,'<div class="layui-input-inline" style="width:auto;">'
-              ,'<input type="hidden" name="cover" lay-verify="required" class="layui-input fly-case-image">'
+              ,'<input type="hidden" name="cover" class="layui-input fly-case-image">'
               ,'<button type="button" class="layui-btn layui-btn-primary" id="caseUpload">'
                 ,'<i class="layui-icon">&#xe67c;</i>上传图片'
               ,'</button>'
@@ -69,16 +57,17 @@ layui.define(['laypage', 'fly'], function(exports){
         ,'</ul>'].join('')
         ,success: function(layero, index){
           var image = layero.find('.fly-case-image')
-          ,preview = $('#preview');
- 
+          ,pic = layero.find("#pic"),preview = $('#preview');
+
           upload.render({
-            url: '/api/upload/case/'
+            url: '/api/upload/'
             ,elem: '#caseUpload'
-            ,size: 30
+            ,size: 200
             ,done: function(res){
               if(res.status == 0){
                 image.val(res.url);
-                preview.html('<a href="'+ res.url +'" target="_blank" style="color: #5FB878;">封面已上传，点击可预览</a>');
+                pic.val(res.url);
+                preview.html('<a href="'+ res.url +'" target="_blank" style="color: #5FB878;">图片已上传，点击可预览</a>');
               } else {
                 layer.msg(res.msg, {icon: 5});
               }
@@ -90,17 +79,17 @@ layui.define(['laypage', 'fly'], function(exports){
               return layer.tips('你需要同意才能提交', $('#agree').next(), {tips: 1});
             }
 
-            fly.json('/case/push/', data.field, function(res){
-              layer.close(index);
-              layer.alert(res.msg, {
-                icon: 1
-              })
-            });
+              fly.json('/beauty/push', {pic: data.field.link}, function (res) {
+                  layer.alert(res.msg, {
+                      icon: 1,
+                  })
+              });
+            layer.closeAll();
           });
-        }
+          }
       });
     }
-    
+
     //点赞
     ,praise: function(othis){
       var li = othis.parents('li')
@@ -108,24 +97,63 @@ layui.define(['laypage', 'fly'], function(exports){
       ,unpraise = !othis.hasClass(PRIMARY)
       ,numElem = li.find('.fly-case-nums')
 
-      fly.json('/case/praise/', {
+      fly.json('/beauty/praise', {
         id: li.data('id')
         ,unpraise: unpraise ? true : null
       }, function(res){
-        numElem.html(res.praise);
-        if(unpraise){
-          othis.addClass(PRIMARY).html('点赞');
-          layer.tips('少了个赞囖', numElem, {
-            tips: 1
-          });
-        } else {
-          othis.removeClass(PRIMARY).html('已赞');
-          layer.tips('成功获得个赞', numElem, {
-            tips: [1, '#FF5722']
-          });
+        if(res.status == 0) {
+            numElem.html(res.praise);
+            if (unpraise) {
+                othis.addClass(PRIMARY).html('点赞');
+                layer.tips('少了个赞 :(', numElem, {
+                    tips: 1
+                });
+            } else {
+                othis.removeClass(PRIMARY).html('已赞');
+                layer.tips('多了个赞 :)', numElem, {
+                    tips: [1, '#FF5722']
+                });
+            }
+        }else{
+          layer.msg(res.msg);
         }
       });
     }
+
+    // 批准
+      ,approve: function(othis){
+          var li = othis.parents('li')
+              ,PRIMARY = 'layui-btn-primary'
+              ,unpraise = !othis.hasClass(PRIMARY)
+              ,numElem = li.find('.fly-case-nums')
+
+          fly.json('/beauty/approve', {
+              id: li.data('id')
+          }, function(res){
+             layer.msg(res.msg, {time: 1000},function () {
+                 if(res.status == 0){
+                     parent.location.reload();
+                 }
+             });
+          });
+      }
+      // 删除
+      ,delpic: function(othis){
+          var li = othis.parents('li')
+              ,PRIMARY = 'layui-btn-primary'
+              ,unpraise = !othis.hasClass(PRIMARY)
+              ,numElem = li.find('.fly-case-nums')
+
+          fly.json('/beauty/delete', {
+              id: li.data('id')
+          }, function(res){
+              layer.msg(res.msg, {time: 1000}, function () {
+                  if(res.status == 0){
+                      parent.location.reload();
+                  }
+              });
+          });
+      }
 
     //查看点赞用户
     ,showPraise: function(othis){

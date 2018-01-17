@@ -64,7 +64,7 @@
     </select>
 
     <select id="weeklyTop" resultType="Post">
-        SELECT * FROM post WHERE `delete` = 0 AND YEARWEEK(date_format(createtime,'%Y-%m-%d')) = YEARWEEK(now()) AND readers > 10 ORDER BY comments DESC
+        SELECT * FROM post WHERE `delete` = 0 AND YEARWEEK(date_format(createtime,'%Y-%m-%d')) = YEARWEEK(now()) AND readers > 10 ORDER BY comments DESC LIMIT 0,10
     </select>
 
     <select id="countMyPost" resultType="Integer">

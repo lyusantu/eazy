@@ -37,11 +37,7 @@ public class ColumnController {
 
     @RequestMapping(value = "/{tab}", method = RequestMethod.GET)
     public String index(HttpServletRequest request, @PathVariable("tab") String tab) {
-        List<Column> columnList = (List<Column>) request.getSession().getAttribute("tab1");
-        if (ObjectUtil.isNull(columnList)) {
-            columnList = columnService.listColumn(new Column(0));
-            request.getSession().setAttribute(Constants.TAB1, columnList);
-        }
+        List<Column> columnList =  columnService.listColumn(new Column(0));
         Column column = null; // 获取当前标识
         if (ObjectUtil.isNotNull(columnList) && columnList.size() != 0) {
             column = new Column();
@@ -67,6 +63,7 @@ public class ColumnController {
         request.setAttribute(Constants.PAGE, page);
         request.setAttribute(Constants.POST_LIST, postList);
         request.setAttribute(Constants.TYPE, type);
+        request.setAttribute(Constants.TAB1, columnList);
         request.setAttribute(Constants.TAB1_SELECT, tab);
         request.setAttribute(Constants.TAB2_SELECT, tab2);
         request.setAttribute(Constants.REPLY_LIST, replyService.weeklyTop());// 回帖周榜

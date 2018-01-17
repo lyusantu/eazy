@@ -51,7 +51,7 @@ public class IndexController {
         page.setPageNumber(1);
         page.setTotalCount(postService.count(null, null, null));
         request.setAttribute(Constants.PAGE, page);
-        request.getSession().setAttribute(Constants.TAB1, columnList);// 暂时先存到session中
+        request.setAttribute(Constants.TAB1, columnList);
         request.setAttribute(Constants.TAB1_SELECT, Constants.TAB_SELECT_ALL);
         request.setAttribute(Constants.POST_LIST, postList);
         request.setAttribute(Constants.REPLY_LIST, replyService.weeklyTop());// 回帖周榜

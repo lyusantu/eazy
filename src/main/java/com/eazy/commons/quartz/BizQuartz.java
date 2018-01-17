@@ -33,7 +33,7 @@ public class BizQuartz {
      */
     @Scheduled(cron = "0 0/1 9-17 * * ? ")
     public void addUserScore() {
-        LOG.info("@Scheduled--------addUserScore()");
+
     }
 
     /**
@@ -41,7 +41,7 @@ public class BizQuartz {
      */
     @Scheduled(cron = "0 0/5 * * * ? ")
     public void cacheClear() {
-        LOG.info("@Scheduled-------cacheClear()");
+
     }
 
     /**
@@ -49,6 +49,6 @@ public class BizQuartz {
      */
     @Scheduled(cron = "0 0 0 * * ?")
     public void clearSignInRecord() {
-        LOG.info("@Scheduled------clearSignInRecord");
+
     }
 }

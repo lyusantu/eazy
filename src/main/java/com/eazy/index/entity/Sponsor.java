@@ -1,8 +1,9 @@
 package com.eazy.index.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Sponsor {
+public class Sponsor implements Serializable {
 
     private Integer id;
 

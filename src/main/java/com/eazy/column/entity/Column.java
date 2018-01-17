@@ -1,6 +1,8 @@
 package com.eazy.column.entity;
 
-public class Column {
+import java.io.Serializable;
+
+public class Column implements Serializable {
 
     private Integer id;
 

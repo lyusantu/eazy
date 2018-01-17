@@ -3,10 +3,11 @@ package com.eazy.post.entity;
 import com.eazy.column.entity.Column;
 import com.eazy.user.entity.User;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
-public class Post {
+public class Post implements Serializable {
 
     private Integer id;
 

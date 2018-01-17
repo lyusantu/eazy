@@ -4,6 +4,7 @@ import com.eazy.column.dao.ColumnDao;
 import com.eazy.column.entity.Column;
 import com.eazy.column.service.ColumnService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ public class ColumnServiceImpl implements ColumnService {
     private ColumnDao columnDao;
 
     @Override
+    @Cacheable(value = "myCache", key = "'listColumn'+#column.pid")
     public List<Column> listColumn(Column column) {
         return columnDao.listColumn(column);
     }

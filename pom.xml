@@ -317,6 +317,16 @@
       <artifactId>mail</artifactId>
       <version>1.4.7</version>
     </dependency>
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis-ehcache</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+      <version>3.0.0.m3</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>${project.artifactId}_${project.version}_${maven.build.timestamp}</finalName>

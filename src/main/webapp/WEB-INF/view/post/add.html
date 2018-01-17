@@ -32,7 +32,7 @@
                                     <div class="layui-input-block">
                                         <select lay-verify="required" name="type" lay-search="">
                                             <option value=""></option>
-                                            #for(x : session.tab1)
+                                            #for(x : tab1)
                                             <optgroup label="#(x.name)">
                                                 #for( lt : listType)
                                                    #if(x.id == lt.pid)

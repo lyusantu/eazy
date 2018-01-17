@@ -20,14 +20,11 @@
         </a>
 
         <ul class="layui-nav fly-nav layui-hide-xs">
-            <li class="layui-nav-item layui-this">
+            <li class="layui-nav-item #if(header == null) layui-this #end">
                 <a href="/">社区</a>
             </li>
-            <li class="layui-nav-item">
-                <a href="/">博客</a>
-            </li>
-            <li class="layui-nav-item">
-                <a href="/">酷站</a>
+            <li class="layui-nav-item #if(header == 'beauty') layui-this #end">
+                <a href="/beauty/time/1">BEAUTY</a>
             </li>
         </ul>
 
