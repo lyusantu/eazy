@@ -13,6 +13,7 @@ import com.eazy.post.service.ReplyService;
 import com.eazy.user.entity.User;
 import com.eazy.user.service.UserService;
 import com.xiaoleilu.hutool.util.ObjectUtil;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@Api(value = "/", tags = "index")
 public class IndexController {
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());

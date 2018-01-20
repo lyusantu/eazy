@@ -10,6 +10,7 @@ import com.xiaoleilu.hutool.date.DateUtil;
 import com.xiaoleilu.hutool.json.JSONArray;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/sign")
+@Api(value = "/sign", tags = "签到接口")
 public class SignController {
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());

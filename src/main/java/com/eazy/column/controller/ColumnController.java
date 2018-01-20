@@ -10,6 +10,7 @@ import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
 import com.eazy.post.service.ReplyService;
 import com.xiaoleilu.hutool.util.ObjectUtil;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/tab")
+@Api(value = "/tab", tags = "菜单栏接口")
 public class ColumnController {
 
     @Autowired

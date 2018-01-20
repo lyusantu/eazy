@@ -22,6 +22,8 @@ import com.xiaoleilu.hutool.json.JSONArray;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.lang.Base64;
 import com.xiaoleilu.hutool.util.ObjectUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +44,7 @@ import java.util.Random;
 
 @Controller
 @RequestMapping("/user")
+@Api(value = "/user", tags = "User接口")
 public class UserController {
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
@@ -125,6 +128,7 @@ public class UserController {
     // ajax登录
     @RequestMapping(value = "/ajaxSignIn", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
+    @ApiOperation(value = "异步登录接口", notes = "根据用户名和密码进行登录", httpMethod = "POST", response = User.class)
     public AjaxResult ajaxSignIn(HttpServletRequest request, HttpServletResponse response, User user) {
         String email = user.getEmail();
         user.setPassword(SecureUtil.md5(user.getPassword()));

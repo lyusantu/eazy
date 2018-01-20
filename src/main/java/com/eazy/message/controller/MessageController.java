@@ -6,6 +6,7 @@ import com.eazy.message.service.MessageService;
 import com.eazy.user.entity.User;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/message")
+@Api(value = "/message", tags = "消息接口")
 public class MessageController {
 
     @Autowired

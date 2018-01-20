@@ -4,6 +4,7 @@ import com.eazy.commons.Constants;
 import com.eazy.commons.QiNiuUtil;
 import com.eazy.commons.auth.AuthPassport;
 import com.eazy.commons.dto.AjaxResult;
+import io.swagger.annotations.Api;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,6 +17,7 @@ import java.io.IOException;
 
 @RequestMapping("/api")
 @Controller
+@Api(value = "/api", tags = "理论上是一个上传接口")
 public class APIController {
 
     @AuthPassport

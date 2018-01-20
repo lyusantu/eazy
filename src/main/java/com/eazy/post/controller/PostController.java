@@ -22,6 +22,7 @@ import com.eazy.verify.entity.Verify;
 import com.eazy.verify.service.VerifyService;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
+import io.swagger.annotations.Api;
 import org.ansj.app.keyword.KeyWordComputer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ import java.util.regex.Pattern;
 @Controller
 @Transactional
 @RequestMapping("/post")
+@Api(value = "/post", tags = "主题接口")
 public class PostController {
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());

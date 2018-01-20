@@ -8,6 +8,7 @@ import com.eazy.commons.dto.AjaxResult;
 import com.eazy.user.entity.User;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/beauty")
+@Api(value = "/beauty", tags = "不可描述")
 public class BeautyController {
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());

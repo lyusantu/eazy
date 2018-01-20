@@ -16,7 +16,7 @@
 
 
     <!-- 激活组件扫描功能,扫描aop的相关组件组件 -->
-    <context:component-scan base-package="com.eazy.commons.aop"/>
+    <context:component-scan base-package="com.eazy"/>
     <!-- 启动对@AspectJ注解的支持 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
@@ -119,4 +119,10 @@
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
         <property name="cacheManager" ref="cacheManagerFactory" />
     </bean>
+
+    <!--重要！将你的SwaggerConfig配置类注入-->
+    <bean class="com.eazy.config.SwaggerConfig"/>
+    <!--重要！配置swagger资源不被拦截-->
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/" />
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/" />
 </beans>
