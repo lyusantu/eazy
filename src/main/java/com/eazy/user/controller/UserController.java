@@ -31,7 +31,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -123,7 +125,7 @@ public class UserController {
     // ajax登录
     @RequestMapping(value = "/ajaxSignIn", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public AjaxResult ajaxSignIn(HttpServletRequest request, User user) {
+    public AjaxResult ajaxSignIn(HttpServletRequest request, HttpServletResponse response, User user) {
         String email = user.getEmail();
         user.setPassword(SecureUtil.md5(user.getPassword()));
         Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
@@ -142,6 +144,14 @@ public class UserController {
                     // baseService.addLoginRecord(user.getId(), Constants.getIpAddress(request)); // 记录本次登录信息
                     request.getSession().setAttribute(Constants.LOGIN_USER, user);
                     LOG.info(email + "登录成功");
+                    Cookie mailCookie = new Cookie("email", user.getEmail());
+                    mailCookie.setMaxAge(60 * 60 * 24 * 3);
+                    mailCookie.setPath("/");
+                    Cookie pwdCookie = new Cookie("password", user.getPassword());
+                    pwdCookie.setMaxAge(60 * 60 * 24 * 3);
+                    pwdCookie.setPath("/");
+                    response.addCookie(mailCookie);
+                    response.addCookie(pwdCookie);
                     return new AjaxResult(0, null, "/");
                 } else if (user.getStatus() == 2)
                     return new AjaxResult(1, "该账号已经封禁");
@@ -198,7 +208,15 @@ public class UserController {
     // 注销
     @AuthPassport
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String logout(HttpServletRequest request) {
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        Cookie emailCookie = new Cookie("email", null);
+        emailCookie.setMaxAge(0);
+        emailCookie.setPath("/");
+        Cookie pwdCookie = new Cookie("password", null);
+        pwdCookie.setMaxAge(0);
+        pwdCookie.setPath("/");
+        response.addCookie(emailCookie);
+        response.addCookie(pwdCookie);
         request.getSession().removeAttribute(Constants.LOGIN_USER);
         return "redirect:/";
     }

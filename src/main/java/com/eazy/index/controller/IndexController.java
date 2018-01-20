@@ -42,7 +42,7 @@ public class IndexController {
     @Autowired
     private ColumnService columnService;
 
-    @RequestMapping(value = "/")
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(HttpServletRequest request) {
         List<Post> postList = postService.list(new Page(0, Constants.NUM_PER_PAGE), null, null, null); // 置顶帖
         Column column = new Column(0); // 一级菜单
