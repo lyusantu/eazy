@@ -8,7 +8,8 @@ eazy
 涉及到的技术：
     
     前端：layui
-    后端：Spring、SpringMVC、MyBatis、Redis、Quartz
+    后端：Spring、SpringMVC、MyBatis、Redis、Quartz、Ehcache、Enjoy模板引擎
+    其它：swagger-ui、Markdown
 
     
     
