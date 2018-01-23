@@ -13,9 +13,11 @@ import com.xiaoleilu.hutool.util.ObjectUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -38,8 +40,8 @@ public class ColumnController {
     private ReplyService replyService;
 
     @RequestMapping(value = "/{tab}", method = RequestMethod.GET)
-    public String index(HttpServletRequest request, @PathVariable("tab") String tab) {
-        List<Column> columnList =  columnService.listColumn(new Column(0));
+    public String index(HttpServletRequest request, @PathVariable("tab") String tab, @RequestParam(value = "p", defaultValue = "1") Integer p) {
+        List<Column> columnList = columnService.listColumn(new Column(0));
         Column column = null; // 获取当前标识
         if (ObjectUtil.isNotNull(columnList) && columnList.size() != 0) {
             column = new Column();
@@ -55,11 +57,10 @@ public class ColumnController {
             columnList1 = columnService.listColumn(column);
             request.setAttribute(Constants.TAB2, columnList1);
         }
-        String p = request.getParameter("p");
         String type = request.getParameter("type");
         String tab2 = request.getParameter("tab");
-        Page page = new Page(((p == null ? 1 : Integer.parseInt(p)) - 1) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
-        page.setPageNumber(p == null ? 1 : Integer.parseInt((p)));
+        Page page = new Page(((p - 1)) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
+        page.setPageNumber(p);
         page.setTotalCount(postService.count(tab, tab2, type));
         List<Post> postList = postService.list(page, tab, tab2, type);
         request.setAttribute(Constants.PAGE, page);

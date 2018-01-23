@@ -213,7 +213,7 @@
             , layout: ['prev', 'page', 'next', 'skip']
             , jump: function (obj, first) {
                 if (!first)
-                    location.href = '/tab/#(tab1_select)?p=' + obj.curr + '#if(tab2_select != null)&tab=#(tab2_select)#end#if(type != null)&type=#(type)#end';
+                    location.href = '/tab/#(tab1_select)?#if(tab2_select != null)tab=#(tab2_select)&#end p=' + obj.curr;
             },
         });
 
