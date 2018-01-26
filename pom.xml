@@ -13,7 +13,6 @@
   </properties>
 
   <dependencies>
-
     <!-- https://mvnrepository.com/artifact/org.ansj/ansj_seg -->
     <dependency>
       <groupId>org.ansj</groupId>
@@ -344,6 +343,11 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.baomidou</groupId>
+      <artifactId>mybatis-plus</artifactId>
+      <version>2.1.8</version>
     </dependency>
   </dependencies>
   <build>

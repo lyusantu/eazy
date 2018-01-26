@@ -30,55 +30,47 @@ public class BeautyController {
     private BeautyService beautyService;
 
     @RequestMapping(value = "/{orderWay}/{p}", method = RequestMethod.GET)
-    public String index(HttpServletRequest request, @PathVariable("orderWay") String order, @PathVariable("p") Integer p) {
-        if (order.equalsIgnoreCase("pa")) {
-            User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
-            if (ObjectUtil.isNull(user)) {
-                request.setAttribute("msg", "无权限");
-                return "err/err";
-            }
-        }
-        request.setAttribute("header", "beauty");
+    public String index(HttpServletRequest request, @PathVariable(Constants.GET_ORDER_WAY) String order, @PathVariable(Constants.GET_P) Integer p) {
+        if (isPa(order, null, request))
+            return Constants.URL_ERR_ERR;
+        request.setAttribute(Constants.HEADER, "beauty");
+        request.setAttribute(Constants.TITLE, "beauty");
         Page page = new Page((p - 1) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
         page.setPageNumber(p);
         page.setTotalCount(beautyService.countBeauty(order, null));
         List<Beauty> listBeauty = beautyService.listBeauty(page, order, null);
-        request.setAttribute("order", order);
         request.setAttribute(Constants.PAGE, page);
-        request.setAttribute("listBeauty", listBeauty);
-        return "beauty/index";
+        request.setAttribute(Constants.SET_ORDER, order);
+        request.setAttribute(Constants.LIST_BEAUTY, listBeauty);
+        return Constants.URL_BEAUTY_INDEX;
     }
 
     @RequestMapping(value = "/{u}/{orderWay}/{p}", method = RequestMethod.GET)
-    public String myPush(HttpServletRequest request, @PathVariable("u") Integer uid, @PathVariable("orderWay") String order, @PathVariable("p") Integer p) {
-        if (order.equalsIgnoreCase("pa")) {
-            User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
-            if (ObjectUtil.isNull(user)) {
-                request.setAttribute("msg", "无权限");
-                return "err/err";
-            }
-        }
-        request.setAttribute("header", "beauty");
+    public String myPush(HttpServletRequest request, @PathVariable(Constants.GET_U) Integer uid, @PathVariable(Constants.GET_ORDER_WAY) String order, @PathVariable(Constants.GET_P) Integer p) {
+        if (isPa(order, uid, request))
+            return Constants.URL_ERR_ERR;
+        request.setAttribute(Constants.HEADER, "beauty");
+        request.setAttribute(Constants.TITLE, "beauty");
         Page page = new Page((p - 1) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
         page.setPageNumber(p);
         page.setTotalCount(beautyService.countBeauty(order, uid));
         List<Beauty> listBeauty = beautyService.listBeauty(page, order, uid);
-        request.setAttribute("uid", uid);
-        request.setAttribute("order", order);
         request.setAttribute(Constants.PAGE, page);
-        request.setAttribute("listBeauty", listBeauty);
-        return "beauty/index";
+        request.setAttribute(Constants.SET_UID, uid);
+        request.setAttribute(Constants.SET_ORDER, order);
+        request.setAttribute(Constants.LIST_BEAUTY, listBeauty);
+        return Constants.URL_BEAUTY_INDEX;
     }
 
     @RequestMapping(value = "/push", method = RequestMethod.POST)
     public @ResponseBody
     JSONObject push(HttpServletRequest request) {
-        String pic = request.getParameter("pic");
+        String pic = request.getParameter(Constants.GET_PIC);
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         if (ObjectUtil.isNull(user))
-            return new JSONObject().put("msg", "用户未登入");
+            return new JSONObject().put(Constants.SET_MSG, "用户未登入");
         beautyService.add(new Beauty(user.getId(), pic, new Timestamp(System.currentTimeMillis()), 0, 0));
-        return new JSONObject().put("msg", "发布成功,请等待审批 :)");
+        return new JSONObject().put(Constants.SET_MSG, "发布成功,请等待审批 :)");
     }
 
     @RequestMapping(value = "/praise", method = RequestMethod.POST)
@@ -86,13 +78,13 @@ public class BeautyController {
     JSONObject praise(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         if (ObjectUtil.isNull(user))
-            return new JSONObject().put("status", 1).put("msg", "用户未登入");
-        String id = request.getParameter("id");
-        String unpraise = request.getParameter("unpraise");
+            return new JSONObject().put(Constants.SET_STATUS, 1).put(Constants.SET_MSG, "用户未登入");
+        String id = request.getParameter(Constants.GET_ID);
+        String unpraise = request.getParameter(Constants.GET_UNPRAISE);
         Beauty beauty = beautyService.getBeauty(Integer.parseInt(id));
-        beauty.setPraise(unpraise.equalsIgnoreCase("true") ? beauty.getPraise() - 1 : beauty.getPraise() + 1);
+        beauty.setPraise(unpraise.equalsIgnoreCase(Constants.TRUE) ? beauty.getPraise() - 1 : beauty.getPraise() + 1);
         beautyService.praise(Integer.parseInt(id), beauty.getPraise());
-        return new JSONObject().put("status", 0).put("praise", beauty.getPraise());
+        return new JSONObject().put(Constants.SET_STATUS, 0).put(Constants.SET_PRAISE, beauty.getPraise());
     }
 
     @RequestMapping(value = "/approve", method = RequestMethod.POST)
@@ -100,12 +92,12 @@ public class BeautyController {
     JSONObject approve(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         if (ObjectUtil.isNull(user))
-            return new JSONObject().put("status", 1).put("msg", "用户未登入");
-        if (!user.getType().equalsIgnoreCase("admin"))
-            return new JSONObject().put("status", 1).put("msg", "用户无权限");
-        String id = request.getParameter("id");
+            return new JSONObject().put(Constants.SET_STATUS, 1).put(Constants.SET_MSG, "用户未登入");
+        if (!user.getType().equalsIgnoreCase(Constants.ROLE_ADMIN))
+            return new JSONObject().put(Constants.SET_STATUS, 1).put(Constants.SET_MSG, "用户无权限");
+        String id = request.getParameter(Constants.GET_ID);
         beautyService.approve(Integer.parseInt(id));
-        return new JSONObject().put("status", 0).put("msg", "审批成功");
+        return new JSONObject().put(Constants.SET_STATUS, 0).put(Constants.SET_MSG, "审批成功");
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -113,12 +105,30 @@ public class BeautyController {
     JSONObject delete(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         if (ObjectUtil.isNull(user))
-            return new JSONObject().put("status", 1).put("msg", "用户未登入");
-        if (!user.getType().equalsIgnoreCase("admin"))
-            return new JSONObject().put("status", 1).put("msg", "用户无权限");
-        String id = request.getParameter("id");
+            return new JSONObject().put(Constants.SET_STATUS, 1).put(Constants.SET_MSG, "用户未登入");
+        if (!user.getType().equalsIgnoreCase(Constants.ROLE_ADMIN))
+            return new JSONObject().put(Constants.SET_STATUS, 1).put(Constants.SET_MSG, "用户无权限");
+        String id = request.getParameter(Constants.GET_ID);
         beautyService.delete(Integer.parseInt(id));
-        return new JSONObject().put("status", 0).put("msg", "删除成功");
+        return new JSONObject().put(Constants.SET_STATUS, 0).put(Constants.SET_MSG, "删除成功");
+    }
+
+    public boolean isPa(String order, Integer uid, HttpServletRequest request) {
+        boolean flag = false;
+        if (order.equalsIgnoreCase("pa")) {
+            request.setAttribute(Constants.SET_MSG, "无权限");
+            User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+            if (ObjectUtil.isNotNull(user)) {
+                if (ObjectUtil.isNull(uid)) {
+                    if (!user.getType().equalsIgnoreCase("admin"))
+                        return true;
+                } else {
+                    if (!user.getType().equalsIgnoreCase("admin") && !user.getId().equals(uid))
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

@@ -73,7 +73,23 @@
                         #end
                     </div>
                 </div>
+
+                <!-- 语音识别
+                <div class="detail-about" style="padding:0 0 0 0;">
+                        <audio src='http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&per=4&vol=5&pit=5&spd=5&text=#(post.content)' controls="controls" style="background-color: #FFF;" >
+                            Your browser does not support the audio tag.
+                        </audio>
+                </div>
+                -->
+
                 <div class="detail-body photos">#(post.content)</div>
+                #if(postUpdateRecordList != null && postUpdateRecordList.size() > 0)
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="font-size: 11px;">
+                       #for(p : postUpdateRecordList)
+                            该主题于 #date(p.time, "yyyy-MM-dd HH:mm:ss") 重新进行了编辑<br/>
+                       #end
+                    </blockquote>
+                #end
                 #if(keywords != null && keywords.size() > 0)
                 <hr/>
                    #for(k : keywords)

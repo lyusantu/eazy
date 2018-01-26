@@ -3,6 +3,7 @@ package com.eazy.post.service;
 import com.eazy.commons.Page;
 import com.eazy.post.entity.Keyword;
 import com.eazy.post.entity.Post;
+import com.eazy.post.entity.PostUpdateRecord;
 
 import java.util.List;
 
@@ -41,4 +42,8 @@ public interface PostService {
     List<Post> listSearch(Page page, String type, String tag);
 
     int countSearch(String type, String search);
+
+    int addPostUpdateRecord(PostUpdateRecord postUpdateRecord);
+
+    List<PostUpdateRecord> listPostUpdateRecord(int pid);
 }

@@ -26,7 +26,7 @@
         <ul class="layui-tab-title">
             <li #if(order == 'time') class="layui-this" #end><a href="/beauty#if(uid != null)/#(uid)#end/time/1">按提交时间</a></li>
             <li #if(order == 'praise') class="layui-this" #end><a href="/beauty#if(uid != null)/#(uid)#end/praise/1">按点赞排行</a></li>
-            #if(session.loginUser != null && session.loginUser.type == 'admin')
+            #if(session.loginUser != null && (session.loginUser.type == 'admin' || session.loginUser.id == uid))
             <li #if(order == 'pa') class="layui-this" #end><a href="/beauty#if(uid != null)/#(uid)#end/pa/1">等待审批</a></li>
             #end
         </ul>
@@ -49,8 +49,10 @@
                         #date(b.time, "yyyy-MM-dd")</p>
                     <p>获得<a class="fly-case-nums fly-case-active" href="javascript:;" data-type="showPraise" style=" padding:0 5px; color: #01AAED;">#(b.praise)</a>个赞</p>
                     #if(order == 'pa')
-                    <button class="layui-btn layui-btn-primary fly-case-active" style="height: 19px;line-height: 19px;" data-type="approve"><i class="layui-icon">&#xe605;</i></button>
-                    <button class="layui-btn layui-btn-primary  fly-case-active" style="height: 19px;line-height: 19px;top:38px;" data-type="delpic"><i class="layui-icon">&#x1006;</i></button>
+                        #if(session.loginUser.type == 'admin')
+                            <button class="layui-btn layui-btn-primary fly-case-active" style="height: 19px;line-height: 19px;" data-type="approve"><i class="layui-icon">&#xe605;</i></button>
+                            <button class="layui-btn layui-btn-primary  fly-case-active" style="height: 19px;line-height: 19px;top:38px;" data-type="delpic"><i class="layui-icon">&#x1006;</i></button>
+                        #end
                     #else
                     <button class="layui-btn layui-btn-primary fly-case-active" data-type="praise">点赞</button>
                     <!-- <button class="layui-btn  fly-case-active" data-type="praise">已赞</button> -->

@@ -60,7 +60,7 @@ public class IndexController {
         request.setAttribute(Constants.HOT_WEEKLY_LIST, postService.weeklyTop());// 本周热议
         request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
         request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
-        return Constants.INDEX;
+        return Constants.URL_INDEX;
     }
 
 }

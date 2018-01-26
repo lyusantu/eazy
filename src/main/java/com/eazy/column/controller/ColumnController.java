@@ -40,7 +40,7 @@ public class ColumnController {
     private ReplyService replyService;
 
     @RequestMapping(value = "/{tab}", method = RequestMethod.GET)
-    public String index(HttpServletRequest request, @PathVariable("tab") String tab, @RequestParam(value = "p", defaultValue = "1") Integer p) {
+    public String index(HttpServletRequest request, @PathVariable(Constants.GET_TAB) String tab, @RequestParam(value = Constants.GET_P, defaultValue = "1") Integer p) {
         List<Column> columnList = columnService.listColumn(new Column(0));
         Column column = null; // 获取当前标识
         if (ObjectUtil.isNotNull(columnList) && columnList.size() != 0) {
@@ -57,8 +57,8 @@ public class ColumnController {
             columnList1 = columnService.listColumn(column);
             request.setAttribute(Constants.TAB2, columnList1);
         }
-        String type = request.getParameter("type");
-        String tab2 = request.getParameter("tab");
+        String type = request.getParameter(Constants.GET_TYPE);
+        String tab2 = request.getParameter(Constants.GET_TAB);
         Page page = new Page(((p - 1)) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
         page.setPageNumber(p);
         page.setTotalCount(postService.count(tab, tab2, type));
@@ -73,7 +73,7 @@ public class ColumnController {
         request.setAttribute(Constants.HOT_WEEKLY_LIST, postService.weeklyTop());// 本周热议
         request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
         request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
-        return Constants.INDEX;
+        return Constants.URL_INDEX;
     }
 
 }

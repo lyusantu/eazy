@@ -4,6 +4,7 @@ import com.eazy.commons.Page;
 import com.eazy.post.dao.PostDao;
 import com.eazy.post.entity.Keyword;
 import com.eazy.post.entity.Post;
+import com.eazy.post.entity.PostUpdateRecord;
 import com.eazy.post.service.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,5 +110,15 @@ public class PostServiceImpl implements PostService {
     @Override
     public int countSearch(String type, String search) {
         return postDao.countSearch(type, search);
+    }
+
+    @Override
+    public int addPostUpdateRecord(PostUpdateRecord postUpdateRecord) {
+        return postDao.addPostUpdateRecord(postUpdateRecord);
+    }
+
+    @Override
+    public List<PostUpdateRecord> listPostUpdateRecord(int pid) {
+        return postDao.listPostUpdateRecord(pid);
     }
 }

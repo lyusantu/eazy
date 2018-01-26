@@ -24,7 +24,7 @@ public class APIController {
     @CrossOrigin(origins = "*", maxAge = 3600)
     @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public AjaxResult upload(@Param("file") MultipartFile file) throws IOException {
+    public AjaxResult upload(@Param(Constants.GET_FILE) MultipartFile file) throws IOException {
         String upload = Constants.QINIU_CHAIN + new QiNiuUtil().upload(file);
         return new AjaxResult(0, null, null, upload);
     }

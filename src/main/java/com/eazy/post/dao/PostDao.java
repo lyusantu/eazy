@@ -3,6 +3,7 @@ package com.eazy.post.dao;
 import com.eazy.commons.Page;
 import com.eazy.post.entity.Keyword;
 import com.eazy.post.entity.Post;
+import com.eazy.post.entity.PostUpdateRecord;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -107,4 +108,8 @@ public interface PostDao {
     List<Post> listSearch(@Param("page") Page page, @Param("type") String type,@Param("search") String search);
 
     int countSearch(@Param("type") String type, @Param("search") String search);
+
+    int addPostUpdateRecord(@Param("pur") PostUpdateRecord postUpdateRecord);
+
+    List<PostUpdateRecord> listPostUpdateRecord(@Param("pid") int pid);
 }

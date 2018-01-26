@@ -71,19 +71,19 @@ public class UserController {
     private MessageService messageService;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public String index(@PathVariable("id") int id, HttpServletRequest request) {
+    public String index(@PathVariable(Constants.GET_ID) int id, HttpServletRequest request) {
         User user = new User(id);
         user = userService.getUser(user);
         if (ObjectUtil.isNull(user)) {
-            request.setAttribute("msg", "用户未找到");
-            return "err/err";
+            request.setAttribute(Constants.SET_MSG, "用户未找到");
+            return Constants.URL_ERR_ERR;
         } else {
             Page page = new Page(0, 20);
             request.setAttribute(Constants.TITLE, user.getNickName());
-            request.setAttribute("user", user);
-            request.setAttribute("postList", postService.listMyPost(user.getId(), page)); // 最近的提问
-            request.setAttribute("replyList", replyService.listMyReply(user.getId(), page));// 最近的回答
-            return "user/userhome";
+            request.setAttribute(Constants.ENTITY_USER, user);
+            request.setAttribute(Constants.POST_LIST, postService.listMyPost(user.getId(), page)); // 最近的提问
+            request.setAttribute(Constants.REPLY_LIST, replyService.listMyReply(user.getId(), page));// 最近的回答
+            return Constants.URL_USER_USERHOME;
         }
     }
 
@@ -91,18 +91,18 @@ public class UserController {
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
     public String signIn(HttpServletRequest request) {
         Verify verify = verifyService.randVerify();
-        request.setAttribute("verify", verify);
+        request.setAttribute(Constants.VERIFY, verify);
         request.setAttribute(Constants.TITLE, "登入");
-        return "user/login";
+        return Constants.URL_USER_LOGIN;
     }
 
     // 跳转注册
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signUp(HttpServletRequest request) {
         Verify verify = verifyService.randVerify();
-        request.setAttribute("verify", verify);
+        request.setAttribute(Constants.VERIFY, verify);
         request.setAttribute(Constants.TITLE, "注册");
-        return "user/reg";
+        return Constants.URL_USER_REG;
     }
 
     // 跳转设置
@@ -110,7 +110,7 @@ public class UserController {
     @RequestMapping(value = "/set", method = RequestMethod.GET)
     public String set(HttpServletRequest request) {
         request.setAttribute(Constants.TITLE, "基本设置");
-        return "user/set";
+        return Constants.URL_USER_SET;
     }
 
     // 跳转主页
@@ -119,10 +119,10 @@ public class UserController {
     public String home(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         Page page = new Page(0, 20);
-        request.setAttribute("postList", postService.listMyPost(user.getId(), page)); // 最近提问
-        request.setAttribute("replyList", replyService.listMyReply(user.getId(), page));// 最近的回答
+        request.setAttribute(Constants.POST_LIST, postService.listMyPost(user.getId(), page)); // 最近提问
+        request.setAttribute(Constants.REPLY_LIST, replyService.listMyReply(user.getId(), page));// 最近的回答
         request.setAttribute(Constants.TITLE, "我的主页");
-        return "user/home";
+        return Constants.URL_USER_HOME;
     }
 
     // ajax登录
@@ -132,7 +132,7 @@ public class UserController {
     public AjaxResult ajaxSignIn(HttpServletRequest request, HttpServletResponse response, User user) {
         String email = user.getEmail();
         user.setPassword(SecureUtil.md5(user.getPassword()));
-        Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
+        Verify verify = new Verify(Integer.parseInt(request.getParameter(Constants.VERIFY_ID)), request.getParameter(Constants.VERIFY_CODE));
         verify = verifyService.getVerify(verify);
         if (ObjectUtil.isNull(verify))
             return new AjaxResult(1, "人类验证失败");
@@ -148,10 +148,10 @@ public class UserController {
                     // baseService.addLoginRecord(user.getId(), Constants.getIpAddress(request)); // 记录本次登录信息
                     request.getSession().setAttribute(Constants.LOGIN_USER, user);
                     LOG.info(email + "登录成功");
-                    Cookie mailCookie = new Cookie("email", user.getEmail());
+                    Cookie mailCookie = new Cookie(Constants.SET_EMAIL, user.getEmail());
                     mailCookie.setMaxAge(60 * 60 * 24 * 3);
                     mailCookie.setPath("/");
-                    Cookie pwdCookie = new Cookie("password", user.getPassword());
+                    Cookie pwdCookie = new Cookie(Constants.SET_PASSWORD, user.getPassword());
                     pwdCookie.setMaxAge(60 * 60 * 24 * 3);
                     pwdCookie.setPath("/");
                     response.addCookie(mailCookie);
@@ -169,11 +169,11 @@ public class UserController {
     @RequestMapping(value = "/ajaxSignUp", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public AjaxResult ajaxSignUp(User user, HttpServletRequest request) {
-        String rePassword = request.getParameter("repassword");
+        String rePassword = request.getParameter(Constants.SET_REPASSWORD);
         if (!user.getPassword().equals(rePassword)) {
             return new AjaxResult(1, "两次输入的密码不一致");
         } else {
-            Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
+            Verify verify = new Verify(Integer.parseInt(request.getParameter(Constants.VERIFY_ID)), request.getParameter(Constants.VERIFY_CODE));
             verify = verifyService.getVerify(verify);
             if (ObjectUtil.isNull(verify))
                 return new AjaxResult(1, "人类验证失败");
@@ -187,10 +187,10 @@ public class UserController {
                     user.setStatus(0);
                     user.setGender(0); // 默认为男
                     user.setBalance(100);
-                    user.setType("user");
+                    user.setType(Constants.ROLE_USER);
                     user.setPassword(SecureUtil.md5(user.getPassword()));
                     user.setRegTime(new Timestamp(System.currentTimeMillis()));
-                    user.setAvatar("/res/images/avatar/" + new Random().nextInt(12) + ".jpg");
+                    user.setAvatar("/res/images/avatar/" + new Random().nextInt(10) + ".png");
                     user.setActiveCode(request.getSession().getId() + System.currentTimeMillis());
                     user.setReadType(0);
                     userService.reg(user);
@@ -203,7 +203,7 @@ public class UserController {
                     Message message = new Message(1, 1, user.getId(), 2, "欢迎加入eazy社区", new Timestamp(System.currentTimeMillis()), 0, 0);
                     messageService.addMsg(message);
                     LOG.info("----------推送消息欢迎新用户加入END----------");
-                    return new AjaxResult(0, "激活邮件已发送至您的邮箱,请激活后登录 :)", "/user/signin");
+                    return new AjaxResult(0, "激活邮件已发送至您的邮箱,请激活后登录 :)", Constants.URL_USER_SIGNIN);
                 }
             }
         }
@@ -213,10 +213,10 @@ public class UserController {
     @AuthPassport
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        Cookie emailCookie = new Cookie("email", null);
+        Cookie emailCookie = new Cookie(Constants.SET_EMAIL, null);
         emailCookie.setMaxAge(0);
         emailCookie.setPath("/");
-        Cookie pwdCookie = new Cookie("password", null);
+        Cookie pwdCookie = new Cookie(Constants.SET_PASSWORD, null);
         pwdCookie.setMaxAge(0);
         pwdCookie.setPath("/");
         response.addCookie(emailCookie);
@@ -255,17 +255,17 @@ public class UserController {
         if (!loginUser.getPassword().equals(SecureUtil.md5(user.getPassword())))
             return new AjaxResult(1, "当前密码输入错误");
         else {
-            String pass = request.getParameter("pass");
+            String pass = request.getParameter(Constants.GET_PASS);
             if (user.getPassword().equals(pass))
                 return new AjaxResult(1, "当前密码不能与新密码相同");
             else {
-                String repass = request.getParameter("repass");
+                String repass = request.getParameter(Constants.GET_REPASS);
                 if (pass.equals(repass)) {
                     user.setId(loginUser.getId());
                     user.setPassword(SecureUtil.md5(pass));
                     userService.update(user);
                     request.getSession().removeAttribute(Constants.LOGIN_USER);
-                    return new AjaxResult(0, "密码修改成功! 请重新登录", "/user/signin");
+                    return new AjaxResult(0, "密码修改成功! 请重新登录", Constants.URL_USER_SIGNIN);
                 } else
                     return new AjaxResult(1, "两次输入的密码不一致");
             }
@@ -274,7 +274,7 @@ public class UserController {
 
     // 激活账户
     @RequestMapping(value = "/activeAccount/{code}", method = RequestMethod.GET)
-    public String activeAccount(HttpServletRequest request, @PathVariable("code") String code) {
+    public String activeAccount(HttpServletRequest request, @PathVariable(Constants.GET_CODE) String code) {
         User user = userService.activeAccount(code);
         int err = 1;
         String msg = "激活失败！ 激活码不存在";
@@ -289,8 +289,8 @@ public class UserController {
             } else
                 msg = "激活失败！激活码已失效";
         request.setAttribute(Constants.TITLE, "激活账户");
-        request.setAttribute("err", err);
-        request.setAttribute("msg", msg);
+        request.setAttribute(Constants.SET_ERR, err);
+        request.setAttribute(Constants.SET_MSG, msg);
         return "user/active";
     }
 
@@ -299,7 +299,7 @@ public class UserController {
     @CrossOrigin(origins = "*", maxAge = 3600)
     @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public AjaxResult upload(@Param("file") MultipartFile file, HttpSession session) throws IOException {
+    public AjaxResult upload(@Param(Constants.GET_FILE) MultipartFile file, HttpSession session) throws IOException {
         String upload = Constants.QINIU_CHAIN + new QiNiuUtil().upload(file);
         User user = (User) session.getAttribute(Constants.LOGIN_USER);
         User updateUser = new User(user.getId(), upload);
@@ -314,7 +314,7 @@ public class UserController {
     @RequestMapping(value = "/post", method = RequestMethod.GET)
     public String post(HttpServletRequest request) {
         request.setAttribute(Constants.TITLE, "我的主题");
-        return "user/post";
+        return Constants.URL_USER_POST;
     }
 
     // 我的帖子
@@ -322,13 +322,13 @@ public class UserController {
     @RequestMapping(value = "/myPost")
     public @ResponseBody
     JSONObject myPost(HttpServletRequest request) {
-        int currPage = Integer.parseInt(request.getParameter("page"));
-        int pageSize = Integer.parseInt(request.getParameter("limit"));
+        int currPage = Integer.parseInt(request.getParameter(Constants.PAGE));
+        int pageSize = Integer.parseInt(request.getParameter(Constants.LIMIT));
         Page page = new Page((currPage - 1) * pageSize, pageSize);
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         JSONObject json = new JSONObject();
-        json.put("code", 0);
-        json.put("count", postService.countMyPost(user.getId()));
+        json.put(Constants.SET_CODE, 0);
+        json.put(Constants.SET_COUNT, postService.countMyPost(user.getId()));
         JSONArray array = new JSONArray();
         final JSONObject[] data = {new JSONObject()};
         List<Post> postList = postService.listMyPost(user.getId(), page);
@@ -366,13 +366,13 @@ public class UserController {
     @RequestMapping(value = "/myCollection")
     public @ResponseBody
     JSONObject myCollection(HttpServletRequest request) {
-        int currPage = Integer.parseInt(request.getParameter("page"));
-        int pageSize = Integer.parseInt(request.getParameter("limit"));
+        int currPage = Integer.parseInt(request.getParameter(Constants.PAGE));
+        int pageSize = Integer.parseInt(request.getParameter(Constants.LIMIT));
         Page page = new Page((currPage - 1) * pageSize, pageSize);
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         List<PostCollection> list = collectionService.myCollection(user.getId(), page);
         JSONObject json = new JSONObject();
-        json.put("code", 0).put("count", collectionService.countMyCollection(user.getId()));
+        json.put(Constants.SET_CODE, 0).put(Constants.SET_COUNT, collectionService.countMyCollection(user.getId()));
         JSONArray array = new JSONArray();
         if (list != null && list.size() > 0) {
             list.forEach(
@@ -389,17 +389,17 @@ public class UserController {
     @RequestMapping(value = "/forget", method = RequestMethod.GET)
     public String forget(HttpServletRequest request) {
         Verify verify = verifyService.randVerify();
-        request.setAttribute("verify", verify);
-        request.setAttribute("way", "forget");
+        request.setAttribute(Constants.VERIFY, verify);
+        request.setAttribute(Constants.SET_WAY, "forget");
         request.setAttribute(Constants.TITLE, "找回密码");
-        return "user/forget";
+        return Constants.URL_USER_FORGET;
     }
 
     // 找回密码
     @RequestMapping(value = "/ajaxForget", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     public @ResponseBody
     AjaxResult ajaxForget(HttpServletRequest request, User user) {
-        Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
+        Verify verify = new Verify(Integer.parseInt(request.getParameter(Constants.VERIFY_ID)), request.getParameter(Constants.VERIFY_CODE));
         verify = verifyService.getVerify(verify);
         if (ObjectUtil.isNull(verify))
             return new AjaxResult(1, "人类验证失败");
@@ -431,27 +431,27 @@ public class UserController {
 
     // 跳转修改密码
     @RequestMapping(value = "/updatePwd/{code}", method = RequestMethod.GET)
-    public String forget(HttpServletRequest request, @PathVariable("code") String code) {
+    public String forget(HttpServletRequest request, @PathVariable(Constants.GET_CODE) String code) {
         Verify verify = verifyService.randVerify();
-        request.setAttribute("verify", verify);
-        request.setAttribute("way", "set");
+        request.setAttribute(Constants.VERIFY, verify);
+        request.setAttribute(Constants.SET_WAY, "set");
         User user = userService.activeAccount(code);
-        request.setAttribute("status", ObjectUtil.isNull(user));
-        request.setAttribute("user", user);
+        request.setAttribute(Constants.SET_STATUS, ObjectUtil.isNull(user));
+        request.setAttribute(Constants.ENTITY_USER, user);
         request.setAttribute(Constants.TITLE, "修改密码");
-        return "user/forget";
+        return Constants.URL_USER_FORGET;
     }
 
     // 修改密码
     @RequestMapping(value = "/ajaxUpdatePwd", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     public @ResponseBody
     AjaxResult ajaxUpdatePwd(HttpServletRequest request, User user) {
-        Verify verify = new Verify(Integer.parseInt(request.getParameter("verid")), request.getParameter("vercode"));
+        Verify verify = new Verify(Integer.parseInt(request.getParameter(Constants.VERIFY_ID)), request.getParameter(Constants.VERIFY_CODE));
         verify = verifyService.getVerify(verify);
         if (ObjectUtil.isNull(verify))
             return new AjaxResult(1, "人类验证失败");
         else {
-            String repass = request.getParameter("repass");
+            String repass = request.getParameter(Constants.GET_REPASS);
             if (!user.getPassword().equals(repass))
                 return new AjaxResult(1, "两次输入的密码不一致");
             User loginUser = userService.activeAccount(user.getActiveCode());
@@ -465,7 +465,7 @@ public class UserController {
             userService.update(user);
             user.setActiveCode(request.getSession().getId() + System.currentTimeMillis());
             userService.updateActiveCode(user);
-            return new AjaxResult(0, "密码修改成功", "/user/signin");
+            return new AjaxResult(0, "密码修改成功", Constants.URL_USER_SIGNIN);
         }
     }
 
@@ -479,21 +479,21 @@ public class UserController {
         Page page = new Page(((p == null ? 1 : Integer.parseInt(p)) - 1) * 5, 5);
         page.setPageNumber(p == null ? 1 : Integer.parseInt((p)));
         page.setTotalCount(messageService.countMyMsgAll(user.getId()));
-        request.setAttribute("page", page);
-        request.setAttribute("list", messageService.listMyMsg(user.getId(), page));
+        request.setAttribute(Constants.PAGE, page);
+        request.setAttribute(Constants.LIST, messageService.listMyMsg(user.getId(), page));
         request.setAttribute(Constants.TITLE, "我的消息");
-        return "user/message";
+        return Constants.URL_USER_MESSAGE;
     }
 
     // @的跳转
     @RequestMapping(value = "/jump/{username}", method = RequestMethod.GET)
-    public String jump(@PathVariable("username") String username, HttpServletRequest request) {
+    public String jump(@PathVariable(Constants.GET_USERNAME) String username, HttpServletRequest request) {
         if (username == null)
             System.out.println("null");
         User user = userService.getUserByName(username);
         if (ObjectUtil.isNull(user)) {
-            request.setAttribute("msg", "用户不存在");
-            return "err/err";
+            request.setAttribute(Constants.SET_MSG, "用户不存在");
+            return Constants.URL_ERR_ERR;
         } else
             return "redirect:/user/" + user.getId();
     }
@@ -518,6 +518,6 @@ public class UserController {
         userService.update(user);
         currUser.setReadType(user.getReadType());
         request.getSession().setAttribute(Constants.LOGIN_USER, currUser);
-        return new AjaxResult(0, "设置成功", "/user/custom");
+        return new AjaxResult(0, "设置成功", Constants.URL_USER_CUSTOM);
     }
 }

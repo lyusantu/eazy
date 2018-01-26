@@ -228,6 +228,15 @@
         </if>
     </select>
 
+    <insert id="addPostUpdateRecord" useGeneratedKeys="true" keyProperty="pur.id">
+        INSERT INTO post_update_record(pid, time) VALUES(#{pur.pid}, #{pur.time})
+    </insert>
+
+    <select id="listPostUpdateRecord" resultType="PostUpdateRecord">
+        SELECT * FROM post_update_record WHERE pid = #{pid} ORDER BY time ASC
+    </select>
+
+
     <resultMap id="postResult" type="Post">
         <id column="id" property="id"/>
         <result column="title" property="title"/>

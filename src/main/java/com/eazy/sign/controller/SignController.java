@@ -53,7 +53,7 @@ public class SignController {
             Sign sign = signService.getSignInReocrd(user.getId());// 查询已签到记录
             if (sign == null) {
                 sign = new Sign(user.getId(), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
-                json.put("days", 1).put("experience", getSignInReward(reward)).put("signed", true);
+                json.put(Constants.SET_DAYS, 1).put(Constants.SET_EXPERIENCE, getSignInReward(reward)).put(Constants.SET_SIGNED, true);
                 signService.signIn(sign);
             } else {
                 int days = 1;
@@ -64,7 +64,7 @@ public class SignController {
                     sign = new Sign(sign.getId(), user.getId(), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
                 signService.updateSignIn(sign);
                 reward = this.getSignInReward(days);
-                json.put("days", days).put("experience", reward).put("signed", true);
+                json.put(Constants.SET_DAYS, days).put(Constants.SET_EXPERIENCE, reward).put(Constants.SET_SIGNED, true);
             }
             user.setBalance(user.getBalance() + reward);
             User updateUser = new User();
@@ -89,16 +89,16 @@ public class SignController {
             Sign sign = signService.getSignInReocrd(user.getId());// 查询已签到记录
             int days = 0;
             if (ObjectUtil.isNull(sign)) {
-                json.put("days", days).put("experience", getSignInReward(days)).put("signed", false);
+                json.put(Constants.SET_DAYS, days).put(Constants.SET_EXPERIENCE, getSignInReward(days)).put(Constants.SET_SIGNED, false);
             } else {
-                if (DateUtil.format(new Date(sign.getEndTime().getTime()), "yyyy-MM-dd").equals(DateUtil.format(new Date(), "yyyy-MM-dd"))) { // 已签到
+                if (DateUtil.format(new Date(sign.getEndTime().getTime()), Constants.DATE_FORMAT_YMD).equals(DateUtil.format(new Date(), Constants.DATE_FORMAT_YMD))) { // 已签到
                     days = this.getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime());
-                    json.put("days", days).put("experience", getSignInReward(days)).put("signed", true);
-                } else if (DateUtil.format(new Date(sign.getEndTime().getTime() + 1000 * 60 * 60 * 24), "yyyy-MM-dd").equals(DateUtil.format(new Date(), "yyyy-MM-dd"))) {
+                    json.put(Constants.SET_DAYS, days).put(Constants.SET_EXPERIENCE, getSignInReward(days)).put(Constants.SET_SIGNED, true);
+                } else if (DateUtil.format(new Date(sign.getEndTime().getTime() + 1000 * 60 * 60 * 24), Constants.DATE_FORMAT_YMD).equals(DateUtil.format(new Date(), Constants.DATE_FORMAT_YMD))) {
                     days = this.getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime());
-                    json.put("days", days).put("experience", getSignInReward(days)).put("signed", false);
+                    json.put(Constants.SET_DAYS, days).put(Constants.SET_EXPERIENCE, getSignInReward(days)).put(Constants.SET_SIGNED, false);
                 } else
-                    json.put("days", days).put("experience", getSignInReward(days)).put("signed", false);
+                    json.put(Constants.SET_DAYS, days).put(Constants.SET_EXPERIENCE, getSignInReward(days)).put(Constants.SET_SIGNED, false);
             }
             return new SignResult(0, json);
         }
@@ -114,11 +114,11 @@ public class SignController {
         if (ObjectUtil.isNotNull(listNew) && listNew.size() > 0)
             for (Sign sign : listNew) {
                 jsonNew = new JSONObject();
-                jsonNew.put("uid", sign.getUser().getId()).
-                        put("time", sign.getEndTime())
-                        .put("user", new JSONObject().
-                                put("username", sign.getUser().getNickName())
-                                .put("avatar", sign.getUser().getAvatar()));
+                jsonNew.put(Constants.SET_UID, sign.getUser().getId()).
+                        put(Constants.SET_TIME, sign.getEndTime())
+                        .put(Constants.ENTITY_USER, new JSONObject().
+                                put(Constants.SET_USERNAME, sign.getUser().getNickName())
+                                .put(Constants.SET_AVATAR, sign.getUser().getAvatar()));
                 arrayNew.put(jsonNew);
             }
         JSONObject jsonFast = null;
@@ -127,11 +127,11 @@ public class SignController {
         if (ObjectUtil.isNotNull(listFast) && listFast.size() > 0) {
             for (Sign sign : listFast) {
                 jsonFast = new JSONObject();
-                jsonFast.put("uid", sign.getUser().getId())
-                        .put("time", sign.getEndTime())
-                        .put("user", new JSONObject()
-                                .put("username", sign.getUser().getNickName())
-                                .put("avatar", sign.getUser().getAvatar()));
+                jsonFast.put(Constants.SET_UID, sign.getUser().getId())
+                        .put(Constants.SET_TIME, sign.getEndTime())
+                        .put(Constants.ENTITY_USER, new JSONObject()
+                                .put(Constants.SET_USERNAME, sign.getUser().getNickName())
+                                .put(Constants.SET_AVATAR, sign.getUser().getAvatar()));
                 arrayFast.put(jsonFast);
             }
         }
@@ -141,12 +141,12 @@ public class SignController {
         if (ObjectUtil.isNotNull(listAll) && listAll.size() > 0) {
             for (Sign sign : listAll) {
                 jsonAll = new JSONObject();
-                jsonAll.put("uid", sign.getUser().getId())
-                        .put("days", this.getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime()))
-                        .put("time", sign.getEndTime())
-                        .put("user", new JSONObject()
-                                .put("username", sign.getUser().getNickName())
-                                .put("avatar", sign.getUser().getAvatar()));
+                jsonAll.put(Constants.SET_UID, sign.getUser().getId())
+                        .put(Constants.SET_DAYS, this.getDays(sign.getStartTime().getTime(), sign.getEndTime().getTime()))
+                        .put(Constants.SET_TIME, sign.getEndTime())
+                        .put(Constants.ENTITY_USER, new JSONObject()
+                                .put(Constants.SET_USERNAME, sign.getUser().getNickName())
+                                .put(Constants.SET_AVATAR, sign.getUser().getAvatar()));
                 arrayAll.put(jsonAll);
             }
         }
@@ -171,8 +171,8 @@ public class SignController {
     }
 
     private int getDays(long start, long end) throws ParseException {
-        start = new SimpleDateFormat("yyyy-MM-dd").parse(new SimpleDateFormat("yyyy-MM-dd").format(start)).getTime();
-        end = new SimpleDateFormat("yyyy-MM-dd").parse(new SimpleDateFormat("yyyy-MM-dd").format(end)).getTime();
+        start = new SimpleDateFormat(Constants.DATE_FORMAT_YMD).parse(new SimpleDateFormat(Constants.DATE_FORMAT_YMD).format(start)).getTime();
+        end = new SimpleDateFormat(Constants.DATE_FORMAT_YMD).parse(new SimpleDateFormat(Constants.DATE_FORMAT_YMD).format(end)).getTime();
         long result = end - start;
         long day = 1000 * 60 * 60 * 24;
         return (int) (result / day + 1);
