@@ -5,15 +5,12 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd"
->
+        http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <!--配置整合mybatis过程-->
-
-    <!--1、配置数据库相关参数-->
+    <!-- 配置数据库相关参数 -->
     <context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true"/>
 
-    <!--2.数据源druid -->
+    <!-- 数据源druid -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
           init-method="init" destroy-method="close">
         <property name="driverClassName" value="${jdbc.driverClassName}" />
@@ -30,7 +27,7 @@
         <property name="filters" value="wall,stat" />
     </bean>
 
-    <!--3、配置SqlSessionFactory对象-->
+    <!-- 配置SqlSessionFactory对象 -->
     <bean id="sqlSessionFactory" class="com.eazy.commons.mybatis.EazySqlSessionFactoryBean">
         <!--注入数据库连接池-->
         <property name="dataSource" ref="dataSource"/>
@@ -42,7 +39,7 @@
         <property name="mapperLocations" value="classpath:mapper/*.xml"/>
     </bean>
 
-    <!--4、配置扫描Dao接口包,动态实现DAO接口,注入到spring容器-->
+    <!-- 配置扫描Dao接口包,动态实现DAO接口,注入到spring容器 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <!--注入SqlSessionFactory-->
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>

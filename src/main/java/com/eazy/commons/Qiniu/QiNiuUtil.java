@@ -1,4 +1,4 @@
-package com.eazy.commons;
+package com.eazy.commons.Qiniu;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qiniu.common.QiniuException;

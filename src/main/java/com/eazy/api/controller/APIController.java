@@ -1,7 +1,7 @@
 package com.eazy.api.controller;
 
 import com.eazy.commons.Constants;
-import com.eazy.commons.QiNiuUtil;
+import com.eazy.commons.Qiniu.QiNiuUtil;
 import com.eazy.commons.auth.AuthPassport;
 import com.eazy.commons.dto.AjaxResult;
 import io.swagger.annotations.Api;

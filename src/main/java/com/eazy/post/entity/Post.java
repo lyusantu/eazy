@@ -1,8 +1,5 @@
 package com.eazy.post.entity;
 
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableName;
 import com.eazy.column.entity.Column;
 import com.eazy.user.entity.User;
 
@@ -10,10 +7,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
-@TableName("post")
 public class Post implements Serializable {
 
-    @TableId
     private Integer id;
 
     private String title;
@@ -40,16 +35,12 @@ public class Post implements Serializable {
 
     private Integer wonderful;
 
-    @TableField(exist = false)
     private User user;
 
-    @TableField(exist = false)
     private Column column;
 
-    @TableField(exist = false)
     private Keyword keyword;
 
-    @TableField(exist = false)
     private List<Keyword> keywords;
 
     public Post() {

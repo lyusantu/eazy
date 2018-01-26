@@ -5,7 +5,7 @@ import com.eazy.collection.entity.PostCollection;
 import com.eazy.collection.service.CollectionService;
 import com.eazy.commons.Constants;
 import com.eazy.commons.Page;
-import com.eazy.commons.QiNiuUtil;
+import com.eazy.commons.Qiniu.QiNiuUtil;
 import com.eazy.commons.auth.AuthPassport;
 import com.eazy.commons.dto.AjaxResult;
 import com.eazy.message.entity.Message;
