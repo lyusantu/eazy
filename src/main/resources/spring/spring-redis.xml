@@ -10,7 +10,7 @@
     <!-- 缓存的层级-->
     <context:component-scan base-package="com.eazy.commons.cache" />
     <!-- 引入redis配置 -->
-    <context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"/>
+    <context:property-placeholder location="classpath:properties/redis.properties" ignore-unresolvable="true"/>
 
     <!-- Redis 配置 -->
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">

@@ -39,9 +39,9 @@
                         #end
                     </div>
                     <span class="fly-list-nums">
-            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> #(post.comments)</a>
-            <i class="iconfont" title="人气">&#xe60b;</i> #(post.readers)
-          </span>
+                        <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> #(post.comments)</a>
+                        <i class="iconfont" title="人气">&#xe60b;</i> #(post.readers)
+                    </span>
                 </div>
                 <div class="detail-about">
                     <a class="fly-avatar" href="/user/#(post.user.id)">
@@ -81,26 +81,32 @@
                         </audio>
                 </div>
                 -->
-
                 <div class="detail-body photos">#(post.content)</div>
-                #if(postUpdateRecordList != null && postUpdateRecordList.size() > 0)
-                    <blockquote class="layui-elem-quote layui-quote-nm" style="font-size: 11px;">
-                       #for(p : postUpdateRecordList)
-                            该主题于 #date(p.time, "yyyy-MM-dd HH:mm:ss") 重新进行了编辑<br/>
-                       #end
-                    </blockquote>
-                #end
-                #if(keywords != null && keywords.size() > 0)
-                <hr/>
-                   #for(k : keywords)
-                <a href="/post/tags/#(k.keyword)"><span class="layui-badge-rim">#(k.keyword)</span></a>
-                   #end
-                #end
             </div>
 
+            #if(postUpdateRecordList != null && postUpdateRecordList.size() > 0)
+            <div class="fly-panel detail-box" style="font-size: 12px;padding-bottom: 0px;">
+                <ul class="layui-timeline">
+                    #for(p : postUpdateRecordList)
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis"></i>
+                        <div class="layui-timeline-content layui-text">
+                            <div class="layui-timeline-title">#date(p.time, "yyyy-MM-dd HH:mm")，<a href="/user/(post.user.id)">#(post.user.nickName)</a> 重新进行了编辑主题</div>
+                        </div>
+                    </li>
+                    #end
+                </ul>
+            </div>
+            #end
+
             <div class="fly-panel detail-box" id="flyReply">
+                #if(keywords != null && keywords.size() > 0)
+                    #for(k : keywords)
+                        <a href="/post/tags/#(k.keyword)"><span class="layui-badge-rim">#(k.keyword)</span></a>
+                    #end
+                #end
                 <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
-                    <legend>回帖</legend>
+                    <legend>#if(post.allow == 0)评论#else 该主题已关闭评论 #end</legend>
                 </fieldset>
                 <ul class="jieda" id="jieda">
                 #if(list == null || list.size() == 0)
@@ -126,11 +132,7 @@
                                     #if(r.user.id == post.user.id)
                                     <span>(楼主)</span>
                                     #end
-                                    <!--
-                                    <span style="color:#5FB878">(管理员)</span>
-                                    <span style="color:#FF9E3F">（社区之光）</span>
-                                    <span style="color:#999">（该号已被封）</span>
-                                    -->
+                                    <!-- <span style="color:#FF9E3F">（社区之光）</span> -->
                                 </div>
 
                                 <div class="detail-hits">
@@ -146,15 +148,14 @@
                             <div class="jieda-reply">
 
                                 <!--
-                       <span class="jieda-zan" type="zan">
-                        <i class="iconfont icon-zan"></i>
-                        <em>0</em>
-                      </span>
-                      -->
-                        <span type="reply">
-                        <i class="iconfont icon-svgmoban53"></i>
-                        回复
-                      </span>
+                               <span class="jieda-zan" type="zan">
+                                <i class="iconfont icon-zan"></i>
+                                <em>0</em>
+                               </span>
+                                -->
+
+                                <span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span>
+
                                 <div class="jieda-admin">
                                     #if(session.loginUser != null)
                                     <!--
@@ -182,21 +183,23 @@
                 </div>
                 #end
 
-                <div class="layui-form layui-form-pane">
-                    <form action="/post/reply" method="post">
-                        <div class="layui-form-item layui-form-text">
-                            <a name="comment"></a>
-                            <div class="layui-input-block">
-                                <textarea id="L_content" name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor" style="height: 150px;"></textarea>
+                #if(post.allow == 0)
+                    <div class="layui-form layui-form-pane">
+                        <form action="/post/reply" method="post">
+                            <div class="layui-form-item layui-form-text">
+                                <a name="comment"></a>
+                                <div class="layui-input-block">
+                                    <textarea id="L_content" name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor" style="height: 150px;"></textarea>
+                                </div>
                             </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <input type="hidden" name="pid" value="#(post.id)">
-                            <input type="hidden" name="action" value="/post/reply" />
-                            <button class="layui-btn" lay-filter="*" lay-submit>发表评论</button>
-                        </div>
-                    </form>
-                </div>
+                            <div class="layui-form-item">
+                                <input type="hidden" name="pid" value="#(post.id)">
+                                <input type="hidden" name="action" value="/post/reply" />
+                                <button class="layui-btn" lay-filter="*" lay-submit>发表评论</button>
+                            </div>
+                        </form>
+                    </div>
+                 #end
             </div>
         </div>
 

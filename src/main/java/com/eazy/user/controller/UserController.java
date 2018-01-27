@@ -186,7 +186,7 @@ public class UserController {
                     user.setVip(0);
                     user.setStatus(0);
                     user.setGender(0); // 默认为男
-                    user.setBalance(100);
+                    user.setBalance(Constants.DEFAULT_BALANCE);
                     user.setType(Constants.ROLE_USER);
                     user.setPassword(SecureUtil.md5(user.getPassword()));
                     user.setRegTime(new Timestamp(System.currentTimeMillis()));

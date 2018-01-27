@@ -3,8 +3,8 @@
 <mapper namespace="com.eazy.post.dao.PostDao">
 
     <insert id="addPost" parameterType="Post" useGeneratedKeys="true" keyProperty="post.id">
-        INSERT INTO post(title,`type`,content,reward,`delete`,createtime,author,comments,readers,status,top,wonderful)
-        VALUES(#{post.title}, #{post.type}, #{post.content}, #{post.reward}, #{post.delete}, #{post.createTime}, #{post.author}, #{post.comments}, #{post.readers}, #{post.status}, #{post.top}, #{post.wonderful})
+        INSERT INTO post(title,`type`,content,reward,`delete`,createtime,author,comments,readers,status,top,wonderful, allow)
+        VALUES(#{post.title}, #{post.type}, #{post.content}, #{post.reward}, #{post.delete}, #{post.createTime}, #{post.author}, #{post.comments}, #{post.readers}, #{post.status}, #{post.top}, #{post.wonderful}, #{post.allow})
     </insert>
 
     <select id="list" resultMap="postResult">
@@ -106,6 +106,9 @@
         </if>
         <if test="post.content != null">
             , content = #{post.content}
+        </if>
+        <if test="post.allow != null">
+            , allow = #{post.allow}
         </if>
         WHERE id = #{post.id}
     </update>
@@ -233,7 +236,7 @@
     </insert>
 
     <select id="listPostUpdateRecord" resultType="PostUpdateRecord">
-        SELECT * FROM post_update_record WHERE pid = #{pid} ORDER BY time ASC
+        SELECT * FROM post_update_record WHERE pid = #{pid} ORDER BY time DESC
     </select>
 
 
@@ -251,6 +254,7 @@
         <result column="status" property="status"/>
         <result column="top" property="top"/>
         <result column="wonderful" property="wonderful"/>
+        <result column="allow" property="allow" />
         <association property="user" javaType="User">
             <id column="uid" property="id"/>
             <result column="nickName" property="nickName"/>

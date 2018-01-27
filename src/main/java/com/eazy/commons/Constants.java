@@ -1,13 +1,21 @@
 package com.eazy.commons;
 
+import com.eazy.post.entity.Post;
+import com.eazy.user.entity.User;
+
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 public class Constants {
 
     private Constants() {
     }
+
+    public static final Integer DEFAULT_REDUCE = 5;
+
+    public static final Integer DEFAULT_BALANCE = 200;
 
     public static final Integer NUM_PER_PAGE = 20;
 
@@ -206,6 +214,10 @@ public class Constants {
     public static final String SEARCH_TAG = "searchTag";
 
     public static final String QINIU_CHAIN = "http://oih7sazbd.bkt.clouddn.com/"; // 七牛外链前缀
+
+    public static void resetUserInfo(HttpServletRequest request, User user){
+        request.setAttribute(Constants.LOGIN_USER, user);
+    }
 
     public static String getIpAddress(HttpServletRequest request) {
         String ipAddress = request.getHeader("x-forwarded-for");

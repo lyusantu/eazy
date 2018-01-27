@@ -35,6 +35,8 @@ public class Post implements Serializable {
 
     private Integer wonderful;
 
+    private Integer allow;
+
     private User user;
 
     private Column column;
@@ -190,5 +192,13 @@ public class Post implements Serializable {
 
     public void setKeyword(Keyword keyword) {
         this.keyword = keyword;
+    }
+
+    public Integer getAllow() {
+        return allow;
+    }
+
+    public void setAllow(Integer allow) {
+        this.allow = allow;
     }
 }

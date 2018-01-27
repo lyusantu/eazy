@@ -51,7 +51,7 @@
                 <h3 class="fly-panel-title">#(user.nickName) 最近的主题</h3>
                 <ul class="jie-row">
                     #if(postList == null || postList.size() == 0)
-                        <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何主题</i></div>
+                        <div class="fly-none" style="min-height: 0px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何主题</i></div>
                     #else
                     #for(p : postList)
                     <li>
@@ -83,7 +83,7 @@
                             </li>
                         #end
                     #else
-                        <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有评论任何主题</span></div>
+                        <div class="fly-none" style="min-height: 0px; padding:30px 0; height:auto;"><span>没有评论任何主题</span></div>
                     #end
                 </ul>
             </div>

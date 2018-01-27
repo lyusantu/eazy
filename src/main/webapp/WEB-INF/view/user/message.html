@@ -64,9 +64,12 @@
                             #elseif(m.type == 1) ### 艾特
                             <a href="/user/#(m.user.id)" target="_blank"><cite>#(m.user.nickName)</cite></a> 在主题 <a
                                 href="/post/#(m.post.id)#item-#(m.reply)"
-                                target="_blank"><cite>#(m.post.title)</cite></a> 中@了你
+                                target="_blank"><cite>#(m.post.title)</cite></a> 的评论中@了你
                             #elseif(m.type == 2) ### 系统消息
                             系统消息: #(m.content)
+                            #elseif(m.type == 3) ### 发表的主题
+                            <a href="/user/#(m.user.id)" target="_blank"><cite>#(m.user.nickName)</cite></a> 在主题 <a
+                                href="/post/#(m.post.id)" target="_blank"><cite>#(m.post.title)</cite></a>中@了你
                             #end
                         </blockquote>
                         <p><span class="createtime">#(m.time)</span><a href="javascript:;"

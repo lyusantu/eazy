@@ -84,6 +84,10 @@ public class PostController {
             request.setAttribute(Constants.SET_COLLECTION, collection);
         }
         Post post = postService.getPost(id);
+        if(ObjectUtil.isNull(post)){
+            request.setAttribute(Constants.SET_MSG, "主题不存在");
+            return "err/err";
+        }
         if (post.getDelete() == 0) {
             List<Column> columnList = columnService.listColumn(new Column(0));
             Column column = new Column(columnService.getPidById(post.getType())); // 获取pid
@@ -108,11 +112,11 @@ public class PostController {
             page.setPageNumber(p == null ? 1 : Integer.parseInt((p)));
             page.setTotalCount(replyService.countListReply(reply));
             List<Reply> replyList = replyService.listReply(reply, page);
-            request.setAttribute(Constants.LIST, replyList);
             request.setAttribute(Constants.PAGE, page);
             request.setAttribute(Constants.TAB1, columnList);
-            request.setAttribute(Constants.WEEK_HOT, postService.weeklyTop());// 本周热议
+            request.setAttribute(Constants.LIST, replyList);
             request.setAttribute(Constants.TITLE, post.getTitle());
+            request.setAttribute(Constants.WEEK_HOT, postService.weeklyTop());// 本周热议
         }
         request.setAttribute(Constants.KEYWORDS, postService.getKeyword(post.getId())); // 关键字
         request.setAttribute(Constants.SET_MSG, "该主题已被删除");
@@ -148,7 +152,6 @@ public class PostController {
         else if (user.getBalance() < post.getReward())
             return new AjaxResult(1, "飞吻不足");
         else {
-            System.out.println(post.getReward());
             if (post.getReward() < 20)
                 return new AjaxResult(1, "不要试图更改飞吻值");
             Verify verify = new Verify(Integer.parseInt(request.getParameter(Constants.VERIFY_ID)), request.getParameter(Constants.VERIFY_CODE));
@@ -156,6 +159,7 @@ public class PostController {
             if (ObjectUtil.isNull(verify))
                 return new AjaxResult(1, "人类验证失败");
             else {
+                post.setAllow(ObjectUtil.isNull(request.getParameter("post_allow")) ? 1 : 0);
                 post.setAuthor(user.getId());
                 post.setCreateTime(new Timestamp(System.currentTimeMillis()));
                 postService.addPost(post); // 添加文章
@@ -170,6 +174,7 @@ public class PostController {
                             keyword -> postService.addKeyword(new Keyword(keyword.getName(), post.getId(), new Timestamp(System.currentTimeMillis())))
                     );
                 }
+                push(post.getTitle(), post.getContent(),post.getId(), user.getId(), 0,3); // 推送
                 return new AjaxResult(0, null, "/"); // 此处应该跳转到用户发表的对应目录的首页
             }
         }
@@ -215,39 +220,38 @@ public class PostController {
         if (ObjectUtil.isNull(user))
             return new JSONObject().put(Constants.SET_STATUS, 1).put(Constants.SET_MSG, "未登录");
         else {
+            Post post = postService.getPost(reply.getPid());
+            if (!user.getId().equals(post.getAuthor())) { // 奖赏制度
+                if(user.getBalance() < Constants.DEFAULT_REDUCE)
+                    return new JSONObject().put(Constants.SET_STATUS, 1).put(Constants.SET_MSG, "您的飞吻不足，无法评论");
+                // 扣除评论人的飞吻
+                User updateUser = new User(user.getId(), user.getBalance() - Constants.DEFAULT_REDUCE);
+                userService.update(updateUser);
+                Constants.resetUserInfo(request, user);
+                // 为主题发表者添加飞吻
+                User postUser = userService.getUser(new User(post.getAuthor()));
+                updateUser = new User(postUser.getId(), postUser.getBalance() + Constants.DEFAULT_REDUCE);
+                userService.update(updateUser);
+            }
+            // 添加评论
             reply.setUid(user.getId());
             reply.setAccept(0);
             reply.setTime(new Timestamp(System.currentTimeMillis()));
             replyService.addReply(reply);
-            Post post = new Post(reply.getPid());
-            post = postService.getPost(post.getId());
+            // 更新评论数
             Post updatePost = new Post(post.getId());
             updatePost.setComments(post.getComments() + 1);
             postService.update(updatePost);
-            LOG.info("----------用户 " + user.getNickName() + " 评论了 " + post.getTitle() + "----------");
-            LOG.info("----------开始进行@的推送----------");
-            String reg = "@.\\S*";
-            Pattern pat = Pattern.compile(reg);
-            Matcher mat = pat.matcher(reply.getContent());
-            String name = "";
-            Message message = null;
-            User queryUser = null;
-            while (mat.find()) {
-                name = mat.group();
-                name = name.substring(1, name.length());
-                queryUser = userService.getUserByName(name); // 查询用户是否存在
-                if (ObjectUtil.isNull(queryUser)) {
-                    LOG.info("----------@的用户 " + name + " 不存在----------");
-                } else {
-                    message = new Message(post.getId(), user.getId(), queryUser.getId(), 1, null, new Timestamp(System.currentTimeMillis()), 0, reply.getId());
-                    messageService.addMsg(message);
-                    LOG.info("----------成功向用户 " + name + " 推送了一条信息----------");
-                }
-            }
-            LOG.info("----------@的推送结束----------");
+            this.push(post.getTitle(), reply.getContent(),post.getId(), user.getId(), reply.getId(), 1); // @的推送
+            LOG.info("----------用户\"" + user.getNickName() + "\"评论了主题\"" + post.getTitle() + "\"----------");
             LOG.info("----------开始进行评论的推送----------");
-            message = new Message(post.getId(), user.getId(), post.getAuthor(), 0, null, new Timestamp(System.currentTimeMillis()), 0, reply.getId());
-            messageService.addMsg(message);
+            if(!post.getAuthor().equals(user.getId())) {
+                Message message = new Message(post.getId(), user.getId(), post.getAuthor(), 0, null, new Timestamp(System.currentTimeMillis()), 0, reply.getId());
+                messageService.addMsg(message);
+                LOG.info("----------成功向主题所有者推送了一条来自用户\""  + user.getNickName() + "\"的评论信息----------");
+            }
+            else
+                LOG.info("----------\""  + user.getNickName() + "\"评论了自己的主题\"" + post.getTitle() +"\"，取消评论的推送----------");
             LOG.info("----------评论的推送结束----------");
             return new JSONObject().put(Constants.SET_STATUS, 0).put(Constants.SET_MSG, "评论成功").put(Constants.SET_ACTION, false);
         }
@@ -352,14 +356,13 @@ public class PostController {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         if (ObjectUtil.isNull(user))
             return new AjaxResult(1, "未登入");
-        else if (user.getBalance() < post.getReward())
-            return new AjaxResult(1, "飞吻不足");
         else {
             Verify verify = new Verify(Integer.parseInt(request.getParameter(Constants.VERIFY_ID)), request.getParameter(Constants.VERIFY_CODE));
             verify = verifyService.getVerify(verify);
             if (ObjectUtil.isNull(verify))
                 return new AjaxResult(1, "人类验证失败");
             else {
+                post.setAllow(ObjectUtil.isNull(request.getParameter("post_allow")) ? 1 : 0);
                 postService.update(post);
                 postService.delKeyword(post.getId());// 删除已有关键字
                 KeyWordComputer kwc = new KeyWordComputer(5); // 分词,关键字提取
@@ -369,6 +372,7 @@ public class PostController {
                             keyword -> postService.addKeyword(new Keyword(keyword.getName(), post.getId(), new Timestamp(System.currentTimeMillis())))
                     );
                 }
+                push(post.getTitle(), post.getContent(),post.getId(), user.getId(), 0,3); // 推送
                 postService.addPostUpdateRecord(new PostUpdateRecord(post.getId(), new Timestamp(System.currentTimeMillis())));// 插入一条更改记录
                 return new AjaxResult(0, null, "/post/" + post.getId()); // 此处应该跳转到用户发表的对应目录的首页
             }
@@ -383,7 +387,7 @@ public class PostController {
         page.setPageNumber(p == null ? 1 : Integer.parseInt((p)));
         page.setTotalCount(postService.countTags(type, tag));
         List<Post> postList = postService.listTags(page, type, tag);
-        request.setAttribute(Constants.TITLE, tag);
+        request.setAttribute(Constants.TITLE, "标签：" + tag);
         request.setAttribute(Constants.SEARCH_TAG, tag);
         request.setAttribute(Constants.PAGE, page);
         request.setAttribute(Constants.POST_LIST, postList);
@@ -405,7 +409,7 @@ public class PostController {
         page.setPageNumber(p == null ? 1 : Integer.parseInt((p)));
         page.setTotalCount(postService.countSearch(type, search));
         List<Post> postList = postService.listSearch(page, type, search);
-        request.setAttribute(Constants.TITLE, search);
+        request.setAttribute(Constants.TITLE, "搜索：" + search);
         request.setAttribute(Constants.SEARCH_TAG, search);
         request.setAttribute(Constants.PAGE, page);
         request.setAttribute(Constants.POST_LIST, postList);
@@ -416,6 +420,40 @@ public class PostController {
         request.setAttribute(Constants.SPONSOR_LIST, indexService.listSponsor(1));
         request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
         return Constants.URL_POST_TAGS;
+    }
+
+    /**
+     * 推送
+     * @param title
+     * @param content
+     * @param postId
+     * @param userId
+     * @param type
+     */
+    private void push(String title, String content, Integer postId, Integer userId, int replyId, int type){
+        LOG.info("----------开始进行@的推送----------");
+        String reg = "@.\\S*";
+        Pattern pat = Pattern.compile(reg);
+        Matcher mat = pat.matcher(content);
+        String name = "";
+        Message message = null;
+        User queryUser = null;
+        while (mat.find()) {
+            name = mat.group();
+            name = name.substring(1, name.length());
+            queryUser = userService.getUserByName(name); // 查询用户是否存在
+            if (ObjectUtil.isNull(queryUser)) {
+                LOG.info("----------@的用户 " + name + " 不存在----------");
+            } else {
+                if(!queryUser.getId().equals(userId)) {
+                    message = new Message(postId, userId, queryUser.getId(), type, null, new Timestamp(System.currentTimeMillis()), 0, replyId);
+                    messageService.addMsg(message);
+                    LOG.info("----------成功向用户\"" + name + "\"推送了一条来自主题\"" + title + "\"中的@信息----------");
+                }else
+                    LOG.info("----------\""+ name +"\"在主题\"" + title + "\"中@了自己，取消@的推送----------");
+            }
+        }
+        LOG.info("----------@的推送结束----------");
     }
 
 }
