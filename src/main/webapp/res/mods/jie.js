@@ -179,6 +179,35 @@ layui.define('fly', function(exports){
         });
       });
     }
+
+      ,thanks: function(li){ //感谢
+          /*
+          layer.prompt({
+              formType: 2
+              , value: 'hello'
+              , maxlength: 100000
+              , title: '编辑回帖'
+              , area: ['728px', '300px']
+              , success: function (layero) {
+                  fly.layEditor({
+                      elem: layero.find('textarea')
+                  });
+              }
+          })
+          */
+          layer.confirm('确定花费10飞吻向@xxx的这些评论发送感谢？', {
+              btn: ['确定', '取消']
+          }, function(index, layero){
+              fly.json('/post/thanks', {
+                  id: li.data('id')
+              }, function(res){
+                  layer.msg(res.msg);
+              });
+          }, function(index){
+
+          });
+      }
+
     ,edit: function(li){ //编辑
       fly.json('/jie/getDa/', {
         id: li.data('id')

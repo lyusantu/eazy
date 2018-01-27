@@ -95,6 +95,12 @@
                         </div>
                     </li>
                     #end
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis"></i>
+                        <div class="layui-timeline-content layui-text">
+                            <div class="layui-timeline-title">#date(post.createTime, "yyyy-MM-dd HH:mm")，<a href="/user/(post.user.id)">#(post.user.nickName)</a> 发表了主题</div>
+                        </div>
+                    </li>
                 </ul>
             </div>
             #end
@@ -153,8 +159,9 @@
                                 <em>0</em>
                                </span>
                                 -->
-
                                 <span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span>
+
+                                #if(session.loginUser != null && session.loginUser.id != r.user.id) <span type="thanks">感谢回复者</span>#end
 
                                 <div class="jieda-admin">
                                     #if(session.loginUser != null)

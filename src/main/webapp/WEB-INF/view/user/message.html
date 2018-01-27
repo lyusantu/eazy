@@ -70,6 +70,9 @@
                             #elseif(m.type == 3) ### 发表的主题
                             <a href="/user/#(m.user.id)" target="_blank"><cite>#(m.user.nickName)</cite></a> 在主题 <a
                                 href="/post/#(m.post.id)" target="_blank"><cite>#(m.post.title)</cite></a>中@了你
+                            #elseif(m.type == 4) ### 感谢的主题
+                            <a href="/user/#(m.user.id)" target="_blank"><cite>#(m.user.nickName)</cite></a> 在主题 <a
+                                href="/post/#(m.post.id)#item-#(m.reply)" target="_blank"><cite>#(m.post.title)</cite></a>中感谢了你的评论，获得了10飞吻
                             #end
                         </blockquote>
                         <p><span class="createtime">#(m.time)</span><a href="javascript:;"

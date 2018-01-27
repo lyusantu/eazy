@@ -15,6 +15,8 @@ public class Constants {
 
     public static final Integer DEFAULT_REDUCE = 5;
 
+    public static final Integer DEFAULT_THANKS = 10;
+
     public static final Integer DEFAULT_BALANCE = 200;
 
     public static final Integer NUM_PER_PAGE = 20;

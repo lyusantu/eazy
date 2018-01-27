@@ -24,6 +24,7 @@ import com.eazy.verify.service.VerifyService;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
 import io.swagger.annotations.Api;
+import io.swagger.models.auth.In;
 import org.ansj.app.keyword.KeyWordComputer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -376,6 +377,35 @@ public class PostController {
                 postService.addPostUpdateRecord(new PostUpdateRecord(post.getId(), new Timestamp(System.currentTimeMillis())));// 插入一条更改记录
                 return new AjaxResult(0, null, "/post/" + post.getId()); // 此处应该跳转到用户发表的对应目录的首页
             }
+        }
+    }
+
+    @RequestMapping(value = "/thanks", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public AjaxResult thanks(HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        if (ObjectUtil.isNull(user))
+            return new AjaxResult(1, "未登入");
+        else {
+            if(user.getBalance() < Constants.DEFAULT_THANKS)
+                return new AjaxResult(1, "飞吻不足");
+            Reply reply = new Reply();
+            reply.setId(Integer.parseInt(request.getParameter("id")));
+            reply = replyService.getReply(reply);
+            User updateUser = new User(reply.getUid());
+            User getUser = userService.getUser(updateUser);
+            updateUser.setBalance(getUser.getBalance() + Constants.DEFAULT_THANKS);
+            userService.update(updateUser);
+            updateUser = new User(user.getId());
+            user.setBalance(user.getBalance() - Constants.DEFAULT_THANKS);
+            updateUser.setBalance(user.getBalance());
+            userService.update(updateUser);
+            Constants.resetUserInfo(request, user);
+            Post post = postService.getPost(reply.getPid());
+            // 感谢成功后进行感谢推送
+            Message message = new Message(post.getId(), user.getId(), reply.getUid(), 4, null, new Timestamp(System.currentTimeMillis()), 0, reply.getId());
+            messageService.addMsg(message);
+            return new AjaxResult(0, "感谢成功");
         }
     }
 
