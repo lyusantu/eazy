@@ -13,4 +13,8 @@ public interface ColumnDao {
 
     List<Column> listColumnSecondary();
 
+    Column getDesc(@Param("suffix") String suffix);
+
+    void editDesc(@Param("column") Column column);
+
 }

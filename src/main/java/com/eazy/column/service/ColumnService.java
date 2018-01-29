@@ -12,4 +12,8 @@ public interface ColumnService {
 
     List<Column> listColumnSecondary();
 
+    Column getDesc(String suffix);
+
+    void editDesc(Column column);
+
 }

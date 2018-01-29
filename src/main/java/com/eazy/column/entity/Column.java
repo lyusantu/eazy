@@ -12,11 +12,18 @@ public class Column implements Serializable {
 
     private Integer pid;
 
+    private String desc;
+
     public Column() {
     }
 
     public Column(Integer pid) {
         this.pid = pid;
+    }
+
+    public Column(Integer pid, String desc) {
+        this.pid = pid;
+        this.desc = desc;
     }
 
     public Integer getId() {
@@ -49,5 +56,13 @@ public class Column implements Serializable {
 
     public void setPid(Integer pid) {
         this.pid = pid;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }

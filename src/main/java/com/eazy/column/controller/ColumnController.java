@@ -4,22 +4,22 @@ import com.eazy.column.entity.Column;
 import com.eazy.column.service.ColumnService;
 import com.eazy.commons.Constants;
 import com.eazy.commons.Page;
+import com.eazy.commons.dto.AjaxResult;
 import com.eazy.commons.dto.BaseResult;
 import com.eazy.index.service.IndexService;
 import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
 import com.eazy.post.service.ReplyService;
+import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @Controller
@@ -47,7 +47,7 @@ public class ColumnController {
             column = new Column();
             for (Column c : columnList) {
                 if (c.getSuffix().equalsIgnoreCase(tab)) {
-                    column = new Column(c.getId());
+                    column = new Column(c.getId(), c.getDesc());
                     break;
                 }
             }
@@ -59,6 +59,7 @@ public class ColumnController {
         }
         String type = request.getParameter(Constants.GET_TYPE);
         String tab2 = request.getParameter(Constants.GET_TAB);
+        request.setAttribute("tab_desc", ObjectUtil.isNull(tab2) ? column.getDesc() : columnService.getDesc(tab2).getDesc());
         Page page = new Page(((p - 1)) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
         page.setPageNumber(p);
         page.setTotalCount(postService.count(tab, tab2, type));
@@ -74,6 +75,20 @@ public class ColumnController {
         request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
         request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
         return Constants.URL_INDEX;
+    }
+
+    @RequestMapping(value = "/getDesc", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public AjaxResult getDesc(HttpServletRequest request, @PathParam("suffix") String suffix) {
+        Column column = columnService.getDesc(suffix);
+        return new AjaxResult(0, ObjectUtil.isNull(column.getDesc()) ? "" : column.getDesc(),column.getSuffix());
+    }
+
+    @RequestMapping(value = "/editDesc", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public AjaxResult editDesc(Column column) {
+        columnService.editDesc(column);
+        return new AjaxResult(0);
     }
 
 }

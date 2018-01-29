@@ -4,6 +4,7 @@ import com.eazy.column.dao.ColumnDao;
 import com.eazy.column.entity.Column;
 import com.eazy.column.service.ColumnService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,5 +32,16 @@ public class ColumnServiceImpl implements ColumnService {
     @Override
     public List<Column> listColumnSecondary() {
         return columnDao.listColumnSecondary();
+    }
+
+    @Override
+    public Column getDesc(String suffix) {
+        return columnDao.getDesc(suffix);
+    }
+
+    @Override
+    @CacheEvict(value = "myCache", key = "'listColumn0'")
+    public void editDesc(Column column) {
+        columnDao.editDesc(column);
     }
 }
