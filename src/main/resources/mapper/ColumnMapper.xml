@@ -14,4 +14,14 @@
         SELECT * FROM `column` WHERE pid != 0
     </select>
 
+    <select id="getDesc" resultType="Column">
+        SELECT * FROM `column` WHERE suffix = #{suffix}
+    </select>
+
+    <update id="editDesc">
+        UPDATE `column`
+        SET `desc` = #{column.desc}
+        WHERE suffix = #{column.suffix}
+    </update>
+
 </mapper>
