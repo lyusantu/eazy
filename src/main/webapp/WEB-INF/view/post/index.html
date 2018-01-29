@@ -116,7 +116,9 @@
                 </fieldset>
                 <ul class="jieda" id="jieda">
                 #if(list == null || list.size() == 0)
-                    <li class="fly-none">消灭零回复</li>
+                    #if(post.allow == 0)
+                        <li class="fly-none">消灭零回复</li>
+                    #end
                 #else
                     #for(r : list)
                         <li data-id="#(r.id)" class="jieda-daan">

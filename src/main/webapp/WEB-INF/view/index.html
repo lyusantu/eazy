@@ -106,6 +106,17 @@
                 </div>
             </div>
 
+            #if(tab1_select != 'all')
+            <div class="fly-panel fly-signin">
+                #if(session.loginUser != null && session.loginUser.type == 'admin')
+                <div class="fly-panel-title">
+                    <a href="javascript:;" class="layui-btn" id="LAY_edit_tab_desc" pid="#if(tab2_select == null)#(tab1_select)#else #(tab2_select)#end">更新描述</a>
+                </div>
+                #end
+                <div class="fly-panel-main" id="tab_desc" style="line-height:150%;">#(tab_desc)</div>
+            </div>
+            #end
+
             <div class="fly-panel fly-signin" id="signin">
                 <div class="fly-panel-title">
                     签到
@@ -131,6 +142,7 @@
                         </a>
                     </dd>
                     #end
+                </dl>
             </div>
             #end
 
@@ -196,6 +208,30 @@
 #@footer()
 #@js?()
 <script>
+    /*
+    layui.cache.user = {
+        username: '#(session.loginUser != null ? session.loginUser.nickName : 0)'
+        ,uid: '#(session.loginUser != null ? session.loginUser.id : -1)'
+        ,avatar: '#(session.loginUser != null ? session.loginUser.avatar : 0)'
+        ,experience: '#(session.loginUser != null ? session.loginUser.balance : 0)'
+        ,sex: '#(session.loginUser != null ? session.loginUser.gender == 0 ? "男" : "女" : 0)'
+    };
+
+    layui.config({
+        version: "3.0.0"
+        ,base: '/res/mods/'
+    }).extend({
+        fly: 'index'
+    }).use(['face', 'fly'], function () {
+        var fly = layui.fly
+            ,$ = layui.jquery;
+        $('#tab_desc').each(function(){
+            var othis = $(this), html = othis.html();
+            othis.html(fly.content(html));
+        });
+    });
+    */
+
     layui.use(['util', 'laydate', 'layer', 'laypage', 'carousel'], function () {
         var util = layui.util
             , laydate = layui.laydate
