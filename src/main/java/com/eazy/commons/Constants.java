@@ -1,16 +1,50 @@
 package com.eazy.commons;
 
 import com.eazy.post.entity.Post;
+import com.eazy.post.entity.Reply;
 import com.eazy.user.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class Constants {
 
     private Constants() {
+    }
+
+    public static String getAccountRecordDesc(int way, User user, Post post, Reply reply, Integer reward) {
+        switch (way) {
+            case 0:
+                return "感谢 <a href=\"/user/" + user.getId() + "\">" + user.getNickName() + "</a> 在主题 <a href=\"/post/" + post.getId() + "/#item-" + reply.getId() + "\">" + post.getTitle() + "</a> 中的评论";
+            case 1:
+                return "<a href=\"/user/" + user.getId() + "\">" + user.getNickName() + "</a> 感谢你在主题 <a href\"/post/" + post.getId() + "/#item-" + reply.getId() + "\">" + post.getTitle() + "</a> 中的评论";
+            case 2:
+                return new SimpleDateFormat("yyyyMMdd").format(new Date()) + " 的每日签到奖励 " + reward + " 飞吻";
+            case 3:
+                return "收到 <a href=\"/user/" + user.getId() + "\">" + user.getNickName() + "</a> 在主题 <a href=\"/post/" + post.getId() + "/#item-" + reply.getId() + "\">" + post.getTitle() + "</a> 中的评论";
+            case 4:
+                return "评论了主题 › <a href=\"/post/" + post.getId() + "/#item-" + reply.getId() + "\">" + post.getTitle() + "</a>";
+            case 5:
+                return "创建了主题 › <a href=\"/post/" + post.getId() + "\">" + post.getTitle() +"</a>";
+            case 6:
+                return "获得初始资金 " +  reward + " 飞吻";
+            default:
+                return null;
+        }
+    }
+
+    public static Timestamp getTimeStamp() {
+        return new Timestamp(System.currentTimeMillis());
+    }
+
+    public static User getLoginUser(HttpServletRequest request) {
+        return (User) request.getSession().getAttribute(LOGIN_USER);
     }
 
     public static final Integer DEFAULT_REDUCE = 5;
@@ -217,7 +251,7 @@ public class Constants {
 
     public static final String QINIU_CHAIN = "http://oih7sazbd.bkt.clouddn.com/"; // 七牛外链前缀
 
-    public static void resetUserInfo(HttpServletRequest request, User user){
+    public static void resetUserInfo(HttpServletRequest request, User user) {
         request.setAttribute(Constants.LOGIN_USER, user);
     }
 
