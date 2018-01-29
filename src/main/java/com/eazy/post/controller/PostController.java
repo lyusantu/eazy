@@ -1,5 +1,7 @@
 package com.eazy.post.controller;
 
+import com.eazy.accountRecord.entity.AccountRecord;
+import com.eazy.accountRecord.service.AccountRecordService;
 import com.eazy.collection.entity.PostCollection;
 import com.eazy.collection.service.CollectionService;
 import com.eazy.column.entity.Column;
@@ -75,6 +77,9 @@ public class PostController {
 
     @Autowired
     private IndexService indexService;
+
+    @Autowired
+    private AccountRecordService accountRecordService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String index(HttpServletRequest request, @PathVariable(Constants.GET_ID) int id) {
@@ -175,6 +180,9 @@ public class PostController {
                             keyword -> postService.addKeyword(new Keyword(keyword.getName(), post.getId(), new Timestamp(System.currentTimeMillis())))
                     );
                 }
+                AccountRecord arSet = new AccountRecord(user.getId(), 1, post.getReward(), 5, user.getBalance(),
+                        Constants.getAccountRecordDesc(5, null, post, null, null), Constants.getTimeStamp());
+                accountRecordService.addAccountReocrd(arSet);
                 push(post.getTitle(), post.getContent(),post.getId(), user.getId(), 0,3); // 推送
                 return new AjaxResult(0, null, "/"); // 此处应该跳转到用户发表的对应目录的首页
             }
@@ -222,16 +230,19 @@ public class PostController {
             return new JSONObject().put(Constants.SET_STATUS, 1).put(Constants.SET_MSG, "未登录");
         else {
             Post post = postService.getPost(reply.getPid());
+            Integer balance = 0;
             if (!user.getId().equals(post.getAuthor())) { // 奖赏制度
                 if(user.getBalance() < Constants.DEFAULT_REDUCE)
                     return new JSONObject().put(Constants.SET_STATUS, 1).put(Constants.SET_MSG, "您的飞吻不足，无法评论");
                 // 扣除评论人的飞吻
-                User updateUser = new User(user.getId(), user.getBalance() - Constants.DEFAULT_REDUCE);
+                user.setBalance(user.getBalance() - Constants.DEFAULT_REDUCE);
+                User updateUser = new User(user.getId(), user.getBalance());
                 userService.update(updateUser);
                 Constants.resetUserInfo(request, user);
                 // 为主题发表者添加飞吻
                 User postUser = userService.getUser(new User(post.getAuthor()));
                 updateUser = new User(postUser.getId(), postUser.getBalance() + Constants.DEFAULT_REDUCE);
+                balance = updateUser.getBalance();
                 userService.update(updateUser);
             }
             // 添加评论
@@ -243,6 +254,15 @@ public class PostController {
             Post updatePost = new Post(post.getId());
             updatePost.setComments(post.getComments() + 1);
             postService.update(updatePost);
+            // 收入支出记录
+            if(!user.getId().equals(post.getAuthor())) {
+                AccountRecord arGet = new AccountRecord(post.getAuthor(), 0, Constants.DEFAULT_REDUCE, 3, balance,
+                        Constants.getAccountRecordDesc(3, user, post, reply, null), Constants.getTimeStamp());
+                accountRecordService.addAccountReocrd(arGet);
+                AccountRecord arSet = new AccountRecord(user.getId(), 1, Constants.DEFAULT_REDUCE, 4, user.getBalance(),
+                        Constants.getAccountRecordDesc(4, null, post, reply, null), Constants.getTimeStamp());
+                accountRecordService.addAccountReocrd(arSet);
+            }
             this.push(post.getTitle(), reply.getContent(),post.getId(), user.getId(), reply.getId(), 1); // @的推送
             LOG.info("----------用户\"" + user.getNickName() + "\"评论了主题\"" + post.getTitle() + "\"----------");
             LOG.info("----------开始进行评论的推送----------");
@@ -399,12 +419,21 @@ public class PostController {
             updateUser = new User(user.getId());
             user.setBalance(user.getBalance() - Constants.DEFAULT_THANKS);
             updateUser.setBalance(user.getBalance());
-            userService.update(updateUser);
+            userService.update(updateUser); // 从自身扣除
             Constants.resetUserInfo(request, user);
             Post post = postService.getPost(reply.getPid());
             // 感谢成功后进行感谢推送
             Message message = new Message(post.getId(), user.getId(), reply.getUid(), 4, null, new Timestamp(System.currentTimeMillis()), 0, reply.getId());
             messageService.addMsg(message);
+            // 添加支出记录
+            User thanksUser = userService.getUser(new User(reply.getUid()));
+            AccountRecord arSet = new AccountRecord(user.getId(), 1, Constants.DEFAULT_THANKS, 0, user.getBalance(),
+                    Constants.getAccountRecordDesc(0, thanksUser, post, reply, null), Constants.getTimeStamp());
+            accountRecordService.addAccountReocrd(arSet);
+            // 添加收入记录
+            AccountRecord arGet = new AccountRecord(thanksUser.getId(), 0, Constants.DEFAULT_THANKS, 1, thanksUser.getBalance(),
+                    Constants.getAccountRecordDesc(1, user, post, reply, null), Constants.getTimeStamp());
+            accountRecordService.addAccountReocrd(arGet);
             return new AjaxResult(0, "感谢成功");
         }
     }
