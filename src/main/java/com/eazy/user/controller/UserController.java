@@ -1,5 +1,7 @@
 package com.eazy.user.controller;
 
+import com.eazy.accountRecord.entity.AccountRecord;
+import com.eazy.accountRecord.service.AccountRecordService;
 import com.eazy.api.service.MailTaskService;
 import com.eazy.collection.entity.PostCollection;
 import com.eazy.collection.service.CollectionService;
@@ -69,6 +71,9 @@ public class UserController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private AccountRecordService accountRecordService;
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public String index(@PathVariable(Constants.GET_ID) int id, HttpServletRequest request) {
@@ -194,6 +199,9 @@ public class UserController {
                     user.setActiveCode(request.getSession().getId() + System.currentTimeMillis());
                     user.setReadType(0);
                     userService.reg(user);
+                    AccountRecord arSet = new AccountRecord(user.getId(), 0, Constants.DEFAULT_BALANCE, 6, Constants.DEFAULT_BALANCE,
+                            Constants.getAccountRecordDesc(6, null, null, null, Constants.DEFAULT_BALANCE), Constants.getTimeStamp());
+                    accountRecordService.addAccountReocrd(arSet);
                     LOG.info(Base64.decode(user.getEmail()) + "注册成功");
                     LOG.info("----------激活邮件发送START----------");
                     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
@@ -520,4 +528,15 @@ public class UserController {
         request.getSession().setAttribute(Constants.LOGIN_USER, currUser);
         return new AjaxResult(0, "设置成功", Constants.URL_USER_CUSTOM);
     }
+
+    // 收入支出明细
+    @AuthPassport
+    @RequestMapping(value = "/balance", method = RequestMethod.GET)
+    public String balance(HttpServletRequest request) {
+        User user = Constants.getLoginUser(request);
+        List<AccountRecord> accountRecordList = accountRecordService.listAccountRecord(user.getId());
+        request.setAttribute("arList", accountRecordList);
+        return "user/balance";
+    }
+
 }
