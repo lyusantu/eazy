@@ -363,6 +363,33 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
         othis.addClass(DISABLED);
     });
 
+    $('body').on('click', '#LAY_edit_tab_desc', function () {
+        fly.json('/tab/getDesc', {
+            suffix: $(this).attr('pid')
+        }, function(res){
+            layer.prompt({
+                formType: 2
+                ,value: res.msg
+                ,maxlength: 100000
+                ,title: '更新描述'
+                ,area: ['728px', '300px']
+                ,success: function(layero){
+                    fly.layEditor({
+                        elem: layero.find('textarea')
+                    });
+                }
+            }, function(value, index){
+                fly.json('/tab/editDesc', {
+                    desc: value,
+                    suffix: res.action
+                }, function(res2){
+                    layer.close(index);
+                    $('#tab_desc').html(fly.content(value));
+                });
+            });
+        });
+    });
+
     $('body').on('click', '#LAY_add', function () {
         var othis = $(this);
         fly.json('/post/ajaxAdd', {

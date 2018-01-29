@@ -6,6 +6,10 @@
  
  */
 
+/* 自定义 */
+.sep5{
+  height:5px;
+}
 
 /* 全局 */
 html,body{overflow-x: hidden;}
