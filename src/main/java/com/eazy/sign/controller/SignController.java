@@ -1,5 +1,7 @@
 package com.eazy.sign.controller;
 
+import com.eazy.accountRecord.entity.AccountRecord;
+import com.eazy.accountRecord.service.AccountRecordService;
 import com.eazy.commons.Constants;
 import com.eazy.commons.dto.SignResult;
 import com.eazy.sign.entity.Sign;
@@ -40,6 +42,9 @@ public class SignController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AccountRecordService accountRecordService;
+
     // 签到
     @RequestMapping(value = "/in", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
@@ -72,6 +77,9 @@ public class SignController {
             updateUser.setBalance(user.getBalance());
             userService.update(updateUser);
             request.getSession().setAttribute(Constants.LOGIN_USER, user); // 增加奖励
+            AccountRecord arGet = new AccountRecord(user.getId(), 0, reward, 2, user.getBalance(),
+                    Constants.getAccountRecordDesc(2, null, null, null, reward), Constants.getTimeStamp()); // 收入记录
+            accountRecordService.addAccountReocrd(arGet);
         }
         return new SignResult(0, json);
     }
