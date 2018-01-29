@@ -25,13 +25,13 @@
     #end
 
     <p class="fly-home-info">
-        <i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">#(session.loginUser.balance) 飞吻</span>
+        <a href="/user/balance" class="layui-btn layui-btn-sm layui-btn-primary layui-btn-radius"><i class="iconfont icon-kiss" title="飞吻" style="color: #FF7200;padding-left:0px;"></i>#(session.loginUser.balance) 飞吻</a>
         <i class="iconfont icon-shijian"></i><span>#date(session.loginUser.regTime,"yyyy-MM-dd") 加入，第 #(session.loginUser.id) 号会员</span>
         #if(session.loginUser.city != null && session.loginUser.city.trim() != '')<i class="iconfont icon-chengshi"></i><span>来自#(session.loginUser.city)</span>#end
     </p>
-
-    <p class="fly-home-sign">（#(session.loginUser.sign == null || session.loginUser.sign.trim() == '' ? '这个人懒得留下签名' : session.loginUser.sign)）</p>
-
+    #if(session.loginUser.sign != null && session.loginUser.sign.trim() != '')
+        <p class="fly-home-sign">#(session.loginUser.sign)</p>
+    #end
 </div>
 
 <div class="layui-container">

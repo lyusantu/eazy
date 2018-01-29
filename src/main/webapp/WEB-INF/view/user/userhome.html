@@ -29,10 +29,9 @@
         <i class="iconfont icon-shijian"></i><span>#date(user.regTime,"yyyy-MM-dd") 加入，第 #(user.id) 号会员</span>
         #if(user.city != null && user.city.trim() != '')<i class="iconfont icon-chengshi"></i><span>来自#(user.city)</span>#end
     </p>
-
-    <p class="fly-home-sign">（#(user.sign == null || user.sign.trim() == '' ? '这个人懒得留下签名' : user.sign)）</p>
-
-
+    #if(user.sign != null && user.sign.trim() != '')
+    <p class="fly-home-sign">#(user.sign)</p>
+    #end
     <div class="fly-sns" data-user="">
         <!--
         <a href="javascript:;" class="layui-btn layui-btn-primary fly-imActive" data-type="addFriend">加为好友</a>
