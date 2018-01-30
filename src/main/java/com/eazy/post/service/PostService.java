@@ -3,6 +3,7 @@ package com.eazy.post.service;
 import com.eazy.commons.Page;
 import com.eazy.post.entity.Keyword;
 import com.eazy.post.entity.Post;
+import com.eazy.post.entity.PostRewardRecord;
 import com.eazy.post.entity.PostUpdateRecord;
 
 import java.util.List;
@@ -46,4 +47,10 @@ public interface PostService {
     int addPostUpdateRecord(PostUpdateRecord postUpdateRecord);
 
     List<PostUpdateRecord> listPostUpdateRecord(int pid);
+
+    int addPostRewardRecord(PostRewardRecord postRewardRecord);
+
+    int rewardCount(Integer pid);
+
+    int isReward(Integer uid, Integer pid);
 }

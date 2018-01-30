@@ -3,8 +3,10 @@
 <mapper namespace="com.eazy.post.dao.PostDao">
 
     <insert id="addPost" parameterType="Post" useGeneratedKeys="true" keyProperty="post.id">
-        INSERT INTO post(title,`type`,content,reward,`delete`,createtime,author,comments,readers,status,top,wonderful, allow)
-        VALUES(#{post.title}, #{post.type}, #{post.content}, #{post.reward}, #{post.delete}, #{post.createTime}, #{post.author}, #{post.comments}, #{post.readers}, #{post.status}, #{post.top}, #{post.wonderful}, #{post.allow})
+        INSERT INTO post(title,`type`,content,reward,`delete`,createtime,author,comments,readers,status,top,wonderful, allow, post_reward, reward_content, reward_num)
+        VALUES(#{post.title}, #{post.type}, #{post.content}, #{post.reward}, #{post.delete}, #{post.createTime},
+         #{post.author}, #{post.comments}, #{post.readers}, #{post.status}, #{post.top}, #{post.wonderful},
+         #{post.allow}, #{post.postReward}, #{post.rewardContent}, #{post.rewardNum})
     </insert>
 
     <select id="list" resultMap="postResult">
@@ -109,6 +111,15 @@
         </if>
         <if test="post.allow != null">
             , allow = #{post.allow}
+        </if>
+        <if test="post.postReward != null">
+            , post_reward = #{post.postReward}
+        </if>
+        <if test="post.rewardContent != null">
+            , reward_content = #{post.rewardContent}
+        </if>
+        <if test="post.rewardNum != null">
+            , reward_num = #{post.rewardNum}
         </if>
         WHERE id = #{post.id}
     </update>
@@ -239,6 +250,17 @@
         SELECT * FROM post_update_record WHERE pid = #{pid} ORDER BY time DESC
     </select>
 
+    <insert id="addPostRewardRecord" useGeneratedKeys="true" keyProperty="pr.id">
+        INSERT INTO post_reward_record(uid, pid, num, time) VALUES(#{pr.uid}, #{pr.pid}, #{pr.num}, #{pr.time})
+    </insert>
+
+    <select id="rewardCount" resultType="Integer">
+        SELECT COUNT(id)  FROM post_reward_record WHERE pid = #{pid}
+    </select>
+
+    <select id="isReward" resultType="Integer">
+        SELECT COUNT(id)  FROM post_reward_record WHERE pid = #{pid} AND uid = #{uid}
+    </select>
 
     <resultMap id="postResult" type="Post">
         <id column="id" property="id"/>
@@ -255,6 +277,9 @@
         <result column="top" property="top"/>
         <result column="wonderful" property="wonderful"/>
         <result column="allow" property="allow" />
+        <result column="post_reward" property="postReward" />
+        <result column="reward_content" property="rewardContent" />
+        <result column="reward_num" property="rewardNum" />
         <association property="user" javaType="User">
             <id column="uid" property="id"/>
             <result column="nickName" property="nickName"/>

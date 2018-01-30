@@ -4,22 +4,24 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style type="text/css">
-        table{
-            width:90em;
-            table-layout:fixed;/* 只有定义了表格的布局算法为fixed，下面td的定义才能起作用。 */
+        table {
+            width: 90em;
+            table-layout: fixed; /* 只有定义了表格的布局算法为fixed，下面td的定义才能起作用。 */
         }
-        td{
-            width:100%;
-            word-break:keep-all;/* 不换行 */
-            white-space:nowrap;/* 不换行 */
-            overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
-            text-overflow:ellipsis;/* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+
+        td {
+            width: 100%;
+            word-break: keep-all; /* 不换行 */
+            white-space: nowrap; /* 不换行 */
+            overflow: hidden; /* 内容超出宽度时隐藏超出部分的内容 */
+            text-overflow: ellipsis; /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
         }
     </style>
 </head>
 <body>
 
-<table style="font-size: 14px; border: 1px solid #ccc; margin-top: 20ex;" cellpadding="1" cellspacing="5" align="center">
+<table style="font-size: 14px; border: 1px solid #ccc; margin-top: 20ex;" cellpadding="1" cellspacing="5"
+       align="center">
     <tr>
         <td style="width: 20%;">时间</td>
         <td style="width: 15%;">类型</td>
@@ -30,8 +32,12 @@
     #for(ar : arList)
     <tr>
         <td>#date(ar.time, "yyyy-MM-dd HH:mm:ss")</td>
-        <td>#if(ar.way == 0)发送谢意#elseif(ar.way==1)收到谢意#elseif(ar.way==2)每日签到奖励#elseif(ar.way==3)主题回复收益#elseif(ar.way==4)创建回复#elseif(ar.way==5)创建主题#end</td>
-        <td><span #if(ar.type == 0) style="color:#0aa31c" #else style="color:#cc0000" #end>#if(ar.type == 0) + #else - #end #(ar.num)</span></td>
+        <td>#if(ar.way == 0)发送谢意#elseif(ar.way == 1)收到谢意#elseif(ar.way == 2)每日签到奖励#elseif(ar.way == 3)主题回复收益
+            #elseif(ar.way == 4)创建评论#elseif(ar.way == 5)创建主题#elseif(ar.way == 6)初始资金#elseif(ar.way == 7)评论采纳收益
+            #elseif(ar.way == 8)采纳删除支出#elseif(ar.way == 9)打赏支出#elseif(ar.way == 10)打赏收益#end
+        </td>
+        <td><span #if(ar.type== 0) style="color:#0aa31c" #else style="color:#cc0000" #end>#if(ar.type == 0) + #else - #end #(ar.num)</span>
+        </td>
         <td>#(ar.balance)</td>
         <td>#(ar.desc)</td>
     </tr>

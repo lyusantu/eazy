@@ -17,6 +17,7 @@ layui.define('fly', function(exports){
     jieda: $('#jieda')
     ,content: $('#L_content')
     ,jiedaCount: $('#jiedaCount')
+    ,postReward: $('#post_reward')
   };
 
   //监听专栏选择
@@ -181,20 +182,6 @@ layui.define('fly', function(exports){
     }
 
       ,thanks: function(li){ //感谢
-          /*
-          layer.prompt({
-              formType: 2
-              , value: 'hello'
-              , maxlength: 100000
-              , title: '编辑回帖'
-              , area: ['728px', '300px']
-              , success: function (layero) {
-                  fly.layEditor({
-                      elem: layero.find('textarea')
-                  });
-              }
-          })
-          */
           layer.confirm('确定花费10飞吻向@xxx的这些评论发送感谢？', {
               btn: ['确定', '取消']
           }, function(index, layero){
@@ -202,6 +189,26 @@ layui.define('fly', function(exports){
                   id: li.data('id')
               }, function(res){
                   layer.msg(res.msg);
+              });
+          }, function(index){
+
+          });
+      }
+
+      ,reward: function(span){ // 打赏
+          console.log(span);
+          layer.confirm('确定花费' + span.context.dataset.reward +'飞吻以打赏此主题？', {
+              btn: ['确定', '取消']
+          }, function(index, layero){
+              fly.json('/post/reward', {
+                  pid: span.context.dataset.id,
+                  reward: span.context.dataset.reward
+              }, function(res){
+                if(res.status == 0){
+                  location.reload();
+                }else{
+                    layer.msg(res.msg);
+                }
               });
           }, function(index){
 

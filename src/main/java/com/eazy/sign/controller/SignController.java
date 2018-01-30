@@ -51,6 +51,7 @@ public class SignController {
     public SignResult in(HttpServletRequest request) throws IOException, ParseException {
         JSONObject json = new JSONObject();
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        user = userService.getUser(user);
         if (ObjectUtil.isNull(user))
             return new SignResult(1, "请先登入");
         else {

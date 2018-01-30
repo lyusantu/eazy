@@ -34,6 +34,14 @@ public class Constants {
                 return "创建了主题 › <a href=\"/post/" + post.getId() + "\">" + post.getTitle() +"</a>";
             case 6:
                 return "获得初始资金 " +  reward + " 飞吻";
+            case 7:
+                return "你在主题 › <a href=\"/post/" + post.getId() + "/#item-" + reply.getId() + "\">" + post.getTitle() + "</a> 中的评论被采纳";
+            case 8:
+                return "管理员删除了你在主题 › <a href=\"/post/" + post.getId() + "\">" + post.getTitle() + "</a> 中被采纳的评论";
+            case 9:
+                return "你打赏了 <a href=\"/user/" + user.getId() + "\">" + user.getNickName() + "</a> 的主题 › <a href=\"/post/" + post.getId() + "\">" + post.getTitle() + "</a>";
+            case 10:
+                return "收到 <a href=\"/user/" + user.getId() + "\">" + user.getNickName() + "</a> 在主题 <a href=\"/post/" + post.getId() + "\">" + post.getTitle() + "</a> 中的打赏";
             default:
                 return null;
         }

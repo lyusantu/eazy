@@ -48,8 +48,31 @@
                                 <div class="layui-inline">
                                     <label class="layui-form-label">允许评论</label>
                                     <div class="layui-input-inline" style="width: 190px;">
-                                        <input type="checkbox" name="post_allow" title="" #if(post.allow == 0)checked=""#end>
-                                        <div class="layui-unselect layui-form-checkbox layui-form-checked" lay-skin=""><span>允许评论</span><i class="layui-icon"></i></div>
+                                        <input type="checkbox" #if(post.allow == 0)checked=""#end name="post_allow" lay-skin="switch" lay-filter="switch_post_allow" lay-text="">
+                                        <div class="layui-unselect layui-form-switch layui-form-onswitch" lay-skin="_switch"><em>ON</em><i></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">打赏可见</label>
+                                    <div class="layui-input-inline" style="width: 190px;">
+                                        <input type="checkbox" name="post_reward" lay-skin="switch" lay-filter="switch_post_reward" lay-text="" #if(post.postReward == 1)checked #end>
+                                        <div class="layui-unselect layui-form-switch layui-form-onswitch" lay-skin="_switch"><em>ON</em><i></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="rewardContent" #if(post.postReward == 0) style="display: none;" #end>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">设置飞吻</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="rewardNum" required lay-verify="number" value="#(post.rewardNum)" class="layui-input" placeholder="请合理输入飞吻数">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-form-text">
+                                    <div class="layui-input-block">
+                                        <textarea id="L_reward_content" name="rewardContent"
+                                                  placeholder="请输入打赏区显示内容，如恶意使用打赏功能，您的账户可能会被封禁" class="layui-textarea fly-editor" style="height: 260px;">#(post.rewardContent)</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -92,4 +115,15 @@
 #@js?()
 <script>
     layui.cache.page = 'jie';
+
+    layui.use(['layer','form'], function() {
+        var layer = layui.layer
+            , $ = layui.jquery
+            ,form = layui.form;
+
+        form.on('switch(switch_post_reward)', function (data) {
+            $('#rewardContent').toggle(500);
+        })
+
+    })
 </script>

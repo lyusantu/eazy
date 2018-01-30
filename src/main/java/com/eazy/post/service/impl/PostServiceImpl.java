@@ -4,6 +4,7 @@ import com.eazy.commons.Page;
 import com.eazy.post.dao.PostDao;
 import com.eazy.post.entity.Keyword;
 import com.eazy.post.entity.Post;
+import com.eazy.post.entity.PostRewardRecord;
 import com.eazy.post.entity.PostUpdateRecord;
 import com.eazy.post.service.PostService;
 import org.slf4j.Logger;
@@ -120,5 +121,20 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostUpdateRecord> listPostUpdateRecord(int pid) {
         return postDao.listPostUpdateRecord(pid);
+    }
+
+    @Override
+    public int addPostRewardRecord(PostRewardRecord postRewardRecord) {
+        return postDao.addPostRewardRecord(postRewardRecord);
+    }
+
+    @Override
+    public int rewardCount(Integer pid) {
+        return postDao.rewardCount(pid);
+    }
+
+    @Override
+    public int isReward(Integer uid, Integer pid) {
+        return postDao.isReward(uid, pid);
     }
 }

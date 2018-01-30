@@ -3,6 +3,7 @@ package com.eazy.post.dao;
 import com.eazy.commons.Page;
 import com.eazy.post.entity.Keyword;
 import com.eazy.post.entity.Post;
+import com.eazy.post.entity.PostRewardRecord;
 import com.eazy.post.entity.PostUpdateRecord;
 import org.apache.ibatis.annotations.Param;
 
@@ -112,4 +113,10 @@ public interface PostDao {
     int addPostUpdateRecord(@Param("pur") PostUpdateRecord postUpdateRecord);
 
     List<PostUpdateRecord> listPostUpdateRecord(@Param("pid") int pid);
+
+    int addPostRewardRecord(@Param("pr") PostRewardRecord postRewardRecord);
+
+    int rewardCount(@Param("pid") Integer pid);
+
+    int isReward(@Param("uid") Integer uid,@Param("pid") Integer pid);
 }

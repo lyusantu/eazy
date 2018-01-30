@@ -32,6 +32,10 @@ public class AccountRecord implements Serializable {
      * 4 = 创建回复
      * 5 = 创建主题
      * 6 = 初始奖励
+     * 7 = 采纳
+     * 8 = 采纳删除支出
+     * 9 = 打赏主题
+     * 10 = 主题打赏收益
      */
     private Integer way;
 

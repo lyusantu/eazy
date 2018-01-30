@@ -13,10 +13,7 @@ import com.eazy.commons.dto.AjaxResult;
 import com.eazy.index.service.IndexService;
 import com.eazy.message.entity.Message;
 import com.eazy.message.service.MessageService;
-import com.eazy.post.entity.Keyword;
-import com.eazy.post.entity.Post;
-import com.eazy.post.entity.PostUpdateRecord;
-import com.eazy.post.entity.Reply;
+import com.eazy.post.entity.*;
 import com.eazy.post.service.PostService;
 import com.eazy.post.service.ReplyService;
 import com.eazy.user.entity.User;
@@ -83,17 +80,20 @@ public class PostController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String index(HttpServletRequest request, @PathVariable(Constants.GET_ID) int id) {
+        Post post = postService.getPost(id);
+        if (ObjectUtil.isNull(post)) {
+            request.setAttribute(Constants.SET_MSG, "主题不存在");
+            return "err/err";
+        }
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
         if (ObjectUtil.isNotNull(user)) { // 是否收藏
             PostCollection collection = new PostCollection(id, user.getId());
             collection = collectionService.verifyCollection(collection);
             request.setAttribute(Constants.SET_COLLECTION, collection);
+            if(post.getPostReward() == 1)
+                request.setAttribute("isReward", postService.isReward(user.getId(), post.getId()));
         }
-        Post post = postService.getPost(id);
-        if(ObjectUtil.isNull(post)){
-            request.setAttribute(Constants.SET_MSG, "主题不存在");
-            return "err/err";
-        }
+        request.setAttribute("rewardCount", postService.rewardCount(post.getId()));
         if (post.getDelete() == 0) {
             List<Column> columnList = columnService.listColumn(new Column(0));
             Column column = new Column(columnService.getPidById(post.getType())); // 获取pid
@@ -153,6 +153,7 @@ public class PostController {
     @ResponseBody
     public AjaxResult addPost(HttpServletRequest request, Post post) {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        user = userService.getUser(user);
         if (ObjectUtil.isNull(user))
             return new AjaxResult(1, "未登入");
         else if (user.getBalance() < post.getReward())
@@ -168,6 +169,8 @@ public class PostController {
                 post.setAllow(ObjectUtil.isNull(request.getParameter("post_allow")) ? 1 : 0);
                 post.setAuthor(user.getId());
                 post.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                // 是否开启了打赏?
+                post.setPostReward(ObjectUtil.isNull(request.getParameter("post_reward")) ? 0 : 1);
                 postService.addPost(post); // 添加文章
                 user.setBalance(user.getBalance() - post.getReward());
                 User updateUser = new User(user.getId(), user.getBalance());
@@ -183,7 +186,7 @@ public class PostController {
                 AccountRecord arSet = new AccountRecord(user.getId(), 1, post.getReward(), 5, user.getBalance(),
                         Constants.getAccountRecordDesc(5, null, post, null, null), Constants.getTimeStamp());
                 accountRecordService.addAccountReocrd(arSet);
-                push(post.getTitle(), post.getContent(),post.getId(), user.getId(), 0,3); // 推送
+                push(post.getTitle(), post.getContent(), post.getId(), user.getId(), 0, 3); // 推送
                 return new AjaxResult(0, null, "/"); // 此处应该跳转到用户发表的对应目录的首页
             }
         }
@@ -226,13 +229,14 @@ public class PostController {
     public @ResponseBody
     JSONObject reply(HttpServletRequest request, Reply reply) {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        user = userService.getUser(user);
         if (ObjectUtil.isNull(user))
             return new JSONObject().put(Constants.SET_STATUS, 1).put(Constants.SET_MSG, "未登录");
         else {
             Post post = postService.getPost(reply.getPid());
             Integer balance = 0;
             if (!user.getId().equals(post.getAuthor())) { // 奖赏制度
-                if(user.getBalance() < Constants.DEFAULT_REDUCE)
+                if (user.getBalance() < Constants.DEFAULT_REDUCE)
                     return new JSONObject().put(Constants.SET_STATUS, 1).put(Constants.SET_MSG, "您的飞吻不足，无法评论");
                 // 扣除评论人的飞吻
                 user.setBalance(user.getBalance() - Constants.DEFAULT_REDUCE);
@@ -255,7 +259,7 @@ public class PostController {
             updatePost.setComments(post.getComments() + 1);
             postService.update(updatePost);
             // 收入支出记录
-            if(!user.getId().equals(post.getAuthor())) {
+            if (!user.getId().equals(post.getAuthor())) {
                 AccountRecord arGet = new AccountRecord(post.getAuthor(), 0, Constants.DEFAULT_REDUCE, 3, balance,
                         Constants.getAccountRecordDesc(3, user, post, reply, null), Constants.getTimeStamp());
                 accountRecordService.addAccountReocrd(arGet);
@@ -263,16 +267,15 @@ public class PostController {
                         Constants.getAccountRecordDesc(4, null, post, reply, null), Constants.getTimeStamp());
                 accountRecordService.addAccountReocrd(arSet);
             }
-            this.push(post.getTitle(), reply.getContent(),post.getId(), user.getId(), reply.getId(), 1); // @的推送
+            this.push(post.getTitle(), reply.getContent(), post.getId(), user.getId(), reply.getId(), 1); // @的推送
             LOG.info("----------用户\"" + user.getNickName() + "\"评论了主题\"" + post.getTitle() + "\"----------");
             LOG.info("----------开始进行评论的推送----------");
-            if(!post.getAuthor().equals(user.getId())) {
+            if (!post.getAuthor().equals(user.getId())) {
                 Message message = new Message(post.getId(), user.getId(), post.getAuthor(), 0, null, new Timestamp(System.currentTimeMillis()), 0, reply.getId());
                 messageService.addMsg(message);
-                LOG.info("----------成功向主题所有者推送了一条来自用户\""  + user.getNickName() + "\"的评论信息----------");
-            }
-            else
-                LOG.info("----------\""  + user.getNickName() + "\"评论了自己的主题\"" + post.getTitle() +"\"，取消评论的推送----------");
+                LOG.info("----------成功向主题所有者推送了一条来自用户\"" + user.getNickName() + "\"的评论信息----------");
+            } else
+                LOG.info("----------\"" + user.getNickName() + "\"评论了自己的主题\"" + post.getTitle() + "\"，取消评论的推送----------");
             LOG.info("----------评论的推送结束----------");
             return new JSONObject().put(Constants.SET_STATUS, 0).put(Constants.SET_MSG, "评论成功").put(Constants.SET_ACTION, false);
         }
@@ -313,6 +316,9 @@ public class PostController {
         user.setBalance(updateUser.getBalance() + post.getReward());
         userService.update(user);
         updateUser.setBalance(user.getBalance());
+        AccountRecord arGet = new AccountRecord(user.getId(), 0, post.getReward(), 7, user.getBalance(),
+                Constants.getAccountRecordDesc(7, null, post, reply, null), Constants.getTimeStamp());
+        accountRecordService.addAccountReocrd(arGet);
         return new AjaxResult(0);
     }
 
@@ -334,6 +340,9 @@ public class PostController {
             User updateUser = userService.getUser(user);
             user.setBalance(updateUser.getBalance() - post.getReward()); // 更改用户余额
             userService.update(user);
+            AccountRecord arSet = new AccountRecord(user.getId(), 1, post.getReward(), 8, user.getBalance(),
+                    Constants.getAccountRecordDesc(8, null, post, reply, null), Constants.getTimeStamp());
+            accountRecordService.addAccountReocrd(arSet);
         }
         Post post = postService.getPost(reply.getPid());
         Post updatePost = new Post(post.getId());
@@ -384,6 +393,7 @@ public class PostController {
                 return new AjaxResult(1, "人类验证失败");
             else {
                 post.setAllow(ObjectUtil.isNull(request.getParameter("post_allow")) ? 1 : 0);
+                post.setPostReward(ObjectUtil.isNull(request.getParameter("post_reward")) ? 0 : 1);
                 postService.update(post);
                 postService.delKeyword(post.getId());// 删除已有关键字
                 KeyWordComputer kwc = new KeyWordComputer(5); // 分词,关键字提取
@@ -393,7 +403,7 @@ public class PostController {
                             keyword -> postService.addKeyword(new Keyword(keyword.getName(), post.getId(), new Timestamp(System.currentTimeMillis())))
                     );
                 }
-                push(post.getTitle(), post.getContent(),post.getId(), user.getId(), 0,3); // 推送
+                push(post.getTitle(), post.getContent(), post.getId(), user.getId(), 0, 3); // 推送
                 postService.addPostUpdateRecord(new PostUpdateRecord(post.getId(), new Timestamp(System.currentTimeMillis())));// 插入一条更改记录
                 return new AjaxResult(0, null, "/post/" + post.getId()); // 此处应该跳转到用户发表的对应目录的首页
             }
@@ -404,10 +414,11 @@ public class PostController {
     @ResponseBody
     public AjaxResult thanks(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        user = userService.getUser(user);
         if (ObjectUtil.isNull(user))
             return new AjaxResult(1, "未登入");
         else {
-            if(user.getBalance() < Constants.DEFAULT_THANKS)
+            if (user.getBalance() < Constants.DEFAULT_THANKS)
                 return new AjaxResult(1, "飞吻不足");
             Reply reply = new Reply();
             reply.setId(Integer.parseInt(request.getParameter("id")));
@@ -482,14 +493,56 @@ public class PostController {
     }
 
     /**
+     * 打赏
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/reward", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public AjaxResult reward(HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        user = userService.getUser(user);
+        if (ObjectUtil.isNull(user))
+            return new AjaxResult(1, "未登入");
+        else {
+            if (user.getBalance() < Constants.DEFAULT_THANKS)
+                return new AjaxResult(1, "飞吻不足");
+            Integer pid = Integer.parseInt(request.getParameter("pid"));
+            Integer num = Integer.parseInt(request.getParameter("reward"));
+            Post post = postService.getPost(pid);
+            User postUser = new User(post.getAuthor());
+            postUser = userService.getUser(postUser);
+            PostRewardRecord pr = new PostRewardRecord(user.getId(), pid, num, Constants.getTimeStamp());
+            postService.addPostRewardRecord(pr); // 插入打赏记录
+            user.setBalance(user.getBalance() - num);
+            User updateUser = new User(user.getId(), user.getBalance());
+            userService.update(updateUser); // 减少用户飞吻
+            AccountRecord arSet = new AccountRecord(user.getId(), 1, num, 9, user.getBalance(),
+                    Constants.getAccountRecordDesc(9, postUser, post, null, num), Constants.getTimeStamp()); // 用户支出记录
+            accountRecordService.addAccountReocrd(arSet);
+            postUser.setBalance(postUser.getBalance() + num);
+            updateUser = new User(post.getAuthor(), postUser.getBalance());
+            userService.update(updateUser); // 发表主题者添加收益
+            AccountRecord arGet = new AccountRecord(postUser.getId(), 0, num, 10, postUser.getBalance(),
+                    Constants.getAccountRecordDesc(10, user, post, null, num), Constants.getTimeStamp()); // 发表主题者收益记录
+            accountRecordService.addAccountReocrd(arGet);
+            Message message = new Message(post.getId(), user.getId(), post.getAuthor(), 5, null, new Timestamp(System.currentTimeMillis()), 0, null); // 打赏推送
+            messageService.addMsg(message);
+            return new AjaxResult(0);
+        }
+    }
+
+    /**
      * 推送
+     *
      * @param title
      * @param content
      * @param postId
      * @param userId
      * @param type
      */
-    private void push(String title, String content, Integer postId, Integer userId, int replyId, int type){
+    private void push(String title, String content, Integer postId, Integer userId, int replyId, int type) {
         LOG.info("----------开始进行@的推送----------");
         String reg = "@.\\S*";
         Pattern pat = Pattern.compile(reg);
@@ -504,12 +557,12 @@ public class PostController {
             if (ObjectUtil.isNull(queryUser)) {
                 LOG.info("----------@的用户 " + name + " 不存在----------");
             } else {
-                if(!queryUser.getId().equals(userId)) {
+                if (!queryUser.getId().equals(userId)) {
                     message = new Message(postId, userId, queryUser.getId(), type, null, new Timestamp(System.currentTimeMillis()), 0, replyId);
                     messageService.addMsg(message);
                     LOG.info("----------成功向用户\"" + name + "\"推送了一条来自主题\"" + title + "\"中的@信息----------");
-                }else
-                    LOG.info("----------\""+ name +"\"在主题\"" + title + "\"中@了自己，取消@的推送----------");
+                } else
+                    LOG.info("----------\"" + name + "\"在主题\"" + title + "\"中@了自己，取消@的推送----------");
             }
         }
         LOG.info("----------@的推送结束----------");

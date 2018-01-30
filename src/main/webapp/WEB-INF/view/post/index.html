@@ -82,6 +82,21 @@
                 </div>
                 -->
                 <div class="detail-body photos">#(post.content)</div>
+                #if(session.loginUser != null && session.loginUser.id == post.author)
+                    <div class="detail-body photos">#(post.rewardContent)</div>
+                #elseif(post.postReward == 1)
+                    #if(session.loginUser != null && isReward > 0)
+                        <div class="detail-body photos">#(post.rewardContent)</div>
+                    #else
+                    <br/>
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="border-left: 5px solid #009688;">
+                        <div class="jieda-reply" id="post_reward">
+                            <span class="layui-btn layui-btn-xs jie-admin " type="reward" style="padding:0px 10px;color:#FFF;" data-reward="#(post.rewardNum)" data-id="#(post.id)">打赏</span> #(post.rewardNum) 飞吻后可见
+                        <span style="float: right;padding-right: 0px;" type="rewardRecord">#(rewardCount) 打赏</span>
+                        </div>
+                    </blockquote>
+                    #end
+                #end
             </div>
 
             #if(postUpdateRecordList != null && postUpdateRecordList.size() > 0)

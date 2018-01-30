@@ -15,6 +15,14 @@ public class Message {
 
     private Integer atid;
 
+    /**
+     * 0 = 评论
+     * 1 = 艾特
+     * 2 = 系统消息
+     * 3 = 发表的主题
+     * 4 = 感谢的主题
+     * 5 = 打赏
+     */
     private Integer type;
 
     private String content;
@@ -31,7 +39,7 @@ public class Message {
 
     private Integer reply;
 
-    public Message(Integer pid, Integer uid, Integer atid, Integer type, String content, Timestamp time, Integer status,int reply) {
+    public Message(Integer pid, Integer uid, Integer atid, Integer type, String content, Timestamp time, Integer status,Integer reply) {
         this.pid = pid;
         this.uid = uid;
         this.atid = atid;

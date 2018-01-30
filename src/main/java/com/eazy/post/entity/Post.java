@@ -37,6 +37,12 @@ public class Post implements Serializable {
 
     private Integer allow;
 
+    private Integer postReward;
+
+    private String rewardContent;
+
+    private Integer rewardNum;
+
     private User user;
 
     private Column column;
@@ -47,6 +53,14 @@ public class Post implements Serializable {
 
     public Post() {
 
+    }
+
+    public Integer getRewardNum() {
+        return rewardNum;
+    }
+
+    public void setRewardNum(Integer rewardNum) {
+        this.rewardNum = rewardNum;
     }
 
     public Post(Integer id) {
@@ -200,5 +214,21 @@ public class Post implements Serializable {
 
     public void setAllow(Integer allow) {
         this.allow = allow;
+    }
+
+    public Integer getPostReward() {
+        return postReward;
+    }
+
+    public void setPostReward(Integer postReward) {
+        this.postReward = postReward;
+    }
+
+    public String getRewardContent() {
+        return rewardContent;
+    }
+
+    public void setRewardContent(String rewardContent) {
+        this.rewardContent = rewardContent;
     }
 }
