@@ -10,7 +10,7 @@
                 <h1>#(post.title)</h1>
                 <div class="fly-detail-info">
                     <!-- <span class="layui-badge">审核中</span> -->
-                    <span class="layui-badge layui-bg-green fly-detail-column">#(post.column.name)</span>
+                    <span class="layui-badge-rim">#(post.column.name)</span>
                     #if(post.status == 0)
                        <span class="layui-badge" style="background-color: #999;">未结</span>
                     #end
@@ -91,7 +91,7 @@
                     <br/>
                     <blockquote class="layui-elem-quote layui-quote-nm" style="border-left: 5px solid #009688;">
                         <div class="jieda-reply" id="post_reward">
-                            <span class="layui-btn layui-btn-xs jie-admin " type="reward" style="padding:0px 10px;color:#FFF;" data-reward="#(post.rewardNum)" data-id="#(post.id)">打赏</span> #(post.rewardNum) 飞吻后可见
+                            <span class="layui-badge-rim" type="reward" style="padding:0px 10px;" data-reward="#(post.rewardNum)" data-id="#(post.id)">打赏</span> #(post.rewardNum) 飞吻后可见
                         <span style="float: right;padding-right: 0px;" type="rewardRecord">#(rewardCount) 打赏</span>
                         </div>
                     </blockquote>
@@ -156,6 +156,7 @@
                                     <span>(楼主)</span>
                                     #end
                                     <!-- <span style="color:#FF9E3F">（社区之光）</span> -->
+                                    <!--<span style="float:right; padding-right:20px;">#(for.index + 1)</span>-->
                                 </div>
 
                                 <div class="detail-hits">
@@ -201,11 +202,13 @@
                 #end
                 </ul>
 
+                <!--
                 #if(page.totalPage > 1)
                 <div style="text-align: center;">
                     <div id="page"></div>
                 </div>
                 #end
+                -->
 
                 #if(post.allow == 0)
                     <div class="layui-form layui-form-pane">
@@ -219,7 +222,7 @@
                             <div class="layui-form-item">
                                 <input type="hidden" name="pid" value="#(post.id)">
                                 <input type="hidden" name="action" value="/post/reply" />
-                                <button class="layui-btn" lay-filter="*" lay-submit>发表评论</button>
+                                <button class="layui-btn layui-btn-primary" lay-filter="*" lay-submit>发表评论</button>
                             </div>
                         </form>
                     </div>

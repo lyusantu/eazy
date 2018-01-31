@@ -1,21 +1,23 @@
 #@header()
 
-#@column()
-
-<div class="layui-container">
+<div class="layui-container" style="margin-top: 15px;">
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md8" #if(session.loginUser !=null && session.loginUser.readType !=0) style="width:100%"
              #end>
             <div class="fly-panel" style="margin-bottom: 0;">
+
+                <div class="fly-panel-title fly-filter" style="padding:10px 10px 10px 20px;line-height: 30px;">
+                    <a href="/tab/all" #if(tab1_select == "all") class="layui-this" #end>全部</a>
+                    #for(t : tab1)
+                    <a href="/tab/#(t.suffix)"  #if(tab1_select == t.suffix) class="layui-this" #end>#(t.name)</a>
+                    #end
+                    <span class="fly-search layui-hide-xs" style="float: right;height: 30px;"><i class="layui-icon"></i></span>
+                </div>
+
                 #if(tab2 != null && tab2.size() > 0)
-                <div class="fly-panel-title fly-filter">
+                <div class="fly-panel-title fly-filter layui-hide-xs" style="background-color: #f9f9f9;padding:10px 10px 10px 20px;line-height: 30px;">
                     #for(t : tab2)
                     <a href="/tab/#(tab1_select)?tab=#(t.suffix)" #if(tab2_select == t.suffix) class="layui-hide-xs layui-this" #end>#(t.name)</a>
-                        #if(for.index == for.size - 1)
-                            <span class="fly-filter-right layui-hide-xs"></span>
-                        #else
-                            <span class="fly-mid"></span>
-                        #end
                     #end
                 </div>
                 #end
@@ -45,18 +47,20 @@
                             <img src="#(p.user.avatar)" alt="#(p.user.nickName)">
                         </a>
                         <h2>
-                            <a class="layui-badge">#(p.column.name)</a>
                             <a href="/post/#(p.id)">#(p.title)</a>
                         </h2>
                         <div class="fly-list-info">
+                            <a><span class="layui-badge-rim">#(p.column.name)</span></a>
                             <a href="/user/#(p.user.id)" link>
                                 <cite>#(p.user.nickName)</cite>
                                 #if(p.user.auth != null)
                                 <i class="iconfont icon-renzheng" title="认证信息：#(p.user.auth)"></i>
                                 #end
+                                <!--
                                 #if(p.user.vip != 0)
                                 <i class="layui-badge fly-badge-vip">VIP#(p.user.vip)</i>
                                 #end
+                                -->
                             </a>
                             <!-- 自定义头衔 -->
                             <!-- <span style="color:#FF9E3F">（社区之光）</span> -->
@@ -103,6 +107,9 @@
             <div class="fly-panel fly-signin">
                 <div class="fly-panel-title">
                     当前在线人数：#(com.eazy.commons.SessionCounter::getActiveSessions())
+                    <div class="fly-column-right layui-hide-xs">
+                        <a href="/post/add" class="layui-btn layui-btn-primary" style="margin-right: 5px;"><i class="layui-icon"></i>&nbsp;创作新主题</a>
+                    </div>
                 </div>
             </div>
 
@@ -110,7 +117,7 @@
             <div class="fly-panel fly-signin">
                 #if(session.loginUser != null && session.loginUser.type == 'admin')
                 <div class="fly-panel-title">
-                    <a href="javascript:;" class="layui-btn" id="LAY_edit_tab_desc" pid="#if(tab2_select == null)#(tab1_select)#else #(tab2_select)#end">更新描述</a>
+                    <a href="javascript:;" class="layui-btn layui-btn-primary" id="LAY_edit_tab_desc" pid="#if(tab2_select == null)#(tab1_select)#else #(tab2_select)#end"><i class="layui-icon"></i>&nbsp;更新描述</a>
                 </div>
                 #end
                 <div class="fly-panel-main" id="tab_desc" style="line-height:150%;">#(tab_desc)</div>
@@ -127,7 +134,7 @@
                     <span class="fly-signin-days"></span>
                 </div>
                 <div class="fly-panel-main fly-signin-main">
-                    <button class="layui-btn layui-btn-danger" id="LAY_signin">今日签到</button>
+                    <button class="layui-btn layui-btn-primary" id="LAY_signin">今日签到</button>
                 </div>
             </div>
 
@@ -165,7 +172,7 @@
                 <h3 class="fly-panel-title">最热标签</h3>
                 <dl class="fly-panel-main">
                     #for(k : keywordList)
-                    <dd><a href="/post/tags/#(k.keyword)" target="_blank"><span class="layui-badge-rim">#(k.keyword)</span></a><dd>
+                    <dd><a href="/post/tags/#(k.keyword)" target="_blank"  style="padding:5px 8px;"><span class="layui-btn layui-btn-xs layui-btn-primary layui-btn-radius" style="padding:0 10px;margin: 0px 0px 5px 0px;">#(k.keyword)</span></a><dd>
                     #end
                 </dl>
             </div>

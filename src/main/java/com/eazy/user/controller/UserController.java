@@ -123,6 +123,7 @@ public class UserController {
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String home(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(Constants.LOGIN_USER);
+        user = userService.getUser(user);
         Page page = new Page(0, 20);
         request.setAttribute(Constants.POST_LIST, postService.listMyPost(user.getId(), page)); // 最近提问
         request.setAttribute(Constants.REPLY_LIST, replyService.listMyReply(user.getId(), page));// 最近的回答

@@ -8,16 +8,18 @@
             #end
 
             #if(session.loginUser != null)
+            <!--
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/post">我发表的主题</a></li>
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/post/#collection">我收藏的主题</a></li>
+            -->
             #end
         </ul>
         <div class="fly-column-right layui-hide-xs">
             <span class="fly-search"><i class="layui-icon"></i></span>
-            <a href="/post/add" class="layui-btn">创作新主题</a>
+            <a href="/post/add" class="layui-btn layui-btn-primary"><i class="layui-icon"></i>&nbsp;创作新主题</a>
         </div>
         <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;">
-            <a href="/post/add" class="layui-btn">创作新主题</a>
+            <a href="/post/add" class="layui-btn layui-btn-primary"><i class="layui-icon"></i>&nbsp;创作新主题</a>
         </div>
     </div>
 </div>

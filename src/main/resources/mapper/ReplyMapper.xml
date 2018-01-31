@@ -9,7 +9,10 @@
 
     <select id="listReply" resultMap="replyResult">
         SELECT r.*, u.id uuid,u.nickName,u.avatar,u.vip,u.auth FROM reply r, user u
-        WHERE r.uid = u.id AND r.pid = #{reply.pid} ORDER BY r.accept DESC, r.id DESC LIMIT #{page.startNumber},#{page.pageSize}
+        WHERE r.uid = u.id AND r.pid = #{reply.pid} ORDER BY r.accept DESC, r.id DESC
+         <if test="page == null">
+          LIMIT #{page.startNumber},#{page.pageSize}
+         </if>
     </select>
 
     <select id="countListReply" resultType="Integer">
@@ -30,7 +33,7 @@
     </delete>
 
     <select id="weeklyTop" resultMap="replyResult">
-        SELECT u.id uuid, u.nickname nickName,u.avatar avatar, count(*) vip FROM reply r,user u WHERE r.uid = u.id AND YEARWEEK(date_format(r.time,'%Y-%m-%d')) = YEARWEEK(now()) GROUP BY r.uid LIMIT 0,16
+        SELECT u.id uuid, u.nickname nickName,u.avatar avatar, count(*) vip FROM reply r,user u WHERE r.uid = u.id AND YEARWEEK(date_format(r.time,'%Y-%m-%d')) = YEARWEEK(now()) GROUP BY r.uid ORDER BY vip DESC LIMIT 0,16
     </select>
 
     <select id="listMyReply" resultMap="replyResult">

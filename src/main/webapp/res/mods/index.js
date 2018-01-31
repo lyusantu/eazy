@@ -320,7 +320,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
         , '<button class="layui-btn layui-btn-disabled">今日已签到</button>'
         , '<span>获得了<cite>{{ d.experience }}</cite>飞吻</span>'
         , '{{# } else { }}'
-        , '<button class="layui-btn layui-btn-danger" id="LAY_signin">今日签到</button>'
+        , '<button class="layui-btn layui-btn-primary" id="LAY_signin">今日签到</button>'
         , '<span>可获得<cite>{{ d.experience }}</cite>飞吻</span>'
         , '{{# } }}'].join('')
         , tplSigninDay = '已连续签到<cite>{{ d.days }}</cite>天'
@@ -671,7 +671,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
     //固定Bar
     util.fixbar({
         bar1: '&#xe642;'
-        , bgcolor: '#009688'
+        , bgcolor: '#C9C9C9'
         , click: function (type) {
             if (type === 'bar1') {
                 fly.json('/post/ajaxAdd', {

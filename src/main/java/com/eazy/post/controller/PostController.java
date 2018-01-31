@@ -136,7 +136,7 @@ public class PostController {
         if (ObjectUtil.isNull(user))
             return new AjaxResult(1, "未登入");
         else
-            return new AjaxResult(0, null, Constants.URL_POST_ADD);
+            return new AjaxResult(0, null, "/post/add");
     }
 
     @AuthPassport
