@@ -27,4 +27,7 @@ public interface UserService {
     User getUserByName(String name);
 
     List<User> recentlyJoined();
+
+    int countUser();
+
 }

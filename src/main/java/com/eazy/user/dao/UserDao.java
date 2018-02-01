@@ -28,4 +28,6 @@ public interface UserDao {
     User getUserByName(@Param("nickName") String name);
 
     List<User> recentlyJoined();
+
+    int countUser();
 }

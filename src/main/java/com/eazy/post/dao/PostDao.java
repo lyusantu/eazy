@@ -119,4 +119,6 @@ public interface PostDao {
     int rewardCount(@Param("pid") Integer pid);
 
     int isReward(@Param("uid") Integer uid,@Param("pid") Integer pid);
+
+    int countAllPost();
 }

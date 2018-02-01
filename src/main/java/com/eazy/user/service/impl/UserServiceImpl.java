@@ -6,6 +6,8 @@ import com.eazy.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "myCache", key = "'countUser'")
     public User activeAccount(String code) {
         return userDao.activeAccount(code);
     }
@@ -72,6 +75,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> recentlyJoined() {
         return userDao.recentlyJoined();
+    }
+
+    @Override
+    @Cacheable(value = "myCache", key = "'countUser'")
+    public int countUser() {
+        return userDao.countUser();
     }
 
 }

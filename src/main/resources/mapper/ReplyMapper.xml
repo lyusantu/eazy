@@ -40,6 +40,10 @@
         SELECT r.*, p.id ppid, p.title FROM reply r, post p WHERE r.pid = p.id AND r.uid = #{uid} ORDER BY r.id DESC LIMIT #{page.startNumber},#{page.pageSize}
     </select>
 
+    <select id="countAllReply" resultType="Integer">
+        SELECT COUNT(*) FROM reply r,post p WHERE r.pid = p.id AND p.delete = 0
+    </select>
+
     <resultMap id="replyResult" type="Reply">
         <id column="id" property="id"/>
         <result column="pid" property="pid"/>

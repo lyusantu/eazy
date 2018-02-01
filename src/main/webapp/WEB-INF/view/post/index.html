@@ -100,7 +100,7 @@
             </div>
 
             #if(postUpdateRecordList != null && postUpdateRecordList.size() > 0)
-            <div class="fly-panel detail-box" style="font-size: 12px;padding-bottom: 0px;">
+            <div class="fly-panel detail-box layui-hide-xs" style="font-size: 12px;padding-bottom: 0px;">
                 <ul class="layui-timeline">
                     #for(p : postUpdateRecordList)
                     <li class="layui-timeline-item">
@@ -231,7 +231,7 @@
         </div>
 
         #if(session.loginUser == null || session.loginUser.readType == 0)
-        <div class="layui-col-md4">
+        <div class="layui-col-md4 layui-hide-xs">
             <dl class="fly-panel fly-list-one">
                 <dt class="fly-panel-title">本周热议</dt>
                 #if(weekHot == null || weekHot.size() == 0)
@@ -245,7 +245,7 @@
                 #end
                 #end
             </dl>
-            <div class="fly-panel">
+            <div class="fly-panel layui-hide-xs">
                 <div class="fly-panel-title">
                     赞助商
                 </div>

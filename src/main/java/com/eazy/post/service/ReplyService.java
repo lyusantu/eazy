@@ -22,4 +22,6 @@ public interface ReplyService {
     List<Reply> weeklyTop();
 
     List<Reply> listMyReply(int uid, Page page);
+
+    int countAllReply();
 }

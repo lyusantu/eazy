@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,9 @@ public class PostServiceImpl implements PostService {
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "myCache", key = "'weeklyTopPost'"),
+            @CacheEvict(value = "myCache", key = "'countAllPost'")})
     public int addPost(Post post) {
         return postDao.addPost(post);
     }
@@ -58,6 +62,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "myCache", key = "'weeklyTopPost'"),
+            @CacheEvict(value = "myCache", key = "'countAllReply'"),
+            @CacheEvict(value = "myCache", key = "'countAllPost'")})
     public void delete(int id) {
         postDao.delete(id);
     }
@@ -137,4 +145,11 @@ public class PostServiceImpl implements PostService {
     public int isReward(Integer uid, Integer pid) {
         return postDao.isReward(uid, pid);
     }
+
+    @Override
+    @Cacheable(value = "myCache", key = "'countAllPost'")
+    public int countAllPost() {
+        return postDao.countAllPost();
+    }
+
 }

@@ -182,7 +182,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 /* 面板 */
 .fly-panel{margin-bottom: 15px; border-radius: 2px; background-color: #FFF; box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);}
 .fly-panel[pad20]{padding: 20px;}
-.fly-panel-title{position: relative; min-height: 25px; line-height: 50px; padding: 0 15px; border-bottom: 1px dotted #E9E9E9; color: #333; border-radius: 2px 2px 0 0; font-size: 14px;}
+.fly-panel-title{position: relative; min-height: 25px; line-height: 50px; padding: 0 15px; border-bottom: 1px dotted #E9E9E9; color: #999; border-radius: 2px 2px 0 0; font-size: 14px;}
 .fly-panel-main{padding: 10px 15px;}
 
 /* 专栏 */

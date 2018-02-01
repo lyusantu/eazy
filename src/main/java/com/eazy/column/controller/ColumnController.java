@@ -1,5 +1,6 @@
 package com.eazy.column.controller;
 
+import com.eazy.collection.service.CollectionService;
 import com.eazy.column.entity.Column;
 import com.eazy.column.service.ColumnService;
 import com.eazy.commons.Constants;
@@ -7,9 +8,12 @@ import com.eazy.commons.Page;
 import com.eazy.commons.dto.AjaxResult;
 import com.eazy.commons.dto.BaseResult;
 import com.eazy.index.service.IndexService;
+import com.eazy.message.service.MessageService;
 import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
 import com.eazy.post.service.ReplyService;
+import com.eazy.user.entity.User;
+import com.eazy.user.service.UserService;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
 import io.swagger.annotations.Api;
@@ -38,6 +42,15 @@ public class ColumnController {
 
     @Autowired
     private ReplyService replyService;
+
+    @Autowired
+    private CollectionService collectionService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private MessageService messageService;
 
     @RequestMapping(value = "/{tab}", method = RequestMethod.GET)
     public String index(HttpServletRequest request, @PathVariable(Constants.GET_TAB) String tab, @RequestParam(value = Constants.GET_P, defaultValue = "1") Integer p) {
@@ -74,6 +87,15 @@ public class ColumnController {
         request.setAttribute(Constants.HOT_WEEKLY_LIST, postService.weeklyTop());// 本周热议
         request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
         request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
+        User user = Constants.getLoginUser(request);
+        if(ObjectUtil.isNotNull(user)){
+            request.setAttribute("countPost",postService.countMyPost(user.getId()));
+            request.setAttribute("countCollection",collectionService.countMyCollection(user.getId()));
+            request.setAttribute("countMessage",messageService.countMyMsg(user.getId()));
+        }
+        request.setAttribute("countAllPost", postService.countAllPost());
+        request.setAttribute("members", userService.countUser() );// 注册会员
+        request.setAttribute("countAllReply", replyService.countAllReply());
         return Constants.URL_INDEX;
     }
 

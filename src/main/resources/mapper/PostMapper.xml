@@ -262,6 +262,10 @@
         SELECT COUNT(id)  FROM post_reward_record WHERE pid = #{pid} AND uid = #{uid}
     </select>
 
+    <select id="countAllPost" resultType="Integer">
+        SELECT COUNT(*) FROM post WHERE `delete` = 0
+    </select>
+
     <resultMap id="postResult" type="Post">
         <id column="id" property="id"/>
         <result column="title" property="title"/>

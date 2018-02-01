@@ -25,7 +25,7 @@
     #end
 
     <p class="fly-home-info">
-        <a href="/user/balance" class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius"><i class="iconfont icon-kiss" title="飞吻" style="color: red;padding-left:0px;"></i>#(session.loginUser.balance) 飞吻</a>
+        <i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">#(session.loginUser.balance) 飞吻</span>
         <i class="iconfont icon-shijian"></i><span>#date(session.loginUser.regTime,"yyyy-MM-dd") 加入，第 #(session.loginUser.id) 号会员</span>
         #if(session.loginUser.city != null && session.loginUser.city.trim() != '')<i class="iconfont icon-chengshi"></i><span>来自#(session.loginUser.city)</span>#end
     </p>

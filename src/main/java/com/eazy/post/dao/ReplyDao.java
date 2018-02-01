@@ -23,4 +23,6 @@ public interface ReplyDao {
     List<Reply> weeklyTop();
 
     List<Reply> listMyReply(@Param("uid") int uid, @Param("page") Page page);
+
+    int countAllReply();
 }

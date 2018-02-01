@@ -53,4 +53,6 @@ public interface PostService {
     int rewardCount(Integer pid);
 
     int isReward(Integer uid, Integer pid);
+
+    int countAllPost();
 }

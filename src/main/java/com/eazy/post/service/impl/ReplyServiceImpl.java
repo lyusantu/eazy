@@ -7,6 +7,7 @@ import com.eazy.post.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,9 @@ public class ReplyServiceImpl implements ReplyService {
     private ReplyDao replyDao;
 
     @Override
-    @CacheEvict(value = "myCache", key = "'weeklyTopReply'")
+    @Caching(evict = {
+                    @CacheEvict(value = "myCache", key = "'weeklyTopReply'"),
+                    @CacheEvict(value = "myCache", key = "'countAllReply'")})
     public int addReply(Reply reply) {
         return replyDao.addReply(reply);
     }
@@ -46,6 +49,9 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "myCache", key = "'weeklyTopReply'"),
+            @CacheEvict(value = "myCache", key = "'countAllReply'")})
     public void delReply(Reply reply) {
         replyDao.delReply(reply);
     }
@@ -59,6 +65,12 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     public List<Reply> listMyReply(int uid, Page page) {
         return replyDao.listMyReply(uid, page);
+    }
+
+    @Override
+    @Cacheable(value = "myCache", key = "'countAllReply'")
+    public int countAllReply() {
+        return replyDao.countAllReply();
     }
 
 }

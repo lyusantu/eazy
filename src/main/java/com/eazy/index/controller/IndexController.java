@@ -1,11 +1,13 @@
 package com.eazy.index.controller;
 
+import com.eazy.collection.service.CollectionService;
 import com.eazy.column.entity.Column;
 import com.eazy.column.service.ColumnService;
 import com.eazy.commons.Constants;
 import com.eazy.commons.Page;
 import com.eazy.index.entity.FriendsSite;
 import com.eazy.index.service.IndexService;
+import com.eazy.message.service.MessageService;
 import com.eazy.post.entity.Post;
 import com.eazy.post.entity.Reply;
 import com.eazy.post.service.PostService;
@@ -44,6 +46,15 @@ public class IndexController {
     @Autowired
     private ColumnService columnService;
 
+    @Autowired
+    private CollectionService collectionService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private MessageService messageService;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(HttpServletRequest request) {
         List<Post> postList = postService.list(new Page(0, Constants.NUM_PER_PAGE), null, null, null); // 置顶帖
@@ -60,6 +71,15 @@ public class IndexController {
         request.setAttribute(Constants.HOT_WEEKLY_LIST, postService.weeklyTop());// 本周热议
         request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
         request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
+        User user = Constants.getLoginUser(request);
+        if(ObjectUtil.isNotNull(user)){
+            request.setAttribute("countPost",postService.countMyPost(user.getId()));
+            request.setAttribute("countCollection",collectionService.countMyCollection(user.getId()));
+            request.setAttribute("countMessage",messageService.countMyMsg(user.getId()));
+        }
+        request.setAttribute("countAllPost", postService.countAllPost());
+        request.setAttribute("members", userService.countUser() );// 注册会员
+        request.setAttribute("countAllReply", replyService.countAllReply());
         return Constants.URL_INDEX;
     }
 
