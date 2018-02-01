@@ -56,7 +56,7 @@
                 <ul class="mine-msg">
                     #for(m : list)
                     <li data-id="#(m.id)">
-                        <blockquote class="layui-elem-quote">
+                        <blockquote class="layui-elem-quote" style="border-left: 6px solid #C9C9C9;background-color: #f8f8f8;">
                             #if(m.type == 0) ### 评论
                             <a href="/user/#(m.user.id)" target="_blank"><cite>#(m.user.nickName)</cite></a> 评论了您的主题 <a
                                 href="/post/#(m.post.id)#item-#(m.reply)"

@@ -96,15 +96,15 @@ i{font-style: normal;}
 
 
 /* 辅助 */
-a:hover{color: #009688; transition: all .3s;}
-pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid #009688;  background-color: #f8f8f8; font-family: Courier New; overflow: auto;}
+a:hover{color: #999; transition: all .3s;}
+pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid #C9C9C9;  background-color: #f8f8f8; font-family: Courier New; overflow: auto;}
 
 .layui-container{padding: 0;}
 .fly-main{width: 1079px; min-height: 600px; margin: 0 auto 15px;}
 .layui-badge{height: 20px; line-height: 20px; border-radius: 2px;}
 
 .fly-link{color: #666;}
-.fly-link:hover{color: #5FB878;}
+.fly-link:hover{color: #999;}
 .fly-grey{color: #999;}
 
 .fly-msg, .fly-error{padding: 10px 15px; line-height: 24px;}
@@ -125,7 +125,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 
 /* 徽章 */
 .fly-badge-vip{height: 16px; line-height: 16px; padding: 0 3px; background-color: #FF5722; color: #fff; border-radius: 2px;}
-.fly-badge-accept{height: 18px; line-height: 18px; padding: 0 5px !important; background-color: #5FB878; border-radius: 2px;}
+.fly-badge-accept{height: 18px; line-height: 18px; padding: 0 5px !important; background-color: #01AAED; border-radius: 2px;}
 
 /* 赞助商 */
 .fly-zanzhu{display: block; position: relative; height: 60px; line-height: 60px; margin-top: 10px; padding: 0 20px; text-align: center; font-size: 16px; font-weight: 300; background-color: #009688; color: #fff;}
@@ -162,7 +162,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 .fly-header .fly-nav-user li .fly-nav-avatar{padding-right: 0;}
 .fly-header .fly-nav-user a.iconfont{color: #A9B7B7;}
 .fly-header>.layui-nav-item a{color: rgba(255,255,255,0.5);}
-.fly-header .layui-this a{color: #5FB878;}
+.fly-header .layui-this a{color: #01AAED;}
 .fly-header .layui-nav .layui-this:after,
 .fly-header .layui-nav .layui-nav-bar,
 .fly-header .fly-nav-user .layui-nav-more{display: none !important;}
@@ -190,7 +190,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 .fly-column ul li{position: relative; display: inline-block; height: 50px;}
 .fly-column ul li a{padding: 0 20px;}
 .fly-column ul li.layui-this:after{ position: absolute; bottom: 13px; left: 8px; z-index: 0; width: 50px; height: 22px; border: 1px solid #5FB878; border-radius: 2px;}
-.fly-column ul li.layui-this a{color: #5FB878;}
+.fly-column ul li.layui-this a{color: #01AAED;}
 .fly-column ul li .fly-mid{margin: 0 20px;}
 .fly-column-right{position: absolute; right: 0; top: 0;}
 .fly-column-right .layui-btn{vertical-align: initial;}
@@ -199,7 +199,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 /* 搜索 */
 .fly-search{display: inline-block; vertical-align: top; width: 50px; height: 50px; margin-right: 10px; text-align: center; cursor: pointer; font-size: 20px;}
 .fly-search .layui-icon{font-size: 20px;}
-.fly-search:hover{color: #5FB878;}
+.fly-search:hover{color: #999;}
 .fly-layer-search input{height: 75px; line-height: 75px; width: 500px; padding: 0 15px; font-size: 20px; border: none 0; background: none;}
 
 /* 筛选 */
@@ -210,7 +210,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
   margin-right: 5px;
   border-radius: 3px;
   color: #666;}
-.fly-filter a.layui-this{color: #5FB878;}
+.fly-filter a.layui-this{color: #01AAED;}
 .fly-filter .fly-mid{margin: 0 8px;}
 .fly-filter-right{position: absolute; right: 10px; top: 0;}
 
@@ -238,7 +238,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 .fly-edit{position:relative; display: block; top: 1px; left:0; padding:0 10px; border: 1px solid #e6e6e6; border-radius: 2px 2px 0 0; background-color: #FBFBFB;}
 .fly-edit span{cursor:pointer; padding:0 10px; line-height: 38px; color:#999;}
 .fly-edit span i{position: relative; padding-right: 6px; font-size: 18px;}
-.fly-edit span:hover{color: #5DB276;}
+.fly-edit span:hover{color: #C9C9C9;}
 
 /* 列表 */
 .fly-list li{position: relative; height: 45px; line-height: 22px; padding: 15px 15px 15px 75px; border-bottom: 1px dotted #e2e2e2;}
@@ -253,7 +253,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 .fly-list-info{position: relative; font-size: 13px; color: #999;}
 .fly-list-info>*{padding-right: 15px;}
 .fly-list-info a[link]{color: #999;}
-.fly-list-info a[link]:hover{color: #5FB878;}
+.fly-list-info a[link]:hover{color: #333;}
 .fly-list-info .icon-renzheng{position: relative; top: 1px; margin-right: 3px;}
 .fly-list-info .fly-badge-vip{position: relative; margin-left: 2px;}
 .fly-list-kiss{color: #FF5722;}
@@ -365,7 +365,7 @@ body .layui-edit-face  .layui-layer-content{padding:0; background-color:#fff; co
 /* 求解管理 */
 .jie-admin{cursor: pointer;}
 .detail-hits .jie-admin{color: #fff; padding: 0 10px; }
-.detail-hits .jie-admin a{color: #fff;}
+.detail-hits .jie-admin a{color: #000;}
 .jieda-admin{position:absolute; right: 0; top: 4px;}
 
 /* 回答 */
@@ -373,7 +373,7 @@ body .layui-edit-face  .layui-layer-content{padding:0; background-color:#fff; co
 .jieda li{position: relative; padding: 20px 0 10px; border-bottom: 1px dotted #DFDFDF;}
 .jieda li:last-child{border-bottom: none;}
 .jieda .fly-none{height: 50px; min-height: 0;}
-.jieda .icon-caina{position:absolute; right:10px; top:15px; font-size:60px; color: #58A571;}
+.jieda .icon-caina{position:absolute; right:10px; top:15px; font-size:60px; color:#01AAED;}
 
 .detail-about-reply{padding: 0 0 0 55px; background: none;}
 .detail-about-reply .detail-hits{left: 0; bottom: 0;}

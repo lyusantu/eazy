@@ -15,7 +15,7 @@
                        <span class="layui-badge" style="background-color: #999;">未结</span>
                     #end
                     #if(post.status == 1)
-                        <span class="layui-badge" style="background-color: #5FB878;">已结</span>
+                        <span class="layui-badge" style="background-color: #01AAED;">已结</span>
                     #end
                     #if(post.top == 1)
                         <span class="layui-badge layui-bg-black">置顶</span>
@@ -25,14 +25,14 @@
                     #end
                     <div class="fly-admin-box" data-id="#(post.id)">
                         #if(session.loginUser != null && session.loginUser.type == 'admin')
-                            <span class="layui-btn layui-btn-xs jie-admin" type="del">删除</span>
+                            <span class="layui-btn layui-btn-danger layui-btn-xs jie-admin" type="del">删除</span>
                             #if(post.top == 0)
-                                <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="1">置顶</span>
+                                <span class="layui-btn layui-btn-normal layui-btn-xs jie-admin" type="set" field="stick" rank="1">置顶</span>
                             #elseif(post.top == 1)
                                 <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="0" style="background-color:#ccc;">取消置顶</span>
                             #end
                             #if(post.wonderful == 0)
-                                <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="1">加精</span>
+                                <span class="layui-btn layui-btn-normal layui-btn-xs jie-admin" type="set" field="status" rank="1">加精</span>
                             #elseif(post.wonderful == 1)
                                 <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="0" style="background-color:#ccc;">取消加精</span>
                             #end
@@ -63,12 +63,12 @@
                         <span style="padding-right: 10px; color: #FF7200">悬赏：#(post.reward)飞吻</span>
                         #if(session.loginUser != null)
                             #if(session.loginUser.id == post.user.id && post.status == 0)
-                                <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="/post/edit/#(post.id)">编辑主题</a></span>
+                                <span class="layui-btn layui-btn-primary layui-btn-xs jie-admin" type="edit"><a href="/post/edit/#(post.id)">编辑主题</a></span>
                             #end
                             #if(collection == null)
-                                <span class="layui-btn layui-btn-xs jie-admin " type="collect" data-type="add">收藏</span>
+                                <span class="layui-btn layui-btn-normal layui-btn-xs jie-admin " type="collect" data-type="add">收藏</span>
                             #else
-                                <span class="layui-btn layui-btn-xs jie-admin layui-btn-danger" type="collect" data-type="remove">取消收藏</span>
+                                <span class="layui-btn layui-btn-normal layui-btn-xs jie-admin layui-btn-danger" type="collect" data-type="remove">取消收藏</span>
                             #end
                         #end
                     </div>

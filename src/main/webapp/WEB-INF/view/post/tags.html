@@ -10,10 +10,7 @@
 
         <div class="fly-column-right layui-hide-xs">
             <span class="fly-search"><i class="layui-icon"></i></span>
-            <a href="/post/add" class="layui-btn">创作新主题</a>
-        </div>
-        <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;">
-            <a href="/post/add" class="layui-btn">创作新主题</a>
+            <a href="/post/add" class="layui-btn layui-btn-primary" style="margin-right: 5px;"><i class="layui-icon"></i>&nbsp;创作新主题</a>
         </div>
     </div>
 </div>
@@ -42,10 +39,10 @@
                             <img src="#(p.user.avatar)" alt="#(p.user.nickName)">
                         </a>
                         <h2>
-                            <a class="layui-badge">#(p.column.name)</a>
                             <a href="/post/#(p.id)">#(p.title)</a>
                         </h2>
                         <div class="fly-list-info">
+                            <a><span class="layui-badge-rim">#(p.column.name)</span></a>
                             <a href="/user/#(p.user.id)" link>
                                 <cite>#(p.user.nickName)</cite>
                                 #if(p.user.auth != null)
