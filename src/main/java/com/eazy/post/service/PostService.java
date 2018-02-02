@@ -55,4 +55,8 @@ public interface PostService {
     int isReward(Integer uid, Integer pid);
 
     int countAllPost();
+
+    int countFollow(int uid);
+
+    List<Post> listFollow(int uid, Page page);
 }

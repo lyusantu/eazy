@@ -17,6 +17,7 @@ import com.eazy.post.entity.*;
 import com.eazy.post.service.PostService;
 import com.eazy.post.service.ReplyService;
 import com.eazy.user.entity.User;
+import com.eazy.user.entity.UserFB;
 import com.eazy.user.service.UserService;
 import com.eazy.verify.entity.Verify;
 import com.eazy.verify.service.VerifyService;
@@ -465,9 +466,23 @@ public class PostController {
         request.setAttribute(Constants.REPLY_LIST, replyService.weeklyTop());// 回帖周榜
         request.setAttribute(Constants.HOT_WEEKLY_LIST, postService.weeklyTop());// 本周热议
         request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
-        request.setAttribute(Constants.SPONSOR_LIST, indexService.listSponsor(1));
         request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
+        User user = Constants.getLoginUser(request);
+        setPara(request,user);
         return Constants.URL_POST_TAGS;
+    }
+
+    private void setPara(HttpServletRequest request, User user){
+        if (ObjectUtil.isNotNull(user)) {
+            request.setAttribute("countPost", postService.countMyPost(user.getId()));
+            request.setAttribute("countCollection", collectionService.countMyCollection(user.getId()));
+            request.setAttribute("countMessage", messageService.countMyMsg(user.getId()));
+            UserFB ufb = new UserFB(user.getId(), 0);
+            request.setAttribute("countFollow", userService.countUserFB(ufb));
+        }
+        request.setAttribute("countAllPost", postService.countAllPost());
+        request.setAttribute("members", userService.countUser());// 注册会员
+        request.setAttribute("countAllReply", replyService.countAllReply());
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
@@ -489,6 +504,8 @@ public class PostController {
         request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
         request.setAttribute(Constants.SPONSOR_LIST, indexService.listSponsor(1));
         request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
+        User user = Constants.getLoginUser(request);
+        setPara(request,user);
         return Constants.URL_POST_TAGS;
     }
 

@@ -53,6 +53,28 @@ public class ColumnController {
     @Autowired
     private MessageService messageService;
 
+    @RequestMapping(value = "/follow", method = RequestMethod.GET)
+    public String follow(HttpServletRequest request, @RequestParam(value = Constants.GET_P, defaultValue = "1") Integer p) {
+        User user = Constants.getLoginUser(request);
+        if(ObjectUtil.isNull(user))
+            return "redirect:/tab/all";
+        List<Column> columnList = columnService.listColumn(new Column(0));
+        Page page = new Page(((p - 1)) * Constants.NUM_PER_PAGE, Constants.NUM_PER_PAGE);
+        page.setPageNumber(p);
+        page.setTotalCount(postService.countFollow(user.getId()));
+        List<Post> postList = postService.listFollow(user.getId(), page);
+        request.setAttribute(Constants.PAGE, page);
+        request.setAttribute(Constants.POST_LIST, postList);
+        request.setAttribute(Constants.TAB1, columnList);
+        request.setAttribute(Constants.TAB1_SELECT, "follow");
+        request.setAttribute(Constants.REPLY_LIST, replyService.weeklyTop());// 回帖周榜
+        request.setAttribute(Constants.HOT_WEEKLY_LIST, postService.weeklyTop());// 本周热议
+        request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
+        request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
+        setPara(request, user);
+        return Constants.URL_INDEX;
+    }
+
     @RequestMapping(value = "/{tab}", method = RequestMethod.GET)
     public String index(HttpServletRequest request, @PathVariable(Constants.GET_TAB) String tab, @RequestParam(value = Constants.GET_P, defaultValue = "1") Integer p) {
         List<Column> columnList = columnService.listColumn(new Column(0));
@@ -89,24 +111,28 @@ public class ColumnController {
         request.setAttribute(Constants.FS_LIST, indexService.listFriendsSite());// 友链
         request.setAttribute(Constants.KEYWORD_LIST, indexService.listKeyword());// 最热标签
         User user = Constants.getLoginUser(request);
-        if(ObjectUtil.isNotNull(user)){
-            request.setAttribute("countPost",postService.countMyPost(user.getId()));
-            request.setAttribute("countCollection",collectionService.countMyCollection(user.getId()));
-            request.setAttribute("countMessage",messageService.countMyMsg(user.getId()));
+        setPara(request, user);
+        return Constants.URL_INDEX;
+    }
+
+    private void setPara(HttpServletRequest request, User user) {
+        if (ObjectUtil.isNotNull(user)) {
+            request.setAttribute("countPost", postService.countMyPost(user.getId()));
+            request.setAttribute("countCollection", collectionService.countMyCollection(user.getId()));
+            request.setAttribute("countMessage", messageService.countMyMsg(user.getId()));
             UserFB ufb = new UserFB(user.getId(), 0);
             request.setAttribute("countFollow", userService.countUserFB(ufb));
         }
         request.setAttribute("countAllPost", postService.countAllPost());
-        request.setAttribute("members", userService.countUser() );// 注册会员
+        request.setAttribute("members", userService.countUser());// 注册会员
         request.setAttribute("countAllReply", replyService.countAllReply());
-        return Constants.URL_INDEX;
     }
 
     @RequestMapping(value = "/getDesc", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public AjaxResult getDesc(HttpServletRequest request, @PathParam("suffix") String suffix) {
         Column column = columnService.getDesc(suffix);
-        return new AjaxResult(0, ObjectUtil.isNull(column.getDesc()) ? "" : column.getDesc(),column.getSuffix());
+        return new AjaxResult(0, ObjectUtil.isNull(column.getDesc()) ? "" : column.getDesc(), column.getSuffix());
     }
 
     @RequestMapping(value = "/editDesc", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8"})

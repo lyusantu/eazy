@@ -152,4 +152,14 @@ public class PostServiceImpl implements PostService {
         return postDao.countAllPost();
     }
 
+    @Override
+    public int countFollow(int uid) {
+        return postDao.countFollow(uid);
+    }
+
+    @Override
+    public  List<Post> listFollow(int uid, Page page) {
+        return postDao.listFollow(uid, page);
+    }
+
 }

@@ -90,11 +90,93 @@
             </div>
             #end
 
-            <div class="fly-panel fly-signin">
-                <div class="fly-panel-title">
-                    当前在线人数：#(com.eazy.commons.SessionCounter::getActiveSessions())
+            <style type="text/css">
+                .cell {
+                    padding: 10px;
+                    font-size: 14px;
+                    line-height: 200%;
+                    text-align: left;
+                    border-bottom: 1px solid #e2e2e2;
+                }
+                .sep10 {
+                    height: 10px;
+                }
+                .bigger {
+                    font-size: 16px;
+                }
+                .sep3 {
+                    height: 3px;
+                }
+                .fade {
+                    color: #666;
+                }
+                .inner {
+                    padding: 15px;
+                    font-size: 14px;
+                    line-height: 150%;
+                    text-align: left;
+                }
+                .fr {
+                    float: right;
+                    text-align: right;
+                }
+                .balance_area {
+                    color: #000;
+                    font-size: 11px;
+                    line-height: 16px;
+                    padding: 5px 10px 5px 10px;
+                    -moz-border-radius: 20px;
+                    -webkit-border-radius: 20px;
+                    border-radius: 20px;
+                    text-decoration: none;
+                    color: #666;
+                    text-shadow: 0px 1px 0px white;
+                    display: inline-block;
+                    margin: -4px -5px 0px 0px;
+                    background: #f5f5f5;
+                    background: -moz-linear-gradient(top, #f5f5f5 0%, #e2e2e2 100%);
+                    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f5f5), color-stop(100%,#e2e2e2));
+                    background: -webkit-linear-gradient(top, #f5f5f5 0%,#e2e2e2 100%);
+                    background: -o-linear-gradient(top, #f5f5f5 0%,#e2e2e2 100%);
+                    background: -ms-linear-gradient(top, #f5f5f5 0%,#e2e2e2 100%);
+                    background: linear-gradient(top, #f5f5f5 0%,#e2e2e2 100%);
+                    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#e2e2e2',GradientType=0 );
+                }
+            </style>
+            #if(session.loginUser != null)
+            <div class="fly-panel layui-hide-xs">
+                <div class="cell" style="padding: 15px;">
+                    <a href="/post/add" class=""><i class="layui-icon"></i>&nbsp;创作新主题</a>
+                </div>
+                <div class="cell">
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tbody><tr>
+                            <td width="33%" align="center"><a href="/user/post" class="dark" style="display: block;"><span class="bigger">#(countPost)</span><div class="sep3"></div><span class="fade">我的主题</span></a></td>
+                            <td width="34%" style="border-left: 1px solid rgba(100, 100, 100, 0.4);" align="center"><a href="/user/post#collection" class="dark" style="display: block;"><span class="bigger">#(countCollection)</span><div class="sep3"></div><span class="fade">我的收藏</span></a></td>
+                            <td width="34%" style="border-left: 1px solid rgba(100, 100, 100, 0.4);" align="center"><a href="/user/follow" class="dark" style="display: block;"><span class="bigger">#(countFollow)</span><div class="sep3"></div><span class="fade">我的关注</span></a></td>
+                        </tr>
+                        </tbody></table>
+                </div>
+                <div class="inner"><div class="fr" id="money"><a href="/user/balance" class="balance_area" style="">
+                    #(session.loginUser.balance) <i class="iconfont icon-kiss" title="飞吻"></i>
+                </a></div><a href="/user/message" class="fade">#(countMessage) 条未读提醒</a></div>
+            </div>
+            #else
+            <div class="fly-panel layui-hide-xs">
+                <div class="cell">
+                    <strong>EAZY = make everthing to simple</strong>
+                    <div class="sep5"></div>
+                    <span class="fade">EAZY 是一个使一切变得简单的地方</span>
+                </div>
+                <div class="inner">
+                    <div class="sep5"></div>
+                    <div align="center"><a href="/user/signup" class="layui-btn layui-btn-primary">现在注册</a>
+                        <div class="sep5"></div>
+                        <div class="sep10"></div>
+                        已注册用户请 &nbsp;<a href="/user/signin">登录</a></div>
                 </div>
             </div>
+            #end
 
             <div class="fly-panel fly-signin" id="signin">
                 <div class="fly-panel-title">
@@ -144,40 +226,56 @@
                 <h3 class="fly-panel-title">最热标签</h3>
                 <dl class="fly-panel-main">
                     #for(k : keywordList)
-                    <dd><a href="/post/tags/#(k.keyword)" target="_blank"><span class="layui-badge-rim">#(k.keyword)</span></a><dd>
+                    <!-- <dd><a href="/post/tags/#(k.keyword)" target="_blank"><span class="layui-badge-rim">#(k.keyword)</span></a><dd> -->
+                    <dd><a href="/post/tags/#(k.keyword)" target="_blank"  style="padding:5px 8px;"><span class="layui-btn layui-btn-xs layui-btn-primary layui-btn-radius" style="padding:0 10px;margin: 0px 0px 5px 0px;">#(k.keyword)</span></a><dd>
                     #end
                 </dl>
             </div>
             #end
 
-            <div class="fly-panel">
-                <div class="fly-panel-title">
-                    赞助商
-                </div>
-                <div class="fly-panel-main">
-                    #if(sponsorList != null && sponsorList.size() > 0)
-                    #for(s : sponsorList)
-                    <a href="#(s.url)" target="_blank" class="fly-zanzhu" style="background-color: #(s.color);">#(s.name)
-                        - #(s.desc)</a>
-                    #end
-                    #else
-                    <a href="javascript:;" target="_blank" class="fly-zanzhu"
-                       style="background-color: #393D49;">虚席以待</a>
-                    #end
-                </div>
-            </div>
-
-            <div class="fly-panel fly-link">
+            <div class="fly-panel fly-link layui-hide-xs">
                 <h3 class="fly-panel-title">友情链接</h3>
                 <dl class="fly-panel-main">
-                    <dd><a href="mailto:lyusantu@gmail.com" class="fly-link" target="_blank">申请友链</a>
-                    <dd>
-                        #for(s : fsList)
-                    <dd><a href="#(s.url)" class="fly-link" target="_blank">#(s.name)</a>
-                    <dd>
-                        #end
+                    #for(s : fsList)
+                    <dd><a href="#(s.url)" target="_blank">#(s.name)</a></dd>
+                    #end
+                    <dd><a href="mailto:lyusantu@gmail.com" class="fly-link" target="_blank" style="color: #01AAED;">申请友链</a></dd>
                 </dl>
             </div>
+
+            <style>
+                .gray {
+                    color: #999;
+                }
+                td{
+                    padding-right: 10px;
+                }
+            </style>
+            <div class="fly-panel layui-hide-xs">
+                <h3 class="fly-panel-title">社区运行状况</h3>
+                <div class="cell">
+                    <table cellpadding="5" cellspacing="0" border="0" width="100%">
+                        <tbody>
+                        <tr>
+                            <td width="60" align="right"><span class="gray">在线人数</span></td>
+                            <td width="auto" align="left"><strong>#(com.eazy.commons.SessionCounter::getActiveSessions())</strong></td>
+                        </tr>
+                        <tr>
+                            <td width="60" align="right"><span class="gray">注册会员</span></td>
+                            <td width="auto" align="left"><strong>#(members)</strong></td>
+                        </tr>
+                        <tr>
+                            <td width="60" align="right"><span class="gray">主题</span></td>
+                            <td width="auto" align="left"><strong>#(countAllPost)</strong></td>
+                        </tr>
+                        <tr>
+                            <td width="60" align="right"><span class="gray">评论</span></td>
+                            <td width="auto" align="left"><strong>#(countAllReply)</strong></td>
+                        </tr>
+                        </tbody></table>
+                </div>
+            </div>
+            <!--
         </div>
         #end
     </div>

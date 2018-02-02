@@ -121,4 +121,8 @@ public interface PostDao {
     int isReward(@Param("uid") Integer uid,@Param("pid") Integer pid);
 
     int countAllPost();
+
+    int countFollow(@Param("uid") int uid);
+
+    List<Post> listFollow(@Param("uid") int uid, @Param("page") Page page);
 }

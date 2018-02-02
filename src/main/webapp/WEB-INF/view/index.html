@@ -11,7 +11,9 @@
                     #for(t : tab1)
                     <a href="/tab/#(t.suffix)"  #if(tab1_select == t.suffix) class="layui-this" #end>#(t.name)</a>
                     #end
-                    <a href="/tab/follow" #if(tab1_select == "follow") class="layui-this" #end>关注</a>
+                    #if(session.loginUser != null)
+                        <a href="/tab/follow" #if(tab1_select == "follow") class="layui-this" #end>关注</a>
+                    #end
                     <span class="fly-search layui-hide-xs" style="float: right;height: 30px;"><i class="layui-icon"></i></span>
                 </div>
 
@@ -93,15 +95,6 @@
 
         #if(session.loginUser == null || session.loginUser.readType == 0)
         <div class="layui-col-md4">
-
-            #if(pwList != null && pwList.size() > 0)
-            <div class="fly-panel">
-                <h3 class="fly-panel-title">温馨通道</h3>
-                <ul class="fly-panel-main fly-list-static">
-
-                </ul>
-            </div>
-            #end
 
             <style type="text/css">
                 .cell {
@@ -191,7 +184,7 @@
             </div>
             #end
 
-            #if(tab1_select != 'all')
+            #if(tab1_select != 'all' && tab1_select != 'follow')
             <div class="fly-panel fly-signin layui-hide-xs">
                 #if(session.loginUser != null && session.loginUser.type == 'admin')
                 <div class="fly-panel-title">
