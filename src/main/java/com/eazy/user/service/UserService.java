@@ -1,6 +1,7 @@
 package com.eazy.user.service;
 
 import com.eazy.user.entity.User;
+import com.eazy.user.entity.UserFB;
 
 import java.util.List;
 
@@ -29,5 +30,11 @@ public interface UserService {
     List<User> recentlyJoined();
 
     int countUser();
+
+    int insertUserFB(UserFB ufb);
+
+    void delUserFB(UserFB ufb);
+
+    int countUserFB(UserFB ufb);
 
 }

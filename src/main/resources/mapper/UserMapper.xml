@@ -100,4 +100,20 @@
         SELECT COUNT(*) FROM user WHERE status = 1
     </select>
 
+    <insert id="insertUserFB" useGeneratedKeys="true" keyProperty="ufb.id">
+        INSERT INTO user_f_b(uid, fid, `type`, time) VALUES(#{ufb.uid}, #{ufb.fid}, #{ufb.type}, #{ufb.time})
+    </insert>
+
+    <delete id="delUserFB">
+        DELETE FROM user_f_b WHERE uid = #{ufb.uid} AND fid = #{ufb.fid}
+    </delete>
+
+
+    <select id="countUserFB" resultType="Integer">
+        SELECT COUNT(*) FROM user_f_b WHERE uid = #{ufb.uid} AND `type` = #{ufb.type}
+        <if test="ufb.fid != null">
+            AND fid = #{ufb.fid}
+        </if>
+    </select>
+
 </mapper>

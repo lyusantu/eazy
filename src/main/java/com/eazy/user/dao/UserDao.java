@@ -1,6 +1,7 @@
 package com.eazy.user.dao;
 
 import com.eazy.user.entity.User;
+import com.eazy.user.entity.UserFB;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -30,4 +31,10 @@ public interface UserDao {
     List<User> recentlyJoined();
 
     int countUser();
+
+    int insertUserFB(@Param("ufb") UserFB ufb);
+
+    void delUserFB(@Param("ufb") UserFB ufb);
+
+    int countUserFB(@Param("ufb") UserFB ufb);
 }

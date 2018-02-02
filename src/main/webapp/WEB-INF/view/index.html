@@ -11,6 +11,7 @@
                     #for(t : tab1)
                     <a href="/tab/#(t.suffix)"  #if(tab1_select == t.suffix) class="layui-this" #end>#(t.name)</a>
                     #end
+                    <a href="/tab/follow" #if(tab1_select == "follow") class="layui-this" #end>关注</a>
                     <span class="fly-search layui-hide-xs" style="float: right;height: 30px;"><i class="layui-icon"></i></span>
                 </div>
 
@@ -163,8 +164,9 @@
                 <div class="cell">
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                         <tbody><tr>
-                            <td width="33%" align="center"><a href="/user/post" class="dark" style="display: block;"><span class="bigger">#(countPost)</span><div class="sep3"></div><span class="fade">我发布的主题</span></a></td>
-                            <td width="34%" style="border-left: 1px solid rgba(100, 100, 100, 0.4);" align="center"><a href="/user/post#collection" class="dark" style="display: block;"><span class="bigger">#(countCollection)</span><div class="sep3"></div><span class="fade">我收藏的主题</span></a></td>
+                            <td width="33%" align="center"><a href="/user/post" class="dark" style="display: block;"><span class="bigger">#(countPost)</span><div class="sep3"></div><span class="fade">我的主题</span></a></td>
+                            <td width="34%" style="border-left: 1px solid rgba(100, 100, 100, 0.4);" align="center"><a href="/user/post#collection" class="dark" style="display: block;"><span class="bigger">#(countCollection)</span><div class="sep3"></div><span class="fade">我的收藏</span></a></td>
+                            <td width="34%" style="border-left: 1px solid rgba(100, 100, 100, 0.4);" align="center"><a href="/user/follow" class="dark" style="display: block;"><span class="bigger">#(countFollow)</span><div class="sep3"></div><span class="fade">我的关注</span></a></td>
                         </tr>
                         </tbody></table>
                 </div>

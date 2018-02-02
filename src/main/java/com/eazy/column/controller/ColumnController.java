@@ -13,6 +13,7 @@ import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
 import com.eazy.post.service.ReplyService;
 import com.eazy.user.entity.User;
+import com.eazy.user.entity.UserFB;
 import com.eazy.user.service.UserService;
 import com.xiaoleilu.hutool.json.JSONObject;
 import com.xiaoleilu.hutool.util.ObjectUtil;
@@ -92,6 +93,8 @@ public class ColumnController {
             request.setAttribute("countPost",postService.countMyPost(user.getId()));
             request.setAttribute("countCollection",collectionService.countMyCollection(user.getId()));
             request.setAttribute("countMessage",messageService.countMyMsg(user.getId()));
+            UserFB ufb = new UserFB(user.getId(), 0);
+            request.setAttribute("countFollow", userService.countUserFB(ufb));
         }
         request.setAttribute("countAllPost", postService.countAllPost());
         request.setAttribute("members", userService.countUser() );// 注册会员

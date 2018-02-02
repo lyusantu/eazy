@@ -2,6 +2,7 @@ package com.eazy.user.service.impl;
 
 import com.eazy.user.dao.UserDao;
 import com.eazy.user.entity.User;
+import com.eazy.user.entity.UserFB;
 import com.eazy.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +82,21 @@ public class UserServiceImpl implements UserService {
     @Cacheable(value = "myCache", key = "'countUser'")
     public int countUser() {
         return userDao.countUser();
+    }
+
+    @Override
+    public int insertUserFB(UserFB ufb) {
+        return userDao.insertUserFB(ufb);
+    }
+
+    @Override
+    public void delUserFB(UserFB ufb) {
+        userDao.delUserFB(ufb);
+    }
+
+    @Override
+    public int countUserFB(UserFB ufb) {
+        return userDao.countUserFB(ufb);
     }
 
 }

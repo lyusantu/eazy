@@ -38,6 +38,18 @@
         <a href="javascript:;" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">发起会话</a>
         -->
         <a href="/beauty/#(user.id)/time/1" class="layui-btn layui-btn-primary fly-imActive" data-type="chat">#(user.gender == 0 ? "he" : "she")'s beauty</a>
+        #if(session.loginUser != null && session.loginUser.id != user.id)
+            #if(follow > 0)
+                <a href="javascript:;" class="layui-btn layui-btn-danger u_fb" uname="#(user.nickName)" uid="#(user.id)" type="unfollow" >取消特别关注</a>
+            #else
+                <a href="javascript:;" class="layui-btn layui-btn-normal u_fb" uname="#(user.nickName)" uid="#(user.id)" type="follow" >加入特别关注</a>
+            #end
+            #if(block > 0)
+                <a href="javascript:;" class="layui-btn layui-btn-danger u_fb" uname="#(user.nickName)" uid="#(user.id)" type="unblock" >Unblock</a>
+            #else
+                <a href="javascript:;" class="layui-btn layui-btn-danger u_fb" uname="#(user.nickName)" uid="#(user.id)" type="block" >Block</a>
+            #end
+        #end
     </div>
 
 

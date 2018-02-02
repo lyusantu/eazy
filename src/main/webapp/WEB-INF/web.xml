@@ -70,6 +70,10 @@
     </session-config>
 
     <error-page>
+        <error-code>400</error-code>
+        <location>/err/400</location>
+    </error-page>
+    <error-page>
         <error-code>403</error-code>
         <location>/err/403</location>
     </error-page>

@@ -16,6 +16,7 @@ import com.eazy.post.entity.Post;
 import com.eazy.post.service.PostService;
 import com.eazy.post.service.ReplyService;
 import com.eazy.user.entity.User;
+import com.eazy.user.entity.UserFB;
 import com.eazy.user.service.UserService;
 import com.eazy.verify.entity.Verify;
 import com.eazy.verify.service.VerifyService;
@@ -88,6 +89,13 @@ public class UserController {
             request.setAttribute(Constants.ENTITY_USER, user);
             request.setAttribute(Constants.POST_LIST, postService.listMyPost(user.getId(), page)); // 最近的提问
             request.setAttribute(Constants.REPLY_LIST, replyService.listMyReply(user.getId(), page));// 最近的回答
+            User currUser = Constants.getLoginUser(request);
+            if (!currUser.getId().equals(user.getId())) {
+                UserFB ufb = new UserFB(currUser.getId(), user.getId(), 0);
+                request.setAttribute("follow", userService.countUserFB(ufb));
+                ufb = new UserFB(currUser.getId(), user.getId(), 1);
+                request.setAttribute("block", userService.countUserFB(ufb));
+            }
             return Constants.URL_USER_USERHOME;
         }
     }
@@ -538,6 +546,27 @@ public class UserController {
         List<AccountRecord> accountRecordList = accountRecordService.listAccountRecord(user.getId());
         request.setAttribute("arList", accountRecordList);
         return "user/balance";
+    }
+
+    // 社区设置
+    @RequestMapping(value = "/fb", method = RequestMethod.POST)
+    public @ResponseBody
+    AjaxResult follow(HttpServletRequest request) {
+        User currUser = Constants.getLoginUser(request);
+        if (ObjectUtil.isNull(currUser))
+            return new AjaxResult(1, "用户未登录");
+        String uid = request.getParameter("uid");
+        String type = request.getParameter("type");
+        UserFB ufb = new UserFB(currUser.getId(), Integer.parseInt(uid), Constants.getTimeStamp());
+        if (type.equalsIgnoreCase("follow"))
+            ufb.setType(0);
+        else if (type.equalsIgnoreCase("block"))
+            ufb.setType(1);
+        if (type.equalsIgnoreCase("unfollow") || type.equalsIgnoreCase("unblock"))
+            userService.delUserFB(ufb);
+        else
+            userService.insertUserFB(ufb);
+        return new AjaxResult(0, "操作成功");
     }
 
 }

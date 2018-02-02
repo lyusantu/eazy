@@ -289,6 +289,29 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
     });
   });
 
+    //帐号绑定
+    $('.u_fb').on('click', function(){
+      var uid = $(this).attr('uid');
+      var type = $(this).attr('type');
+        layer.confirm('确定要开始关注 '+$(this).attr('uname') + "？", {icon: 3}, function(){
+            fly.json('/user/fb', {
+              uid: uid
+              ,type: type
+            }, function(res){
+                if(res.status === 0){
+                  layer.msg(res.msg, {
+                    icon: 1,
+                      time: 1000
+                  },function () {
+                        location.reload();
+                    });
+                } else {
+                    layer.msg(res.msg);
+                }
+            });
+        });
+    });
+
 
   //我的消息
   gather.minemsg = function(){
