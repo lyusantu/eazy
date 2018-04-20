@@ -90,7 +90,7 @@ public class UserController {
             request.setAttribute(Constants.POST_LIST, postService.listMyPost(user.getId(), page)); // 最近的提问
             request.setAttribute(Constants.REPLY_LIST, replyService.listMyReply(user.getId(), page));// 最近的回答
             User currUser = Constants.getLoginUser(request);
-            if (!currUser.getId().equals(user.getId())) {
+            if (currUser != null && !currUser.getId().equals(user.getId())) {
                 UserFB ufb = new UserFB(currUser.getId(), user.getId(), 0);
                 request.setAttribute("follow", userService.countUserFB(ufb));
                 ufb = new UserFB(currUser.getId(), user.getId(), 1);
